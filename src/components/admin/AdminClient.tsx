@@ -238,10 +238,78 @@ export default function AdminClient() {
     localStorage.removeItem("gh_admin_auth");
   };
 
+  // Client-side image compression to guarantee payload stays well under Vercel's 4.5MB limit
+  const compressImageIfNeeded = async (file: File): Promise<File> => {
+    if (
+      file.type === "image/svg+xml" ||
+      file.type.includes("icon") ||
+      file.name.endsWith(".ico") ||
+      file.name.endsWith(".svg")
+    ) {
+      return file;
+    }
+    // Only compress if larger than 1MB
+    if (file.size < 1024 * 1024) {
+      return file;
+    }
+
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new (window as any).Image();
+        img.onload = () => {
+          let width = img.width;
+          let height = img.height;
+          const maxDim = 1600;
+
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            } else {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+
+          const canvas = document.createElement("canvas");
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          if (!ctx) return resolve(file);
+
+          ctx.drawImage(img, 0, 0, width, height);
+          const outMime = file.type === "image/png" ? "image/png" : "image/jpeg";
+
+          canvas.toBlob(
+            (blob) => {
+              if (blob && blob.size < file.size) {
+                const compressedFile = new File([blob], file.name, {
+                  type: outMime,
+                  lastModified: Date.now(),
+                });
+                resolve(compressedFile);
+              } else {
+                resolve(file);
+              }
+            },
+            outMime,
+            0.85
+          );
+        };
+        img.onerror = () => resolve(file);
+        img.src = e.target?.result as string;
+      };
+      reader.onerror = () => resolve(file);
+      reader.readAsDataURL(file);
+    });
+  };
+
   // Generic File Upload Handler
-  const handleFileUpload = async (file: File, type: string): Promise<string | null> => {
+  const handleFileUpload = async (rawFile: File, type: string): Promise<string | null> => {
     setUploadLoading(type);
     try {
+      const file = await compressImageIfNeeded(rawFile);
       const formData = new FormData();
       formData.append("file", file);
       formData.append("type", type);
@@ -250,16 +318,29 @@ export default function AdminClient() {
         method: "POST",
         body: formData,
       });
-      const data = await res.json();
-      if (data.success && data.url) {
-        return data.url;
+
+      const text = await res.text();
+      let data: any;
+      try {
+        data = JSON.parse(text);
+      } catch {
+        if (res.status === 413 || text.toLowerCase().includes("entity too large")) {
+          alert("File size is too large for upload. Please select an image under 4MB.");
+          return null;
+        }
+        alert("Upload server returned: " + (text.slice(0, 150) || "Unknown error"));
+        return null;
+      }
+
+      if (res.ok && data.success && (data.url || data.dataUrl)) {
+        return data.url || data.dataUrl;
       } else {
         alert("Upload error: " + (data.error || "Failed to upload file"));
         return null;
       }
     } catch (err: any) {
       console.error("File upload error:", err);
-      alert("Network error while uploading file: " + err.message);
+      alert("Error while uploading file: " + err.message);
       return null;
     } finally {
       setUploadLoading(null);

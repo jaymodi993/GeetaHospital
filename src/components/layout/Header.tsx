@@ -112,6 +112,7 @@ export default function Header() {
                   width={44}
                   height={44}
                   className="object-contain p-0.5"
+                  unoptimized
                   priority
                 />
               </div>

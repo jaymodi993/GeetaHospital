@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
 
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
 export async function POST(request: Request) {
   try {
     const formData = await request.formData();
@@ -20,70 +23,72 @@ export async function POST(request: Request) {
 
     // Sanitize filename and get extension
     const originalName = file.name || "upload";
-    const ext = path.extname(originalName).toLowerCase() || (file.type.includes("png") ? ".png" : file.type.includes("svg") ? ".svg" : file.type.includes("icon") || file.type.includes("ico") ? ".ico" : ".jpg");
+    const ext =
+      path.extname(originalName).toLowerCase() ||
+      (file.type.includes("png")
+        ? ".png"
+        : file.type.includes("svg")
+        ? ".svg"
+        : file.type.includes("icon") || file.type.includes("ico")
+        ? ".ico"
+        : ".jpg");
     const baseName = path.basename(originalName, ext).replace(/[^a-zA-Z0-9_-]/g, "-").toLowerCase();
-    const timestamp = Date.now();
-    const safeFileName = `${baseName}-${timestamp}${ext}`;
+    const safeFileName = `${baseName}-${Date.now()}${ext}`;
 
-    const uploadsDir = path.join(process.cwd(), "public", "uploads");
-    if (!fs.existsSync(uploadsDir)) {
-      fs.mkdirSync(uploadsDir, { recursive: true });
-    }
-
-    let publicUrl = `/uploads/${safeFileName}`;
-    const mainDest = path.join(uploadsDir, safeFileName);
-    fs.writeFileSync(mainDest, buffer);
-
-    // Context-specific destinations
-    if (type === "logo") {
-      try {
-        const logoPath = path.join(process.cwd(), "public", "images", "logo.png");
-        fs.writeFileSync(logoPath, buffer);
-        publicUrl = "/images/logo.png";
-      } catch (err) {
-        console.warn("Could not overwrite /images/logo.png, using upload path:", err);
-      }
-    } else if (type === "favicon") {
-      try {
-        const publicFavicon = path.join(process.cwd(), "public", "favicon.ico");
-        const appFavicon = path.join(process.cwd(), "src", "app", "favicon.ico");
-        fs.writeFileSync(publicFavicon, buffer);
-        if (fs.existsSync(path.dirname(appFavicon))) {
-          fs.writeFileSync(appFavicon, buffer);
-        }
-        publicUrl = "/favicon.ico";
-      } catch (err) {
-        console.warn("Could not overwrite favicon.ico, using upload path:", err);
-      }
-    } else if (type === "doctor") {
-      try {
-        const docDir = path.join(process.cwd(), "public", "images", "doctors");
-        if (!fs.existsSync(docDir)) fs.mkdirSync(docDir, { recursive: true });
-        const docDest = path.join(docDir, safeFileName);
-        fs.writeFileSync(docDest, buffer);
-        publicUrl = `/images/doctors/${safeFileName}`;
-      } catch (err) {
-        console.warn("Could not write to doctors dir:", err);
-      }
-    } else if (type === "partner") {
-      try {
-        const partnerDir = path.join(process.cwd(), "public", "images", "partners");
-        if (!fs.existsSync(partnerDir)) fs.mkdirSync(partnerDir, { recursive: true });
-        const partnerDest = path.join(partnerDir, safeFileName);
-        fs.writeFileSync(partnerDest, buffer);
-        publicUrl = `/images/partners/${safeFileName}`;
-      } catch (err) {
-        console.warn("Could not write to partners dir:", err);
-      }
-    }
-
-    // Generate base64 Data URL for serverless resilience
-    const mimeType = file.type || (ext === ".svg" ? "image/svg+xml" : ext === ".png" ? "image/png" : ext === ".ico" ? "image/x-icon" : "image/jpeg");
+    const mimeType =
+      file.type ||
+      (ext === ".svg"
+        ? "image/svg+xml"
+        : ext === ".png"
+        ? "image/png"
+        : ext === ".ico"
+        ? "image/x-icon"
+        : "image/jpeg");
     const dataUrl = `data:${mimeType};base64,${buffer.toString("base64")}`;
+
+    let localUrl: string | null = null;
+
+    // Check if running on Vercel serverless (where root filesystem is read-only)
+    const isVercel = process.env.VERCEL === "1" || !!process.env.AWS_LAMBDA_FUNCTION_NAME;
+
+    if (!isVercel) {
+      try {
+        const uploadsDir = path.join(process.cwd(), "public", "uploads");
+        if (!fs.existsSync(uploadsDir)) {
+          fs.mkdirSync(uploadsDir, { recursive: true });
+        }
+        const mainDest = path.join(uploadsDir, safeFileName);
+        fs.writeFileSync(mainDest, buffer);
+        localUrl = `/uploads/${safeFileName}`;
+
+        if (type === "logo") {
+          try {
+            const logoPath = path.join(process.cwd(), "public", "images", "logo.png");
+            fs.writeFileSync(logoPath, buffer);
+            localUrl = "/images/logo.png";
+          } catch (e) {
+            console.warn("Logo overwrite warning:", e);
+          }
+        } else if (type === "favicon") {
+          try {
+            const publicFavicon = path.join(process.cwd(), "public", "favicon.ico");
+            fs.writeFileSync(publicFavicon, buffer);
+            localUrl = "/favicon.ico";
+          } catch (e) {
+            console.warn("Favicon overwrite warning:", e);
+          }
+        }
+      } catch (err) {
+        console.warn("Local disk write warning:", err);
+      }
+    }
+
+    // On Vercel, dataUrl is self-contained and avoids serverless read-only disk issues
+    const resolvedUrl = localUrl || dataUrl;
 
     return NextResponse.json({
       success: true,
-      url: publicUrl,
+      url: resolvedUrl,
       dataUrl,
       fileName: safeFileName,
       size: buffer.length,

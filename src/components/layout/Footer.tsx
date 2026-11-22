@@ -65,6 +65,7 @@ export default function Footer() {
                   width={36}
                   height={36}
                   className="object-contain p-0.5"
+                  unoptimized
                 />
               </div>
               <div>

@@ -12,7 +12,10 @@
     "emergencyPhone": "+91 78743 81551",
     "whatsappNumber": "+917874381551",
     "email": "geetahospitalmundra@gmail.com",
+    "appointmentUrl": "https://kivihealth.com/clinic/geeta-hospital",
     "logoUrl": "/images/logo.png",
+    "faviconUrl": "/favicon.ico",
+    "heroBannerUrl": "/images/hero-banner-1.jpg",
     "address": {
       "street": "3, Ambe Nagar, Nr. Gajanand Complex, Gundala Road",
       "locality": "Baroi-Mundra",
@@ -22,9 +25,44 @@
       "country": "India",
       "fullAddress": "3, Ambe Nagar, Nr. Gajanand Complex, Gundala Road, Baroi-Mundra, Kutch, Gujarat 370421, India"
     },
-    "googleMapsUrl": "https://maps.google.com/?q=Geeta+Hospital+Mundra",
-    "faviconUrl": "/favicon.ico",
-    "heroBannerUrl": "/images/hero-banner-1.jpg"
+    "geo": {
+      "latitude": 22.8364,
+      "longitude": 69.7289
+    },
+    "openingHours": "Mo-Su 00:00-24:00 (24x7 Open)",
+    "accreditations": [
+      {
+        "title": "ISO 9001:2015 Certified",
+        "subtitle": "Quality Healthcare Management Systems",
+        "code": "ISO 9001:2015",
+        "image": "/images/cert-registration.jpg"
+      },
+      {
+        "title": "ROHINI Registered",
+        "subtitle": "Registry of Hospitals in Network of Insurance (IIB)",
+        "code": "ROHINI Validated",
+        "image": "/images/cert-rohini.jpg"
+      },
+      {
+        "title": "GPCB Bio-Medical Waste Authorization",
+        "subtitle": "Gujarat Pollution Control Board Form-III Compliant",
+        "code": "GPCB Form-III",
+        "image": "/images/cert-bmw.jpg"
+      },
+      {
+        "title": "Fire Safety NOC Certified",
+        "subtitle": "Government Approved Fire Prevention Infrastructure",
+        "code": "FSCA Certified",
+        "image": "/images/cert-fire-noc.jpg"
+      },
+      {
+        "title": "PNDT Registration Certificate",
+        "subtitle": "Approved Diagnostic Sonography Clinic",
+        "code": "PNDT Compliant",
+        "image": "/images/cert-pndt.jpg"
+      }
+    ],
+    "googleMapsUrl": "https://maps.google.com/?q=Geeta+Hospital+Mundra"
   },
   "announcements": [
     {
@@ -56,5 +94,1042 @@
     "title": "Geeta Multi-Speciality Hospital Mundra | 24x7 Emergency & Critical Care",
     "description": "Premier 45-bed multi-speciality hospital in Mundra (Kutch). 24x7 Emergency, Gynecology, Pediatrics, Adult & Neonatal ICU, Orthopedics, Cashless Mediclaim. ISO 9001:2015 & ROHINI registered.",
     "keywords": "Hospital in Mundra, Geeta Hospital Mundra, Emergency hospital Mundra, Gynecologist in Mundra, Pediatrician Mundra, ICU hospital Kutch, Dr Kundan Modi, Cashless mediclaim hospital Mundra"
-  }
+  },
+  "doctors": [
+    {
+      "id": "dr-kundan-modi",
+      "name": "Dr. Kundan B. Modi",
+      "qualification": "M.B.B.S., M.D.",
+      "designation": "Chief Gynecologist & Obstetrician",
+      "department": "Gynecology & Obstetrics",
+      "type": "full-time",
+      "experience": "17+ Years",
+      "opdSchedule": "Monday to Sunday (24x7 On-call emergency)",
+      "opdTiming": "10:00 AM - 1:30 PM & 5:00 PM - 8:00 PM",
+      "expertise": [
+        "High risk delivery and Cesarean section delivery",
+        "Gynec and pregnancy related 3D/4D USG",
+        "All Gynecological Laparoscopic Surgeries",
+        "Infertility management & IUI satellite IVF",
+        "Vaginal plastic surgeries for prolapse and urinary incontinence (SUI)"
+      ],
+      "image": "/images/doctors/dr-kundan-modi.jpg",
+      "bio": "Senior Gynecologist & Obstetrician with 17+ years of clinical excellence in maternal health, laparoscopic surgeries, and high-risk childbirth care in Mundra."
+    },
+    {
+      "id": "dr-vinod-prajapati",
+      "name": "Dr. Vinod Prajapati",
+      "qualification": "M.B.B.S., D.A.",
+      "designation": "Critical Care Specialist & Anesthesiologist",
+      "department": "Critical Care & Emergency Medicine",
+      "type": "full-time",
+      "experience": "17+ Years",
+      "opdSchedule": "Monday to Sunday (24x7 Emergency & ICU)",
+      "opdTiming": "24 Hours Emergency & Critical Care",
+      "expertise": [
+        "Heart attack and hypertensive emergency management",
+        "Poisoning and toxicology emergency treatment",
+        "Snake bite treatment with anti-snake venom protocol",
+        "Accidental emergency and polytrauma management",
+        "Severe Malaria, Dengue and multi-organ failure resuscitation"
+      ],
+      "image": "/images/doctors/dr-vinod-prajapati.jpg",
+      "bio": "Leading Critical Care Specialist with 17+ years experience managing life-threatening medical emergencies, cardiac events, snake bites, and ICU ventilation."
+    },
+    {
+      "id": "dr-avani-modi",
+      "name": "Dr. Avani K. Modi",
+      "qualification": "M.B.B.S., D.C.P.",
+      "designation": "Head Consultant Pathologist",
+      "department": "Pathology & Laboratory Medicine",
+      "type": "full-time",
+      "experience": "17+ Years",
+      "opdSchedule": "Monday to Saturday (24x7 In-House Lab)",
+      "opdTiming": "8:30 AM - 8:30 PM",
+      "expertise": [
+        "All kind of Blood and Urine automated tests",
+        "Hormonal profile (Thyroid, FSH, LH, AMH, Prolactin)",
+        "Histopathology and Cytology (PAP smear, Biopsy etc.)",
+        "Thalassemia testing by HPLC method",
+        "Comprehensive executive full body health checkups"
+      ],
+      "image": "/images/doctors/dr-avani-modi.jpg",
+      "bio": "Senior Pathologist directing Geeta Hospital's 24x7 fully computerized in-house laboratory with 17+ years of diagnostic excellence."
+    },
+    {
+      "id": "dr-rahul-patel",
+      "name": "Dr. Rahul N. Patel",
+      "qualification": "M.B.B.S., D.C.H. (Gold Medalist)",
+      "designation": "Senior Pediatrician & Neonatologist",
+      "department": "Pediatrics & Neonatology",
+      "type": "full-time",
+      "experience": "9+ Years",
+      "opdSchedule": "Monday to Saturday",
+      "opdTiming": "10:00 AM - 1:00 PM & 5:30 PM - 8:30 PM",
+      "expertise": [
+        "Pediatric and Neonate OPD & Growth tracking",
+        "NICU care - Critical baby handling & premature baby care",
+        "Neonatal Ventilation, CPAP & High Flow Nasal Cannula (HHFNC)",
+        "Pediatric emergencies (convulsions, severe fever, malaria, dengue)",
+        "All routine and optional childhood vaccinations"
+      ],
+      "image": "/images/doctors/dr-rahul-patel.jpg",
+      "bio": "Gold Medalist Pediatrician & Neonatologist leading Geeta Hospital's advanced NICU with 9+ years experience in premature infant care and childhood health."
+    },
+    {
+      "id": "dr-omkarsinh-chudasama",
+      "name": "Dr. Omkarsinh Chudasama",
+      "qualification": "M.B.B.S., D. Ortho",
+      "designation": "Orthopedic & Trauma Surgeon",
+      "department": "Orthopedics & Joint Care",
+      "type": "full-time",
+      "experience": "9+ Years",
+      "opdSchedule": "Monday to Saturday (24x7 Trauma on-call)",
+      "opdTiming": "10:30 AM - 1:30 PM & 5:30 PM - 8:00 PM",
+      "expertise": [
+        "Emergency accident (fractures) and polytrauma management",
+        "Sports related injuries and ligament repairs",
+        "Arthritis, osteoporosis, chronic joint & back pain",
+        "Pediatric trauma and bone deformities",
+        "Minimally invasive fracture surgeries using C-ARM"
+      ],
+      "image": "/images/doctors/dr-omkarsinh-chudasama.jpg",
+      "bio": "Expert Orthopedic Surgeon specializing in trauma, fracture repair with C-ARM, joint preservation, and sports injury rehabilitation."
+    },
+    {
+      "id": "dr-shailesh-chauhan",
+      "name": "Dr. Shailesh Chauhan",
+      "qualification": "M.B.B.S., M.S.",
+      "designation": "General & Laparoscopic Surgeon",
+      "department": "General & Laparoscopic Surgery",
+      "type": "full-time",
+      "experience": "2+ Years",
+      "opdSchedule": "Monday to Saturday",
+      "opdTiming": "10:00 AM - 1:00 PM & 5:00 PM - 7:30 PM",
+      "expertise": [
+        "Appendicectomy (Open & Laparoscopic)",
+        "Cholecystectomy / Gallbladder stone removal (Open & Laparoscopic)",
+        "Hernia repair (Inguinal, Umbilical, Incisional - Lap & Open)",
+        "Anorectal diseases (Piles, Fissure, Fistula)",
+        "Hydrocele, circumcision & acute surgical trauma"
+      ],
+      "image": "/images/doctors/dr-shailesh-chauhan.jpg",
+      "bio": "Skilled General and Laparoscopic Surgeon performing modern minimally invasive abdominal procedures and surgical trauma care."
+    },
+    {
+      "id": "dr-tahira-imam",
+      "name": "Dr. Tahira Imam",
+      "qualification": "B.A.M.S.",
+      "designation": "Senior Resident Medical Officer",
+      "department": "General Medicine & Inpatient Care",
+      "type": "full-time",
+      "experience": "24+ Years",
+      "opdSchedule": "Daily Regular OPD & Inpatient Rounds",
+      "opdTiming": "9:00 AM - 1:00 PM & 4:30 PM - 7:30 PM",
+      "expertise": [
+        "24+ years clinical experience in primary care",
+        "Inpatient ward monitoring and maternal-child health triage",
+        "Emergency patient stabilization and continuous care",
+        "Lifestyle and integrative health counseling"
+      ],
+      "image": "/images/doctors/dr-tahira-imam.jpg",
+      "bio": "Senior Medical Officer with 24+ years of dedicated clinical practice providing round-the-clock primary patient care and inpatient ward oversight."
+    },
+    {
+      "id": "dr-gautam-aniyaliya",
+      "name": "Dr. Gautam Aniyaliya",
+      "qualification": "B.H.M.S.",
+      "designation": "Resident Medical Officer",
+      "department": "General Medicine & Emergency Care",
+      "type": "full-time",
+      "experience": "5+ Years",
+      "opdSchedule": "Daily Emergency & Inpatient Duty",
+      "opdTiming": "Full-Time 24x7 Shift Coverage",
+      "expertise": [
+        "Emergency triage and immediate medical stabilization",
+        "Inpatient clinical management & post-operative recovery",
+        "Acute medical conditions and OPD consultations",
+        "Round-the-clock patient monitoring"
+      ],
+      "image": "/images/doctors/dr-gautam-aniyaliya.jpg",
+      "bio": "Resident Medical Officer with 5+ years experience ensuring vigilant 24x7 inpatient care, emergency triage, and clinical support."
+    },
+    {
+      "id": "dr-krupa-nath",
+      "name": "Dr. Krupa Nath",
+      "qualification": "B.H.M.S.",
+      "designation": "Resident Medical Officer",
+      "department": "General Medicine & Inpatient Care",
+      "type": "full-time",
+      "experience": "4+ Years",
+      "opdSchedule": "Daily Emergency & Inpatient Duty",
+      "opdTiming": "Full-Time 24x7 Shift Coverage",
+      "expertise": [
+        "Round-the-clock inpatient observation and care",
+        "Emergency duty and routine health checkups",
+        "Pre and post-operative patient assessment",
+        "Patient education and medication counseling"
+      ],
+      "image": "/images/doctors/dr-krupa-nath.jpg",
+      "bio": "Resident Medical Officer with 4+ years of clinical service dedicated to continuous patient monitoring and inpatient healthcare delivery."
+    },
+    {
+      "id": "dr-jaydatt-tekani",
+      "name": "Dr. Jaydatt Tekani",
+      "qualification": "M.D. (Medicine), DNB (Cardiology)",
+      "designation": "Visiting Interventional Cardiologist",
+      "department": "Cardiology (Heart Care)",
+      "type": "visiting",
+      "experience": "12+ Years",
+      "opdSchedule": "1st Thursday of every month",
+      "opdTiming": "5:00 PM - 6:00 PM",
+      "opdDays": [
+        "Thursday"
+      ],
+      "clinicAffiliation": "Marengo CIMS Hospital / K.K. Patel Super Speciality Hospital, Bhuj",
+      "contactNumber": "+91 63529 15211",
+      "expertise": [
+        "Coronary artery disease, Angina & Heart failure management",
+        "Post-Angioplasty & Bypass surgery follow-up care",
+        "Echocardiography (ECHO), ECG interpretation & preventive cardiology",
+        "Hypertensive heart disease & dyslipidemia management"
+      ],
+      "image": "/images/camp-cardiology.jpg",
+      "bio": "Renowned cardiologist providing monthly super-speciality cardiac consultations and ECG/ECHO assessments at Geeta Hospital."
+    },
+    {
+      "id": "dr-naushad-ravjani",
+      "name": "Dr. Naushad B. Ravjani",
+      "qualification": "M.D., D.M. (Neurology - NIMS Hyderabad)",
+      "designation": "Visiting Super-Specialist Neurologist",
+      "department": "Neurology & Brain Sciences",
+      "type": "visiting",
+      "experience": "11+ Years",
+      "opdSchedule": "1st & 3rd Thursday of every month",
+      "opdTiming": "3:30 PM - 5:30 PM",
+      "opdDays": [
+        "Thursday"
+      ],
+      "clinicAffiliation": "Brain Care & Cure Clinic, Bhuj",
+      "expertise": [
+        "Stroke recovery, Paralysis & Brain attack management",
+        "Epilepsy, seizures & diagnostic EEG testing facility",
+        "Severe migraine, chronic headache & trigeminal neuralgia",
+        "Parkinson's disease, tremors & neuropathy disorders"
+      ],
+      "image": "/images/camp-neurology.jpg",
+      "bio": "Leading neurologist with DM from NIMS Hyderabad offering advanced neurological diagnostics and management right here in Mundra."
+    },
+    {
+      "id": "dr-yogesh-patel",
+      "name": "Dr. Yogesh B. Patel (Valani)",
+      "qualification": "M.B.B.S., M.D., FCCCM, EULAR CIH, CCEBDM, EMPH",
+      "designation": "Visiting Consultant Rheumatologist & Diabetologist",
+      "department": "Rheumatology & Diabetology",
+      "type": "visiting",
+      "experience": "13+ Years",
+      "opdSchedule": "1st & 3rd Wednesday of every month",
+      "opdTiming": "9:00 AM - 12:00 PM",
+      "opdDays": [
+        "Wednesday"
+      ],
+      "clinicAffiliation": "Kamla Hospital / Vadodara & Kutch OPD",
+      "contactNumber": "+91 99792 62930",
+      "expertise": [
+        "Rheumatoid arthritis, Ankylosing spondylitis & Lupus (SLE)",
+        "Gout, uric acid disorders & autoimmune joint diseases",
+        "Advanced complex diabetes mellitus & insulin titration",
+        "Critical metabolic diseases & bone health management"
+      ],
+      "image": "",
+      "bio": "Fellow of EULAR with specialized certifications in diabetes and critical care, leading our bi-weekly joint and diabetes clinics."
+    },
+    {
+      "id": "dr-krushnakumar-virda",
+      "name": "Dr. Krushnakumar Virda",
+      "qualification": "M.Ch. (Neuro Surgery), Endovascular Fellowship (Japan)",
+      "designation": "Visiting Brain & Spine Neurosurgeon",
+      "department": "Neurosurgery & Spine Care",
+      "type": "visiting",
+      "experience": "10+ Years",
+      "opdSchedule": "2nd Saturday of every month",
+      "opdTiming": "5:00 PM - 6:00 PM",
+      "opdDays": [
+        "Saturday"
+      ],
+      "clinicAffiliation": "Divine Life Hospital",
+      "contactNumber": "+91 77779 04878",
+      "expertise": [
+        "Brain tumors & neuro-trauma evaluations",
+        "Spine disc herniation, sciatica & minimally invasive spine surgery",
+        "Endovascular neurosurgery & cerebrovascular disease consultation",
+        "Hydrocephalus, spinal stenosis & spinal cord compression"
+      ],
+      "image": "",
+      "bio": "Japan-fellowship trained neurosurgeon offering expert consultations for brain and spine conditions in Mundra."
+    },
+    {
+      "id": "dr-ankur-dhanani",
+      "name": "Dr. Ankur Dhanani",
+      "qualification": "M.S. (E.N.T.)",
+      "designation": "Visiting ENT & Head-Neck Specialist",
+      "department": "ENT (Ear, Nose & Throat)",
+      "type": "visiting",
+      "experience": "12+ Years",
+      "opdSchedule": "2nd & 4th Saturday of every month",
+      "opdTiming": "2:00 PM - 5:00 PM",
+      "opdDays": [
+        "Saturday"
+      ],
+      "clinicAffiliation": "Dhanani's ENT Clinic, Bhuj",
+      "contactNumber": "+91 95106 95906",
+      "expertise": [
+        "Endoscopic sinus surgery & nasal polyp management",
+        "Microscopic ear surgery (Tympanoplasty) & hearing loss testing",
+        "Tonsillitis, adenoids, snoring & sleep apnea treatment",
+        "Vertigo, dizziness clinic & voice disorder therapy"
+      ],
+      "image": "",
+      "bio": "Senior ENT surgeon backed by Geeta Hospital's high-tech ENT operation theater equipped with ear operating microscope and endoscopes."
+    },
+    {
+      "id": "dr-rajesh-punjabi",
+      "name": "Dr. Rajesh Punjabi & Dr. Shital Punjabi",
+      "qualification": "M.D., D.G.O., Infertility & IVF Specialists",
+      "designation": "Visiting Senior IVF & Test Tube Baby Specialists",
+      "department": "IVF & Reproductive Medicine",
+      "type": "visiting",
+      "experience": "20+ Years",
+      "opdSchedule": "1st Saturday of every month",
+      "opdTiming": "2:00 PM - 5:00 PM",
+      "opdDays": [
+        "Saturday"
+      ],
+      "clinicAffiliation": "Shashwat IVF & Women's Hospital, Ahmedabad",
+      "contactNumber": "+91 94270 87387 / +91 81415 52001",
+      "expertise": [
+        "Comprehensive male and female infertility workup",
+        "IUI (Intrauterine Insemination) & IVF/ICSI cycles",
+        "Repeated IVF failure & recurrent pregnancy loss evaluation",
+        "Satellite IVF monitoring & ovulation induction"
+      ],
+      "image": "",
+      "bio": "Nationally recognized fertility leaders from Ahmedabad offering satellite IVF cycle monitoring and specialized infertility OPD at Geeta Hospital."
+    },
+    {
+      "id": "dr-binal-trivedi",
+      "name": "Dr. Binal Trivedi",
+      "qualification": "IVF Specialist",
+      "designation": "Visiting IVF & Fertility Specialist",
+      "department": "IVF & Reproductive Medicine",
+      "type": "visiting",
+      "experience": "14+ Years",
+      "opdSchedule": "1st Saturday of every month",
+      "opdTiming": "2:00 PM - 5:00 PM",
+      "opdDays": [
+        "Saturday"
+      ],
+      "clinicAffiliation": "Sashwat IVF Center, Ahmedabad",
+      "contactNumber": "+91 78743 81551",
+      "expertise": [
+        "Infertility evaluation & IVF / Test Tube Baby consultation",
+        "IUI (Intrauterine Insemination) planning",
+        "Ovulation induction & satellite cycle monitoring",
+        "Recurrent pregnancy loss counseling"
+      ],
+      "image": "",
+      "bio": "Renowned IVF specialist from Sashwat IVF Center, Ahmedabad, conducting dedicated monthly fertility OPD clinics at Geeta Hospital."
+    },
+    {
+      "id": "dr-anvay-gandhi",
+      "name": "Dr. Anvay Gandhi & Dr. Smruti Gandhi",
+      "qualification": "M.S. (Ophthalmology)",
+      "designation": "Visiting Eye Surgeons & Cataract Specialists",
+      "department": "Ophthalmology (Eye Care)",
+      "type": "visiting",
+      "experience": "15+ Years",
+      "opdSchedule": "Every Sunday Morning",
+      "opdTiming": "10:00 AM - 1:00 PM",
+      "opdDays": [
+        "Sunday"
+      ],
+      "clinicAffiliation": "Gandhi Netralaya",
+      "contactNumber": "+91 79908 58504",
+      "expertise": [
+        "Micro-incision Phacoemulsification (Phaco) sutureless cataract surgery",
+        "Glaucoma screening & visual field testing",
+        "Diabetic retinopathy screening & medical retina",
+        "Refractive vision error checkup & pediatric eye care"
+      ],
+      "image": "",
+      "bio": "Accomplished ophthalmologists providing weekly Sunday eye clinics and state-of-the-art PHACO cataract surgery in our dedicated eye operation theater."
+    }
+  ],
+  "services": [
+    {
+      "id": "emergency-ambulance",
+      "title": "24x7 ICU Ambulance Service",
+      "category": "Critical Care",
+      "shortDescription": "Fully equipped mobile ICU ambulance with oxygen, monitor, and trained paramedical staff.",
+      "description": "Round-the-clock emergency patient pickup and inter-hospital transport with ventilator, suction machine, oxygen cylinders, and emergency drugs.",
+      "iconName": "Ambulance",
+      "features": [
+        "Oxygen support",
+        "Trained paramedics",
+        "GPS tracking",
+        "Fast dispatch across Mundra & Kutch"
+      ],
+      "isEmergency24x7": true
+    },
+    {
+      "id": "pathology-lab",
+      "title": "24x7 In-House Pathology Laboratory",
+      "category": "Diagnostics",
+      "shortDescription": "Full automated diagnostic pathology providing accurate reports day and night.",
+      "description": "Fully automated biochemistry, hematology, hormone analysis, cytology, biopsy, and emergency blood gas testing operating 24 hours a day.",
+      "iconName": "FlaskConical",
+      "features": [
+        "Fully automated cell counters",
+        "Thyroid & hormone profiles",
+        "Biopsy & Pap smear",
+        "Same-day digital reports"
+      ],
+      "isEmergency24x7": true
+    },
+    {
+      "id": "inhouse-pharmacy",
+      "title": "24x7 In-House Pharmacy (Geeta Medical)",
+      "category": "Inpatient & Amenities",
+      "shortDescription": "Round-the-clock pharmacy stocked with critical emergency drugs and surgical supplies.",
+      "description": "Geeta Medical Stores operates 24/7 on the ground floor, stocked with authentic prescription drugs, surgical disposables, pediatric drops, and emergency injectables.",
+      "iconName": "Pill",
+      "features": [
+        "100% genuine medications",
+        "Emergency life-saving drugs",
+        "Cold chain storage",
+        "Open all nights and holidays"
+      ],
+      "isEmergency24x7": true
+    },
+    {
+      "id": "icu-critical-care",
+      "title": "3-Bed Intensive Care Unit (ICU)",
+      "category": "Critical Care",
+      "shortDescription": "Advanced ICU with mechanical ventilators, invasive monitors, and 24x7 intensivist care.",
+      "description": "High-dependency multi-bed ICU equipped with modern ventilators, multi-channel monitors, defibrillators, infusion pumps, and dedicated central oxygen lines.",
+      "iconName": "Activity",
+      "features": [
+        "Invasive & Non-invasive ventilators",
+        "Multi-parameter cardiac monitors",
+        "Arterial blood gas testing",
+        "1:1 nursing ratio for critical beds"
+      ],
+      "isEmergency24x7": true
+    },
+    {
+      "id": "nicu-neonatal",
+      "title": "5-Bed Neonatal ICU (NICU)",
+      "category": "Critical Care",
+      "shortDescription": "Specialized care for preterm and critically ill newborns with ventilators and infant warmers.",
+      "description": "Equipped with high-flow HHFNC, infant warmers, LED phototherapy units, neonatal ventilators, and portable X-ray for premature and low birth-weight infants.",
+      "iconName": "Baby",
+      "features": [
+        "Neonatal ventilators & CPAP",
+        "High-intensity phototherapy",
+        "Radiant warmers",
+        "Lactation & kangaroo mother care"
+      ],
+      "isEmergency24x7": true
+    },
+    {
+      "id": "gynec-labor-ot",
+      "title": "Dedicated Labor Room & Gynec OT",
+      "category": "Surgical & Maternal",
+      "shortDescription": "Modern labor delivery room and modular gynecological surgery theater.",
+      "description": "Complete obstetrical unit with electronic fetal monitors, birthing beds, resuscitation warmers, and a sterile modular operating theater with laparoscopy unit.",
+      "iconName": "HeartPulse",
+      "features": [
+        "Painless normal delivery",
+        "High-risk Cesarean capability",
+        "Laparoscopic hysterectomy",
+        "Double dome LED surgical lights"
+      ]
+    },
+    {
+      "id": "orthopedic-c-arm-ot",
+      "title": "Orthopedic OT with C-ARM",
+      "category": "Surgical & Maternal",
+      "shortDescription": "Advanced orthopedic operation theatre equipped with IITV C-ARM image intensifier.",
+      "description": "Specialized orthopedic surgical facility enabling real-time X-ray imaging for complex fracture fixations, joint reconstructions, and pediatric trauma care.",
+      "iconName": "Bone",
+      "features": [
+        "C-ARM image intensifier",
+        "Modular laminar airflow",
+        "Complex trauma plating",
+        "Spine & joint surgery capability"
+      ]
+    },
+    {
+      "id": "ophthalmology-phaco-ot",
+      "title": "Eye Surgery OT with PHACO",
+      "category": "Surgical & Maternal",
+      "shortDescription": "Dedicated eye operation theater with Phaco machine for sutureless cataract surgery.",
+      "description": "Sterile ophthalmic surgical suite equipped with advanced Phacoemulsification technology and operating microscope for cataract and micro-eye procedures.",
+      "iconName": "Eye",
+      "features": [
+        "Sutureless micro-incision cataract",
+        "Premium foldable IOL lenses",
+        "Operating eye microscope",
+        "Day care discharge"
+      ]
+    },
+    {
+      "id": "ent-microscope-ot",
+      "title": "High-Equipped ENT OT",
+      "category": "Surgical & Maternal",
+      "shortDescription": "Ear, Nose, Throat operating theater with ear microscope and diagnostic endoscopes.",
+      "description": "Equipped for endoscopic sinus surgery, tympanoplasty, mastoidectomy, tonsillectomy, and diagnostic nasopharyngoscopy.",
+      "iconName": "Stethoscope",
+      "features": [
+        "Ear surgical microscope",
+        "Rigid nasal endoscopes",
+        "Micro-debrider system",
+        "Advanced bipolar cautery"
+      ]
+    },
+    {
+      "id": "doppler-usg",
+      "title": "3D / 4D Color Doppler Ultrasound (USG)",
+      "category": "Diagnostics",
+      "shortDescription": "High-resolution obstetric, abdominal, and vascular ultrasound sonography.",
+      "description": "State-of-the-art sonography scanner for anomaly scans, fetal Doppler, abdominal diagnostics, gynecological pelvic assessment, and venous studies.",
+      "iconName": "Scan",
+      "features": [
+        "3D/4D Fetal anomaly scans",
+        "Maternal-fetal blood flow Doppler",
+        "Abdomen & pelvis imaging",
+        "Immediate specialist reporting"
+      ]
+    },
+    {
+      "id": "digital-xray",
+      "title": "Digital X-Ray & Portable Imaging",
+      "category": "Diagnostics",
+      "shortDescription": "High-frequency digital radiography for chest, trauma, and bedside ICU imaging.",
+      "description": "Modern radiography system providing crystal-clear bone and chest X-rays with low radiation dosage, plus portable unit for bedside ICU and NICU patients.",
+      "iconName": "Crosshair",
+      "features": [
+        "Digital radiography (DR)",
+        "Bedside portable X-ray unit",
+        "Low radiation protocols",
+        "Rapid musculoskeletal trauma scans"
+      ]
+    },
+    {
+      "id": "ecg-cardiac",
+      "title": "12-Lead Electrocardiography (ECG)",
+      "category": "Diagnostics",
+      "shortDescription": "Immediate computerized 12-lead ECG for chest pain and rhythm evaluation.",
+      "description": "Rapid bedside ECG recording for cardiac emergencies, myocardial infarction triage, and pre-operative cardiac evaluations available 24x7.",
+      "iconName": "LineChart",
+      "features": [
+        "Instant 12-lead cardiac trace",
+        "24x7 emergency chest pain triage",
+        "Pre-operative fitness assessment",
+        "Cardiologist interpretation"
+      ],
+      "isEmergency24x7": true
+    },
+    {
+      "id": "deluxe-special-rooms",
+      "title": "Deluxe & Special AC Inpatient Rooms",
+      "category": "Inpatient & Amenities",
+      "shortDescription": "1 Deluxe room, 7 Special AC rooms, and 3 Semi-special AC patient suites.",
+      "description": "Clean, hygienic, and air-conditioned private rooms equipped with attendant couch, television, attached washroom, and nurse calling bell.",
+      "iconName": "BedDouble",
+      "features": [
+        "Central oxygen connectivity",
+        "Attached sanitary washrooms",
+        "Attendant sleeping facility",
+        "Cable TV & Wi-Fi"
+      ]
+    },
+    {
+      "id": "general-wards",
+      "title": "General Wards & Day Care Units",
+      "category": "Inpatient & Amenities",
+      "shortDescription": "Separate male and female general wards with 16 beds plus 3 day-care beds.",
+      "description": "Spacious, well-ventilated, and clean general inpatient wards with individual privacy curtains, central oxygen lines, and round-the-clock nursing supervision.",
+      "iconName": "Users",
+      "features": [
+        "Separate Male & Female wards",
+        "Day-care observation beds",
+        "Privacy curtains",
+        "Affordable care with high hygiene"
+      ]
+    },
+    {
+      "id": "stretcher-lift",
+      "title": "Hospital Stretcher Elevator / Lift",
+      "category": "Inpatient & Amenities",
+      "shortDescription": "Large stretcher-compatible medical lift connecting all floors seamlessly.",
+      "description": "Smooth transit for bed-ridden, critical, and postoperative patients between ground floor emergency, first floor ICU/OTs, and inpatient wards.",
+      "iconName": "ArrowUpDown",
+      "features": [
+        "Wide stretcher capacity",
+        "Emergency power backup",
+        "Wheelchair accessible",
+        "Direct emergency corridor link"
+      ]
+    },
+    {
+      "id": "cashless-insurance",
+      "title": "Cashless Mediclaim & Corporate Tie-ups",
+      "category": "Inpatient & Amenities",
+      "shortDescription": "Hassle-free cashless hospitalization for major corporate groups and insurance TPAs.",
+      "description": "Dedicated TPA desk coordinating seamless pre-authorization and cashless claims with Adani Group, Jindal, DP World, Tata Power, Reliance, HDFC, and all major TPAs.",
+      "iconName": "ShieldCheck",
+      "features": [
+        "Adani & Jindal group cashless",
+        "DP World (MICT) & Tata Power",
+        "All major insurance TPAs",
+        "On-site TPA claim desk"
+      ]
+    },
+    {
+      "id": "health-checkup-plans",
+      "title": "Full Body Health Checkup Packages",
+      "category": "Community Health",
+      "shortDescription": "Preventive health screenings tailored for executives, women, and seniors.",
+      "description": "Holistic preventive checkup panels including lipid profile, liver & kidney tests, diabetes profile, ECG, X-ray, ultrasound, and specialist consultation.",
+      "iconName": "Sparkles",
+      "features": [
+        "Executive Full Body Panel",
+        "Women's Wellness Screen",
+        "Senior Citizen Cardiac Check",
+        "Corporate employee health plans"
+      ]
+    },
+    {
+      "id": "health-camps-cpr",
+      "title": "Community Camps & CPR Training",
+      "category": "Community Health",
+      "shortDescription": "Free diabetes, hypertension, prenatal yoga camps, and lifesaving CPR workshops.",
+      "description": "Regular community health outreach programs including free blood sugar screening, prenatal education workshops, school first-aid drills, and CPR training.",
+      "iconName": "Award",
+      "features": [
+        "Free Diabetes & BP screening",
+        "Prenatal yoga seminars",
+        "Childhood psychology guidance",
+        "First-aid & BLS CPR workshops"
+      ]
+    }
+  ],
+  "facilities": [
+    {
+      "title": "45-Bed Multi-Speciality Hospital",
+      "highlight": "Highway road-touch plot with ~9,500 sq. ft. floor area",
+      "description": "Strategically located for immediate ambulance access with dedicated parking for 50+ vehicles.",
+      "iconName": "Building2"
+    },
+    {
+      "title": "24x7 ICU Ambulance",
+      "highlight": "Equipped with oxygen & emergency life support",
+      "description": "Rapid dispatch across Mundra, Baroi, and industrial corridors of Kutch.",
+      "iconName": "Ambulance"
+    },
+    {
+      "title": "24x7 In-House Pathology Lab",
+      "highlight": "Complete automated diagnostic profiles",
+      "description": "Full hematology, biochemistry, and hormone analyzer operational round-the-clock.",
+      "iconName": "FlaskConical"
+    },
+    {
+      "title": "24x7 In-House Pharmacy",
+      "highlight": "Geeta Medical Stores on Ground Floor",
+      "description": "Never hunt for medications in emergencies; all critical and routine drugs available on premise.",
+      "iconName": "Pill"
+    },
+    {
+      "title": "Advanced 3-Bed ICU & 5-Bed NICU",
+      "highlight": "Mechanical ventilators & multipara monitors",
+      "description": "Continuous intensive care for adult and neonatal patients managed by trained intensivists.",
+      "iconName": "Activity"
+    },
+    {
+      "title": "3 Major & 1 Minor Operating Theatres",
+      "highlight": "Laparoscopic units & double-dome LED lighting",
+      "description": "Sterile surgical theaters equipped for gynecological, general, orthopedic, and ENT surgeries.",
+      "iconName": "CheckCircle2"
+    },
+    {
+      "title": "C-ARM Equipped Orthopedic OT",
+      "highlight": "Real-time radiographic intraoperative imaging",
+      "description": "Precision fracture reduction and implant placement for severe trauma cases.",
+      "iconName": "Bone"
+    },
+    {
+      "title": "3D/4D Color Doppler Sonography",
+      "highlight": "Comprehensive obstetric & vascular ultrasound",
+      "description": "High-resolution fetal anomaly detection and maternal wellbeing scans.",
+      "iconName": "Scan"
+    },
+    {
+      "title": "Central Medical Oxygen System",
+      "highlight": "Piped oxygen line to all ICU and ward beds",
+      "description": "Uninterrupted medical oxygen supply with dedicated manifold and backup reserve.",
+      "iconName": "Gauge"
+    },
+    {
+      "title": "Deluxe & Special AC Rooms",
+      "highlight": "1 Deluxe, 7 Special AC, 3 Semi-Special AC Rooms",
+      "description": "Comfortable private inpatient rooms designed for privacy and restful healing.",
+      "iconName": "BedDouble"
+    },
+    {
+      "title": "Stretcher-Compatible Elevator",
+      "highlight": "Direct emergency to OT / ICU transport",
+      "description": "Smooth transit for stretchers, wheelchairs, and critical patients across all floors.",
+      "iconName": "ArrowUpDown"
+    },
+    {
+      "title": "Cashless Mediclaim Desk",
+      "highlight": "Tie-ups with Adani, Jindal, DP World & all TPAs",
+      "description": "Dedicated assistance team for paperwork and instant pre-authorizations.",
+      "iconName": "ShieldCheck"
+    }
+  ],
+  "partners": [
+    {
+      "name": "Adani Group",
+      "type": "Corporate",
+      "logoText": "ADANI",
+      "image": "/images/partners/adani.svg"
+    },
+    {
+      "name": "Jindal SAW Ltd.",
+      "type": "Corporate",
+      "logoText": "JINDAL",
+      "image": "/images/partners/jindal-saw.svg"
+    },
+    {
+      "name": "Dubai Port World (MICT)",
+      "type": "Corporate",
+      "logoText": "DP WORLD",
+      "image": "/images/partners/dp-world.svg"
+    },
+    {
+      "name": "Tata Power",
+      "type": "Corporate",
+      "logoText": "TATA POWER",
+      "image": "/images/partners/tata-power.svg"
+    },
+    {
+      "name": "Airport Authority of India",
+      "type": "Corporate",
+      "logoText": "AAI",
+      "image": "/images/partners/aai.svg"
+    },
+    {
+      "name": "TG Terminal",
+      "type": "Corporate",
+      "logoText": "TG TERMINAL",
+      "image": "/images/partners/tg-terminal.svg"
+    },
+    {
+      "name": "Inosource",
+      "type": "Corporate",
+      "logoText": "INOSOURCE",
+      "image": "/images/partners/inosource.svg"
+    },
+    {
+      "name": "Star Health & Allied Insurance",
+      "type": "TPA / Insurance",
+      "logoText": "STAR HEALTH",
+      "image": "/images/partners/star-health.svg"
+    },
+    {
+      "name": "HDFC ERGO General Insurance",
+      "type": "TPA / Insurance",
+      "logoText": "HDFC ERGO",
+      "image": "/images/partners/hdfc-ergo.svg"
+    },
+    {
+      "name": "ICICI Lombard",
+      "type": "TPA / Insurance",
+      "logoText": "ICICI LOMBARD",
+      "image": "/images/partners/icici-lombard.svg"
+    },
+    {
+      "name": "Reliance General Insurance",
+      "type": "TPA / Insurance",
+      "logoText": "RELIANCE",
+      "image": "/images/partners/reliance-general.svg"
+    },
+    {
+      "name": "Care Health Insurance",
+      "type": "TPA / Insurance",
+      "logoText": "CARE HEALTH",
+      "image": "/images/partners/care-health.png"
+    },
+    {
+      "name": "Bajaj Allianz General Insurance",
+      "type": "TPA / Insurance",
+      "logoText": "BAJAJ ALLIANZ",
+      "image": "/images/partners/bajaj-allianz.svg"
+    },
+    {
+      "name": "Niva Bupa Health Insurance",
+      "type": "TPA / Insurance",
+      "logoText": "NIVA BUPA",
+      "image": "/images/partners/niva-bupa.jpg"
+    },
+    {
+      "name": "United India Insurance",
+      "type": "TPA / Insurance",
+      "logoText": "UNITED INDIA",
+      "image": "/images/partners/united-india.svg"
+    },
+    {
+      "name": "Medi Assist TPA",
+      "type": "TPA / Insurance",
+      "logoText": "MEDI ASSIST",
+      "image": "/images/partners/medi-assist.png"
+    },
+    {
+      "name": "Paramount Health TPA",
+      "type": "TPA / Insurance",
+      "logoText": "PARAMOUNT",
+      "image": "/images/partners/paramount-tpa.png"
+    },
+    {
+      "name": "MDIndia Health Insurance TPA",
+      "type": "TPA / Insurance",
+      "logoText": "MDINDIA",
+      "image": "/images/partners/mdindia.svg"
+    },
+    {
+      "name": "Vipul MedCorp TPA",
+      "type": "TPA / Insurance",
+      "logoText": "VIPUL TPA",
+      "image": "/images/partners/vipul-tpa.svg"
+    }
+  ],
+  "gallery": [
+    {
+      "id": "g-building",
+      "title": "Hospital Building Exterior",
+      "category": "Infrastructure",
+      "description": "Multistory 45-bed hospital campus on Gundala Road with ground-floor Geeta Medical Stores and two-wheeler & four-wheeler parking.",
+      "image": "/images/hospital-building.jpg"
+    },
+    {
+      "id": "g-ambulance-1",
+      "title": "24x7 ICU Ambulance Van",
+      "category": "Critical Care",
+      "description": "Dedicated mobile ambulance equipped with portable oxygen, suction equipment, and first-aid kits for immediate patient transit.",
+      "image": "/images/ambulance-1.jpg"
+    },
+    {
+      "id": "g-icu-1",
+      "title": "3-Bed Adult Intensive Care Unit (ICU)",
+      "category": "Critical Care",
+      "description": "Fully equipped adult ICU with multipara cardiac monitors, mechanical ventilators, and central oxygen pipelines.",
+      "image": "/images/icu-1.jpg"
+    },
+    {
+      "id": "g-nicu-1",
+      "title": "5-Bed Neonatal ICU (NICU)",
+      "category": "Critical Care",
+      "description": "Specialized premature infant incubators, radiant baby warmers, phototherapy lamps, and neonatal monitoring.",
+      "image": "/images/nicu-1.jpg"
+    },
+    {
+      "id": "g-carm-ot",
+      "title": "Orthopedic Operation Theatre with C-ARM",
+      "category": "Operating Theatres",
+      "description": "Surgical OT equipped with real-time fluoroscopic C-ARM image intensifier and double-dome surgical lights for trauma surgeries.",
+      "image": "/images/ortho-carm-ot.jpg"
+    },
+    {
+      "id": "g-labour-room",
+      "title": "Labor Delivery Suite & Gynec OT",
+      "category": "Operating Theatres",
+      "description": "Sterile labor room with delivery couch, baby resuscitation warmer, and laparoscopic surgical unit.",
+      "image": "/images/labour-room.jpg"
+    },
+    {
+      "id": "g-consultation-1",
+      "title": "Doctor Consultation Chamber",
+      "category": "Infrastructure",
+      "description": "Air-conditioned doctor consultation chamber equipped with patient examination couch and diagnostic instruments.",
+      "image": "/images/consultation-room-1.jpg"
+    },
+    {
+      "id": "g-ultrasound",
+      "title": "3D/4D Color Doppler Ultrasound Scanner",
+      "category": "Diagnostics",
+      "description": "Advanced sonography system for maternal-fetal anomaly scans, abdominal diagnostics, and pelvic Doppler studies.",
+      "image": "/images/ultrasound-scanner.jpg"
+    },
+    {
+      "id": "g-first-floor",
+      "title": "First Floor Central Sterile Corridor",
+      "category": "Infrastructure",
+      "description": "Connecting passage to NICU, Labour Room, ICU, and Major Operation Theatres with hygienic anti-microbial flooring.",
+      "image": "/images/first-floor-corridor.jpg"
+    },
+    {
+      "id": "g-special-room",
+      "title": "Special AC Private Inpatient Room",
+      "category": "Infrastructure",
+      "description": "Clean, air-conditioned private recovery room with patient bed, attendant couch, television, and attached bathroom.",
+      "image": "/images/special-room-ac.jpg"
+    },
+    {
+      "id": "g-general-ward",
+      "title": "General Inpatient Ward",
+      "category": "Infrastructure",
+      "description": "Spacious, well-ventilated patient ward with central medical oxygen pipeline and dedicated nursing call system.",
+      "image": "/images/general-ward.jpg"
+    },
+    {
+      "id": "g-stretcher-lift",
+      "title": "Hospital Stretcher Elevator / LIFT",
+      "category": "Infrastructure",
+      "description": "Large medical stretcher elevator providing smooth transfer between casualty, ICU, OTs, and inpatient wards.",
+      "image": "/images/stretcher-lift.jpg"
+    },
+    {
+      "id": "g-waiting-room",
+      "title": "Patient Waiting Lounge (50+ Capacity)",
+      "category": "Infrastructure",
+      "description": "Comfortable seating reception area with informational TV display and pre-registration help desk.",
+      "image": "/images/waiting-room.jpg"
+    },
+    {
+      "id": "g-garden",
+      "title": "Atrium Green Garden",
+      "category": "Infrastructure",
+      "description": "Interior natural lightwell with living green plants providing therapeutic ambiance for patients and families.",
+      "image": "/images/hospital-garden.jpg"
+    },
+    {
+      "id": "g-camp-cardio",
+      "title": "Cardiology OPD Banner with Dr. Jaydatt Tekani",
+      "category": "Super-Specialist OPD",
+      "description": "Monthly super-specialist cardiac consultation camp in partnership with Marengo CIMS Hospital, Bhuj.",
+      "image": "/images/camp-cardiology.jpg"
+    },
+    {
+      "id": "g-camp-neuro",
+      "title": "Neurology & Brain Clinic with Dr. Naushad Ravjani",
+      "category": "Super-Specialist OPD",
+      "description": "Bi-weekly neurology clinic with on-site diagnostic EEG testing for epilepsy, paralysis, and severe migraine.",
+      "image": "/images/camp-neurology.jpg"
+    },
+    {
+      "id": "g-camp-cpr",
+      "title": "Free Community CPR Training Camp",
+      "category": "Super-Specialist OPD",
+      "description": "Hands-on basic life support (BLS) and CPR demonstration organized for community safety in Mundra.",
+      "image": "/images/camp-cpr-training.jpg"
+    },
+    {
+      "id": "g-camp-womens-health",
+      "title": "Women's Health & Prenatal Awareness Camp",
+      "category": "Super-Specialist OPD",
+      "description": "Free maternal health education, pregnancy nutrition, and prenatal wellness seminar at Geeta Hospital.",
+      "image": "/images/camp-womens-health.jpg"
+    },
+    {
+      "id": "g-camp-first-aid",
+      "title": "First Aid & Emergency Response Workshop",
+      "category": "Super-Specialist OPD",
+      "description": "Practical emergency response and wound management training sessions for industrial staff and citizens.",
+      "image": "/images/camp-first-aid.jpg"
+    },
+    {
+      "id": "g-camp-seminar",
+      "title": "Community Health Education Seminar",
+      "category": "Super-Specialist OPD",
+      "description": "Educational seminar on diabetes management, hypertension prevention, and cardiac care guidelines.",
+      "image": "/images/camp-health-seminar.jpg"
+    },
+    {
+      "id": "g-pathology-lab",
+      "title": "24x7 In-House Pathology Laboratory",
+      "category": "Diagnostics",
+      "description": "Fully automated biochemistry and hematology analyzers for round-the-clock emergency diagnostics.",
+      "image": "/images/facility-pathology-lab.jpg"
+    },
+    {
+      "id": "g-pharmacy",
+      "title": "24x7 In-House Pharmacy (Geeta Medical Stores)",
+      "category": "Infrastructure",
+      "description": "Fully stocked ground-floor pharmacy supplying authentic medications, injectables, and surgical items 24/7.",
+      "image": "/images/facility-pharmacy.jpg"
+    },
+    {
+      "id": "g-gynec-laparoscopy",
+      "title": "Laparoscopic Gynecological OT Suite",
+      "category": "Operating Theatres",
+      "description": "Minimally invasive laparoscopic surgical tower with high-definition optical camera and LED lighting.",
+      "image": "/images/facility-gynec-ot.jpg"
+    },
+    {
+      "id": "g-oxygen-pipeline",
+      "title": "Central Piped Medical Oxygen Manifold",
+      "category": "Infrastructure",
+      "description": "Dedicated medical gas pipeline providing continuous, monitored oxygen supply to all critical beds.",
+      "image": "/images/facility-oxygen-pipeline.jpg"
+    },
+    {
+      "id": "g-doppler-usg",
+      "title": "3D/4D Color Doppler Sonography Unit",
+      "category": "Diagnostics",
+      "description": "Advanced ultrasound scanner for detailed anomaly scans, vascular Doppler, and maternal health.",
+      "image": "/images/facility-usg.jpg"
+    },
+    {
+      "id": "g-xray-imaging",
+      "title": "Digital Radiography & X-Ray Unit",
+      "category": "Diagnostics",
+      "description": "Low-radiation digital radiography for accurate skeletal trauma diagnostics and chest examinations.",
+      "image": "/images/facility-xray.jpg"
+    },
+    {
+      "id": "g-ecg-station",
+      "title": "12-Lead Computerized ECG Station",
+      "category": "Diagnostics",
+      "description": "Rapid bedside cardiac rhythm recorder for acute chest pain triage and pre-operative cardiac fitness.",
+      "image": "/images/facility-ecg.jpg"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Is emergency and ambulance service available 24x7 at Geeta Hospital Mundra?",
+      "answer": "Yes, Geeta Hospital operates a full 24x7 Emergency Room, ICU Ambulance service, In-house Pathology Laboratory, and In-house Pharmacy 365 days a year. Call our emergency hotline at +91 78743 81551 anytime."
+    },
+    {
+      "question": "Which insurance companies and TPAs provide cashless hospitalization at Geeta Hospital?",
+      "answer": "Geeta Hospital provides cashless facilities for Adani Group, Jindal SAW, DP World (MICT), Tata Power, Airport Authority, TG Terminal, Inosource, and almost all major insurance companies and TPAs including Reliance General Insurance, HDFC ERGO, Paramount TPA, Medi Assist, Star Health, and ICICI Lombard."
+    },
+    {
+      "question": "How can I book an appointment with a doctor at Geeta Hospital?",
+      "answer": "You can book directly online through our Kivihealth appointment portal (https://kivihealth.com/clinic/geeta-hospital), call us at +91 78743 81551, or walk in during regular OPD hours (10:00 AM - 1:30 PM & 5:00 PM - 8:00 PM)."
+    },
+    {
+      "question": "Which visiting super-specialist doctors are available and what are their OPD schedules?",
+      "answer": "We have visiting super-specialists in Cardiology (Dr. Jaydatt Tekani, 1st Thursday), Neurology (Dr. Naushad Ravjani, 1st & 3rd Thursday), Rheumatology (Dr. Yogesh Patel, 1st & 3rd Wednesday), Brain & Spine Surgery (Dr. Krushnakumar Virda, 2nd Saturday), ENT (Dr. Ankur Dhanani, 2nd & 4th Saturday), IVF & Infertility (Dr. Rajesh Punjabi & Dr. Shital Punjabi, 1st Saturday), Laparoscopic Surgery (Dr. Binal Trivedi, Saturday), and Ophthalmology/Cataract (Dr. Anvay & Smruti Gandhi, Sunday)."
+    },
+    {
+      "question": "Does Geeta Hospital have intensive care for premature and sick newborn babies?",
+      "answer": "Yes, we maintain a dedicated 5-bed Neonatal Intensive Care Unit (NICU) equipped with infant warmers, phototherapy, neonatal ventilators, high-flow nasal cannula (HHFNC), and portable X-ray led by experienced pediatricians and neonatologists."
+    },
+    {
+      "question": "Where is Geeta Hospital located in Mundra?",
+      "answer": "Geeta Hospital is conveniently located at 3, Ambe Nagar, Near Gajanand Complex, Gundala Road, Baroi-Mundra, Kutch, Gujarat 370421. It is situated on a highway road-touch plot with ample parking space."
+    }
+  ]
 }
