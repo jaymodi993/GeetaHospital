@@ -441,6 +441,7 @@ export default function AdminClient() {
   // Direct Upload for Logo
   const onLogoFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    e.target.value = "";
     if (!file) return;
     const url = await handleFileUpload(file, "logo");
     if (url) {
@@ -453,6 +454,7 @@ export default function AdminClient() {
   // Direct Upload for Favicon
   const onFaviconFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    e.target.value = "";
     if (!file) return;
     const url = await handleFileUpload(file, "favicon");
     if (url) {
@@ -465,6 +467,7 @@ export default function AdminClient() {
   // Direct Upload for Hero Banner
   const onHeroBannerFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    e.target.value = "";
     if (!file) return;
     const url = await handleFileUpload(file, "banner");
     if (url) {
@@ -1190,9 +1193,10 @@ export default function AdminClient() {
                     <Image
                       src={hospitalProfile.logoUrl || "/images/logo.png"}
                       alt="Logo Preview"
-                      width={120}
+                      width={180}
                       height={70}
-                      className="object-contain max-h-24"
+                      className="object-contain max-h-24 w-auto"
+                      unoptimized
                     />
                   </div>
                   <input
@@ -1264,6 +1268,7 @@ export default function AdminClient() {
                       alt="Banner Preview"
                       fill
                       className="object-cover"
+                      unoptimized
                     />
                   </div>
                   <input
@@ -2067,6 +2072,7 @@ export default function AdminClient() {
                     ref={doctorPhotoInputRef}
                     onChange={async (e) => {
                       const file = e.target.files?.[0];
+                      e.target.value = "";
                       if (!file) return;
                       const url = await handleFileUpload(file, "doctor");
                       if (url) setDocForm({ ...docForm, image: url });
@@ -2440,6 +2446,7 @@ export default function AdminClient() {
                     ref={partnerLogoInputRef}
                     onChange={async (e) => {
                       const file = e.target.files?.[0];
+                      e.target.value = "";
                       if (!file) return;
                       const url = await handleFileUpload(file, "partner");
                       if (url) setPartnerForm({ ...partnerForm, image: url });
@@ -2568,6 +2575,7 @@ export default function AdminClient() {
                     ref={galleryImageInputRef}
                     onChange={async (e) => {
                       const file = e.target.files?.[0];
+                      e.target.value = "";
                       if (!file) return;
                       const url = await handleFileUpload(file, "gallery");
                       if (url) setGalleryForm({ ...galleryForm, image: url });

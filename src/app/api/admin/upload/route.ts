@@ -68,24 +68,6 @@ export async function POST(request: Request) {
         const mainDest = path.join(uploadsDir, safeFileName);
         fs.writeFileSync(mainDest, buffer);
         localUrl = `/uploads/${safeFileName}`;
-
-        if (type === "logo") {
-          try {
-            const logoPath = path.join(process.cwd(), "public", "images", "logo.png");
-            fs.writeFileSync(logoPath, buffer);
-            localUrl = "/images/logo.png";
-          } catch (e) {
-            console.warn("Logo overwrite warning:", e);
-          }
-        } else if (type === "favicon") {
-          try {
-            const publicFavicon = path.join(process.cwd(), "public", "favicon.ico");
-            fs.writeFileSync(publicFavicon, buffer);
-            localUrl = "/favicon.ico";
-          } catch (e) {
-            console.warn("Favicon overwrite warning:", e);
-          }
-        }
       } catch (err) {
         console.warn("Local disk write warning:", err);
       }

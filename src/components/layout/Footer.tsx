@@ -58,13 +58,13 @@ export default function Footer() {
           {/* Col 1: About Hospital */}
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <div className="relative w-11 h-11 rounded-xl overflow-hidden bg-white/95 border border-slate-700 shadow-md flex items-center justify-center shrink-0 p-1">
+              <div className="relative h-11 sm:h-12 w-auto min-w-[44px] max-w-[180px] flex items-center justify-center shrink-0">
                 <Image
                   src={profile.logoUrl || "/images/logo.png"}
                   alt={`${profile.name || "Geeta Hospital"} Logo`}
-                  width={44}
-                  height={44}
-                  className="w-full h-full object-contain"
+                  width={160}
+                  height={48}
+                  className="h-10 sm:h-11 w-auto max-w-[160px] object-contain drop-shadow-xs"
                   unoptimized
                 />
               </div>

@@ -74,7 +74,8 @@ async function run() {
       ...data1.data.hospitalProfile,
       name: "Geeta Hospital",
       tagline: "Leading Multi-Speciality Healthcare in Mundra & Kutch",
-      logoUrl: "data:image/webp;base64,UklGRkAAAABXRUJQVlA4IDQAAADwAQCdASoFAAUAPxF8slSvKSWjAAgA4CcJZQAA/v60YAAA",
+      logoUrl: data1.data.hospitalProfile?.logoUrl || "/images/logo.png",
+      faviconUrl: data1.data.hospitalProfile?.faviconUrl || "/favicon-32.png",
     },
   };
   const body2 = JSON.stringify(updatedPayload);
@@ -98,8 +99,8 @@ async function run() {
   const boundary = '----WebKitFormBoundaryTest123456';
   const mockImage = Buffer.from('GIF89a\x01\x00\x01\x00\x80\x00\x00\xff\xff\xff\x00\x00\x00!\xf9\x04\x01\x00\x00\x00\x00,\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02D\x01\x00;');
   let multipartBody = Buffer.concat([
-    Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="type"\r\n\r\nlogo\r\n`),
-    Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="file"; filename="test-logo.gif"\r\nContent-Type: image/gif\r\n\r\n`),
+    Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="type"\r\n\r\ntest-upload\r\n`),
+    Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="file"; filename="test-mock.gif"\r\nContent-Type: image/gif\r\n\r\n`),
     mockImage,
     Buffer.from(`\r\n--${boundary}--\r\n`),
   ]);

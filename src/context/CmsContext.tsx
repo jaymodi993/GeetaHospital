@@ -162,11 +162,20 @@ export function CmsProvider({ children }: { children: React.ReactNode }) {
   };
 
   useEffect(() => {
-    // 1. Instant hydration from localStorage
+    // 1. Instant hydration with cache version check to bust stale data
     try {
-      const cached = localStorage.getItem("gh_cms_content");
-      if (cached) {
-        applyData(JSON.parse(cached));
+      const CMS_CACHE_KEY = "gh_cms_content";
+      const VERSION_KEY = "gh_cms_version";
+      const CURRENT_VERSION = "v3";
+
+      if (localStorage.getItem(VERSION_KEY) !== CURRENT_VERSION) {
+        localStorage.removeItem(CMS_CACHE_KEY);
+        localStorage.setItem(VERSION_KEY, CURRENT_VERSION);
+      } else {
+        const cached = localStorage.getItem(CMS_CACHE_KEY);
+        if (cached) {
+          applyData(JSON.parse(cached));
+        }
       }
     } catch (e) {
       // ignore
