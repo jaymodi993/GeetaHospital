@@ -1220,24 +1220,25 @@ export default function AdminClient() {
                     2. Browser Favicon
                   </span>
                   <div className="relative w-full h-28 rounded-xl border border-slate-300 bg-white flex flex-col items-center justify-center p-3 overflow-hidden shadow-xs">
-                    <div className="w-12 h-12 rounded-lg border border-slate-200 bg-slate-50 p-2 flex items-center justify-center">
+                    <div className="w-12 h-12 rounded-lg border border-slate-200 bg-slate-50 p-1 flex items-center justify-center">
                       <Image
-                        src={hospitalProfile.faviconUrl || "/favicon.ico"}
+                        src={hospitalProfile.faviconUrl || "/favicon-32.png"}
                         alt="Favicon Preview"
                         width={32}
                         height={32}
                         className="object-contain"
+                        unoptimized
                       />
                     </div>
-                    <span className="text-[10px] text-slate-500 mt-2 font-mono">
-                      {hospitalProfile.faviconUrl || "/favicon.ico"}
+                    <span className="text-[10px] text-slate-500 mt-2 font-mono truncate max-w-[90%]">
+                      {hospitalProfile.faviconUrl || "/favicon-32.png"}
                     </span>
                   </div>
                   <input
                     type="file"
                     ref={faviconInputRef}
                     onChange={onFaviconFileChange}
-                    accept=".ico,image/x-icon,image/png,image/svg+xml"
+                    accept=".ico,image/*,image/x-icon,image/png,image/svg+xml"
                     className="hidden"
                   />
                   <button
@@ -1249,7 +1250,7 @@ export default function AdminClient() {
                     <Upload className="w-3.5 h-3.5" />
                     <span>{uploadLoading === "favicon" ? "Uploading..." : "Upload / Replace Favicon"}</span>
                   </button>
-                  <p className="text-[10px] text-slate-500 text-center">.ico, .png, or .svg (16x16 or 32x32)</p>
+                  <p className="text-[10px] text-slate-500 text-center">Shows in browser tab and bookmarks (.ico, .png)</p>
                 </div>
 
                 {/* Hero Banner Upload Card */}

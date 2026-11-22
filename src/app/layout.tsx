@@ -96,12 +96,13 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
+      { url: "/favicon-32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-192.png", sizes: "192x192", type: "image/png" },
       { url: "/favicon.ico" },
-      { url: "/images/logo.png", type: "image/png" },
     ],
-    shortcut: ["/favicon.ico"],
+    shortcut: ["/favicon-32.png", "/favicon.ico"],
     apple: [
-      { url: "/images/logo.png" },
+      { url: "/favicon-192.png" },
     ],
   },
 };
@@ -114,6 +115,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} scroll-smooth`}>
       <head>
+        <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="apple-touch-icon" href="/favicon-192.png" />
         <JsonLd pageType="home" />
       </head>
       <body className="min-h-screen flex flex-col bg-slate-50 text-slate-900 antialiased selection:bg-sky-600 selection:text-white">

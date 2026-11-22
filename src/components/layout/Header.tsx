@@ -104,30 +104,30 @@ export default function Header() {
         >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-3 group">
-              <div className="relative w-11 h-11 rounded-xl overflow-hidden bg-white border border-slate-200 shadow-xs flex items-center justify-center group-hover:scale-105 transition-transform">
+            <Link href="/" className="flex items-center gap-3 sm:gap-3.5 group shrink-0">
+              <div className="relative w-11 h-11 sm:w-12 sm:h-12 rounded-xl overflow-hidden bg-white border border-slate-200/80 shadow-xs flex items-center justify-center p-1 group-hover:scale-105 transition-transform shrink-0">
                 <Image
                   src={profile.logoUrl || "/images/logo.png"}
                   alt={`${profile.name || "Geeta Hospital"} Logo`}
-                  width={44}
-                  height={44}
-                  className="object-contain p-0.5"
+                  width={48}
+                  height={48}
+                  className="w-full h-full object-contain"
                   unoptimized
                   priority
                 />
               </div>
 
               {/* Title & Tag */}
-              <div className="flex flex-col">
+              <div className="flex flex-col justify-center">
                 <div className="flex items-center gap-1.5">
-                  <span className="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900 group-hover:text-sky-700 transition uppercase">
+                  <span className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 group-hover:text-sky-700 transition uppercase">
                     {profile.name || "GEETA HOSPITAL"}
                   </span>
                   <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-sky-100 text-sky-800 tracking-wider">
                     MUNDRA
                   </span>
                 </div>
-                <span className="text-[11px] font-medium text-slate-500 -mt-0.5">
+                <span className="text-[11px] font-semibold text-slate-500 -mt-0.5 line-clamp-1">
                   {profile.tagline || "45-Bed Multi-Speciality • Since 2009"}
                 </span>
               </div>

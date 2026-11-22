@@ -176,6 +176,33 @@ export function CmsProvider({ children }: { children: React.ReactNode }) {
     refreshCms();
   }, []);
 
+  // 3. Dynamically sync browser tab favicon whenever hospitalProfile.faviconUrl changes
+  useEffect(() => {
+    const faviconUrl = hospitalProfile?.faviconUrl || "/favicon-32.png";
+    if (!faviconUrl || typeof document === "undefined") return;
+
+    try {
+      const existingIcons = document.querySelectorAll("link[rel*='icon']");
+      if (existingIcons.length > 0) {
+        existingIcons.forEach((el) => {
+          (el as HTMLLinkElement).href = faviconUrl;
+        });
+      } else {
+        const link = document.createElement("link");
+        link.rel = "shortcut icon";
+        link.href = faviconUrl;
+        document.head.appendChild(link);
+      }
+
+      const appleIcon = document.querySelector("link[rel='apple-touch-icon']") as HTMLLinkElement;
+      if (appleIcon) {
+        appleIcon.href = faviconUrl;
+      }
+    } catch (e) {
+      console.warn("Favicon sync error:", e);
+    }
+  }, [hospitalProfile?.faviconUrl]);
+
   return (
     <CmsContext.Provider
       value={{

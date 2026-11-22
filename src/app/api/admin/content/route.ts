@@ -23,7 +23,7 @@ export async function GET() {
         ...HOSPITAL_INFO,
         ...(cms.hospitalProfile || {}),
         logoUrl: cms.hospitalProfile?.logoUrl || HOSPITAL_INFO.logoUrl || "/images/logo.png",
-        faviconUrl: cms.hospitalProfile?.faviconUrl || "/favicon.ico",
+        faviconUrl: cms.hospitalProfile?.faviconUrl || "/favicon-32.png",
         heroBannerUrl: cms.hospitalProfile?.heroBannerUrl || "/images/hero-banner-1.jpg",
       },
       announcements: cms.announcements || [
