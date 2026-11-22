@@ -24,6 +24,7 @@ import {
   Ambulance,
   Stethoscope,
   Sparkles,
+  MessageSquare,
 } from "lucide-react";
 import {
   HOSPITAL_INFO,
@@ -33,19 +34,10 @@ import {
   FACILITIES_LIST,
   FAQS,
 } from "@/data/hospitalData";
-import AppointmentModal from "@/components/common/AppointmentModal";
 
 export default function HomeClient() {
   const [activeFaq, setActiveFaq] = useState<number | null>(0);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedDoctorForModal, setSelectedDoctorForModal] = useState("");
-
   const rawPhone = HOSPITAL_INFO.phone.replace(/[^0-9+]/g, "");
-
-  const handleOpenBooking = (docName: string = "") => {
-    setSelectedDoctorForModal(docName);
-    setIsModalOpen(true);
-  };
 
   return (
     <>
@@ -80,13 +72,15 @@ export default function HomeClient() {
 
               {/* CTA Buttons */}
               <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5 pt-2">
-                <button
-                  onClick={() => handleOpenBooking()}
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-xl bg-gradient-to-r from-sky-600 to-teal-600 hover:from-sky-700 hover:to-teal-700 text-white font-bold text-sm shadow-md hover:shadow-lg transition-all active:scale-95"
+                <a
+                  href={`https://wa.me/${HOSPITAL_INFO.whatsappNumber.replace(/[^0-9]/g, "")}?text=${encodeURIComponent("Hello Geeta Hospital Mundra, I would like to inquire about doctor consultation and facilities.")}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold text-sm shadow-md hover:shadow-lg transition-all active:scale-95"
                 >
-                  <Calendar className="w-4 h-4" />
-                  <span>Book Consultation</span>
-                </button>
+                  <MessageSquare className="w-4 h-4" />
+                  <span>WhatsApp Inquiry</span>
+                </a>
 
                 <a
                   href={`tel:${rawPhone}`}
@@ -221,13 +215,15 @@ export default function HomeClient() {
               <Phone className="w-4 h-4" />
               <span>Call: {HOSPITAL_INFO.phone}</span>
             </a>
-            <button
-              onClick={() => handleOpenBooking()}
+            <a
+              href={`https://wa.me/${HOSPITAL_INFO.whatsappNumber.replace(/[^0-9]/g, "")}?text=${encodeURIComponent("Hello Geeta Hospital, I need immediate medical consultation.")}`}
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-red-950/40 hover:bg-red-950/60 border border-white/20 text-white font-bold text-sm transition"
             >
-              <Calendar className="w-4 h-4" />
-              <span>Schedule OPD Visit</span>
-            </button>
+              <MessageSquare className="w-4 h-4" />
+              <span>WhatsApp Hospital Desk</span>
+            </a>
           </div>
         </div>
       </section>
@@ -479,12 +475,14 @@ export default function HomeClient() {
               </p>
               <div className="mt-4 pt-4 border-t border-white/10 flex items-center justify-between text-xs">
                 <span className="text-slate-400">Cardiology OPD</span>
-                <button
-                  onClick={() => handleOpenBooking("Dr. Jaydatt Tekani (Cardiology)")}
+                <a
+                  href={`https://wa.me/${HOSPITAL_INFO.whatsappNumber.replace(/[^0-9]/g, "")}?text=${encodeURIComponent("Inquiry for Dr. Jaydatt Tekani (Cardiology Camp) at Geeta Hospital")}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-sky-400 hover:text-sky-300 font-bold"
                 >
-                  Book Token →
-                </button>
+                  Inquire Schedule →
+                </a>
               </div>
             </div>
 
@@ -500,12 +498,14 @@ export default function HomeClient() {
               </p>
               <div className="mt-4 pt-4 border-t border-white/10 flex items-center justify-between text-xs">
                 <span className="text-slate-400">Neurology OPD</span>
-                <button
-                  onClick={() => handleOpenBooking("Dr. Naushad Ravjani (Neurology)")}
+                <a
+                  href={`https://wa.me/${HOSPITAL_INFO.whatsappNumber.replace(/[^0-9]/g, "")}?text=${encodeURIComponent("Inquiry for Dr. Naushad Ravjani (Neurology Camp) at Geeta Hospital")}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-teal-400 hover:text-teal-300 font-bold"
                 >
-                  Book Token →
-                </button>
+                  Inquire Schedule →
+                </a>
               </div>
             </div>
 
@@ -521,12 +521,14 @@ export default function HomeClient() {
               </p>
               <div className="mt-4 pt-4 border-t border-white/10 flex items-center justify-between text-xs">
                 <span className="text-slate-400">Fertility Clinic</span>
-                <button
-                  onClick={() => handleOpenBooking("Dr. Rajesh Punjabi (IVF Specialist)")}
+                <a
+                  href={`https://wa.me/${HOSPITAL_INFO.whatsappNumber.replace(/[^0-9]/g, "")}?text=${encodeURIComponent("Inquiry for IVF & Fertility Clinic at Geeta Hospital")}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-rose-400 hover:text-rose-300 font-bold"
                 >
-                  Book Token →
-                </button>
+                  Inquire Schedule →
+                </a>
               </div>
             </div>
 
@@ -542,12 +544,14 @@ export default function HomeClient() {
               </p>
               <div className="mt-4 pt-4 border-t border-white/10 flex items-center justify-between text-xs">
                 <span className="text-slate-400">ENT Clinic</span>
-                <button
-                  onClick={() => handleOpenBooking("Dr. Ankur Dhanani (ENT Specialist)")}
+                <a
+                  href={`https://wa.me/${HOSPITAL_INFO.whatsappNumber.replace(/[^0-9]/g, "")}?text=${encodeURIComponent("Inquiry for Dr. Ankur Dhanani (ENT Clinic) at Geeta Hospital")}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-amber-400 hover:text-amber-300 font-bold"
                 >
-                  Book Token →
-                </button>
+                  Inquire Schedule →
+                </a>
               </div>
             </div>
           </div>
@@ -786,12 +790,15 @@ export default function HomeClient() {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
-            <button
-              onClick={() => handleOpenBooking()}
-              className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-white text-sky-900 hover:bg-sky-50 font-bold text-sm shadow-xl transition active:scale-95"
+            <a
+              href={`https://wa.me/${HOSPITAL_INFO.whatsappNumber.replace(/[^0-9]/g, "")}?text=${encodeURIComponent("Hello Geeta Hospital Mundra, I would like to inquire about hospital services and doctor appointments.")}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-sm shadow-xl transition active:scale-95 flex items-center justify-center gap-2"
             >
-              Book an Appointment Today
-            </button>
+              <MessageSquare className="w-4 h-4" />
+              <span>Contact via WhatsApp</span>
+            </a>
             <a
               href={`tel:${rawPhone}`}
               className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-sm shadow-xl transition active:scale-95 flex items-center justify-center gap-2"
@@ -802,13 +809,6 @@ export default function HomeClient() {
           </div>
         </div>
       </section>
-
-      {/* Appointment Modal */}
-      <AppointmentModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        preselectedDoctor={selectedDoctorForModal}
-      />
     </>
   );
 }

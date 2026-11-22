@@ -77,22 +77,3 @@
     box-shadow: 0 0 0 10px rgba(220, 38, 38, 0);
   }
 }
-
-/* Print Letterhead Styles */
-@media print {
-  body {
-    background: #ffffff !important;
-    color: #000000 !important;
-  }
-  header, footer, nav, .print\:hidden {
-    display: none !important;
-  }
-  #official-letterhead, #doctor-print-sheet, #opd-token-print {
-    display: block !important;
-    border: none !important;
-    box-shadow: none !important;
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 20px !important;
-  }
-}

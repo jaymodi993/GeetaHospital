@@ -1,0 +1,58 @@
+{
+  "hospitalProfile": {
+    "name": "Geeta Hospital",
+    "legalName": "Geeta Multi-Speciality Hospital Mundra",
+    "establishedYear": 2009,
+    "yearsOfExcellence": "15+",
+    "bedCapacity": "45 Beds",
+    "builtUpArea": "9,500+ Sq. Ft.",
+    "tagline": "Leading Multi-Speciality Healthcare in Mundra & Kutch",
+    "description": "Established in 2009, Geeta Hospital is Mundra's premier 45-bed multi-speciality hospital offering 24x7 Emergency, Gynecology, Pediatrics, Critical Care, Orthopedics, In-House Pathology Lab, and In-House Pharmacy. ISO 9001:2015 certified and registered under ROHINI.",
+    "phone": "+91 78743 81551",
+    "emergencyPhone": "+91 78743 81551",
+    "whatsappNumber": "+917874381551",
+    "email": "geetahospitalmundra@gmail.com",
+    "logoUrl": "/images/logo.png",
+    "address": {
+      "street": "3, Ambe Nagar, Nr. Gajanand Complex, Gundala Road",
+      "locality": "Baroi-Mundra",
+      "district": "Kutch",
+      "state": "Gujarat",
+      "postalCode": "370421",
+      "country": "India",
+      "fullAddress": "3, Ambe Nagar, Nr. Gajanand Complex, Gundala Road, Baroi-Mundra, Kutch, Gujarat 370421, India"
+    },
+    "googleMapsUrl": "https://maps.google.com/?q=Geeta+Hospital+Mundra"
+  },
+  "announcements": [
+    {
+      "id": "ann-1",
+      "title": "24x7 Emergency, ICU & Trauma Centre Active",
+      "content": "Our ICU ventilators, emergency operation theatres, and dedicated ambulance are staffed 24 hours a day, 7 days a week.",
+      "category": "Emergency",
+      "isActive": true,
+      "date": "2026-11-22"
+    },
+    {
+      "id": "ann-2",
+      "title": "Cashless Mediclaim Desk for TPA & Corporate Insurance",
+      "content": "ROHINI registered hospital providing hassle-free cashless hospitalization for Star Health, Care, ICICI Lombard, Niva Bupa & PSUs.",
+      "category": "TPA / Cashless",
+      "isActive": true,
+      "date": "2026-11-22"
+    },
+    {
+      "id": "ann-3",
+      "title": "Upcoming Super-Speciality Cardiology & Neurology Camps",
+      "content": "Senior consultants from CIMS Hospital and Brain Care Clinic available on pre-scheduled camp dates.",
+      "category": "Camp",
+      "isActive": true,
+      "date": "2026-11-22"
+    }
+  ],
+  "seoSettings": {
+    "title": "Geeta Multi-Speciality Hospital Mundra | 24x7 Emergency & Critical Care",
+    "description": "Premier 45-bed multi-speciality hospital in Mundra (Kutch). 24x7 Emergency, Gynecology, Pediatrics, Adult & Neonatal ICU, Orthopedics, Cashless Mediclaim. ISO 9001:2015 & ROHINI registered.",
+    "keywords": "Hospital in Mundra, Geeta Hospital Mundra, Emergency hospital Mundra, Gynecologist in Mundra, Pediatrician Mundra, ICU hospital Kutch, Dr Kundan Modi, Cashless mediclaim hospital Mundra"
+  }
+}

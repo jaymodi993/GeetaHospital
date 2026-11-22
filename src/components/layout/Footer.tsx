@@ -129,19 +129,19 @@ export default function Footer() {
               </li>
               <li className="pt-2 flex flex-col gap-1.5">
                 <Link
-                  href="/portal"
+                  href="/admin"
                   className="inline-flex items-center gap-1.5 text-xs font-semibold text-sky-400 hover:text-sky-300"
                 >
                   <ShieldCheck className="w-3.5 h-3.5 text-sky-400" />
-                  <span>Hospital Staff & Doctor Portal</span>
+                  <span>Hospital Admin & Content CMS</span>
                 </Link>
                 <a
-                  href={HOSPITAL_INFO.appointmentUrl}
+                  href={`https://wa.me/${HOSPITAL_INFO.whatsappNumber.replace(/[^0-9]/g, "")}?text=${encodeURIComponent("Namaste Geeta Hospital Mundra, I would like to inquire about hospital facilities.")}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-teal-400 hover:text-teal-300"
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-400 hover:text-emerald-300"
                 >
-                  <span>Book via Kivihealth Portal</span>
+                  <span>WhatsApp Hospital Desk</span>
                   <ExternalLink className="w-3 h-3" />
                 </a>
               </li>
