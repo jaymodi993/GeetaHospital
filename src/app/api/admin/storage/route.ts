@@ -95,9 +95,9 @@ export async function POST(request: Request) {
         ...cms,
         hospitalProfile: {
           ...(cms.hospitalProfile || HOSPITAL_INFO),
-          logoUrl: "/images/logo.png",
-          faviconUrl: "/favicon-32.png",
-          heroBannerUrl: "/images/hero-banner-1.jpg",
+          logoUrl: HOSPITAL_INFO.logoUrl || "https://res.cloudinary.com/jaymodi/image/upload/v1795354038/geeta-hospital/logo.png",
+          faviconUrl: HOSPITAL_INFO.faviconUrl || "https://res.cloudinary.com/jaymodi/image/upload/v1795354213/geeta-hospital/favicon-32.png",
+          heroBannerUrl: HOSPITAL_INFO.heroBannerUrl || "https://res.cloudinary.com/jaymodi/image/upload/v1795354125/geeta-hospital/hero-banner-1.jpg",
         },
         doctors: DOCTORS,
         partners: INSURANCE_PARTNERS,

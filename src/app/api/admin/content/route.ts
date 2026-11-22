@@ -22,9 +22,9 @@ export async function GET() {
       hospitalProfile: {
         ...HOSPITAL_INFO,
         ...(cms.hospitalProfile || {}),
-        logoUrl: cms.hospitalProfile?.logoUrl || HOSPITAL_INFO.logoUrl || "/images/logo.png",
-        faviconUrl: cms.hospitalProfile?.faviconUrl || "/favicon-32.png",
-        heroBannerUrl: cms.hospitalProfile?.heroBannerUrl || "/images/hero-banner-1.jpg",
+        logoUrl: cms.hospitalProfile?.logoUrl || HOSPITAL_INFO.logoUrl,
+        faviconUrl: cms.hospitalProfile?.faviconUrl || HOSPITAL_INFO.faviconUrl,
+        heroBannerUrl: cms.hospitalProfile?.heroBannerUrl || HOSPITAL_INFO.heroBannerUrl,
       },
       announcements: cms.announcements || [
         {

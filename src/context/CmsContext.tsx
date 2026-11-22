@@ -166,7 +166,7 @@ export function CmsProvider({ children }: { children: React.ReactNode }) {
     try {
       const CMS_CACHE_KEY = "gh_cms_content";
       const VERSION_KEY = "gh_cms_version";
-      const CURRENT_VERSION = "v4";
+      const CURRENT_VERSION = "v5";
 
       if (localStorage.getItem(VERSION_KEY) !== CURRENT_VERSION) {
         localStorage.removeItem(CMS_CACHE_KEY);
