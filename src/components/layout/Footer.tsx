@@ -129,11 +129,11 @@ export default function Footer() {
               </li>
               <li className="pt-2 flex flex-col gap-1.5">
                 <Link
-                  href="/reception"
+                  href="/portal"
                   className="inline-flex items-center gap-1.5 text-xs font-semibold text-sky-400 hover:text-sky-300"
                 >
                   <ShieldCheck className="w-3.5 h-3.5 text-sky-400" />
-                  <span>Reception & Doctor OPD Portal</span>
+                  <span>Hospital Staff & Doctor Portal</span>
                 </Link>
                 <a
                   href={HOSPITAL_INFO.appointmentUrl}

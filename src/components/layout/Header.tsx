@@ -15,6 +15,7 @@ import {
   HeartPulse,
   Ambulance,
   ChevronRight,
+  Lock,
 } from "lucide-react";
 import { HOSPITAL_INFO } from "@/data/hospitalData";
 import AppointmentModal from "@/components/common/AppointmentModal";
@@ -77,6 +78,14 @@ export default function Header() {
                 <MapPin className="w-3.5 h-3.5 text-teal-400" />
                 <span>Gundala Road, Baroi-Mundra (Kutch)</span>
               </div>
+              <span className="hidden sm:inline text-slate-600">|</span>
+              <Link
+                href="/portal"
+                className="inline-flex items-center gap-1 text-sky-300 hover:text-white font-semibold transition"
+              >
+                <Lock className="w-3 h-3 text-sky-400" />
+                <span>Staff Portal</span>
+              </Link>
             </div>
           </div>
         </div>
