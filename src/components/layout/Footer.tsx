@@ -127,7 +127,14 @@ export default function Footer() {
                   <span>Emergency Location & Contact</span>
                 </Link>
               </li>
-              <li className="pt-2">
+              <li className="pt-2 flex flex-col gap-1.5">
+                <Link
+                  href="/reception"
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-sky-400 hover:text-sky-300"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5 text-sky-400" />
+                  <span>Reception & Doctor OPD Portal</span>
+                </Link>
                 <a
                   href={HOSPITAL_INFO.appointmentUrl}
                   target="_blank"
