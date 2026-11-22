@@ -14,7 +14,7 @@ export default function JsonLd({ pageType = "home", breadcrumbs }: JsonLdProps) 
     name: HOSPITAL_INFO.name,
     legalName: HOSPITAL_INFO.legalName,
     url: "https://geetahospitalmundra.com",
-    logo: "https://geetahospitalmundra.com/wp-content/uploads/2022/06/Logo-2-300x70.jpg",
+    logo: HOSPITAL_INFO.logoUrl || "https://res.cloudinary.com/jaymodi/image/upload/v1795354038/geeta-hospital/logo.png",
     image: "https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?auto=format&fit=crop&w=1200&q=80",
     description: HOSPITAL_INFO.description,
     telephone: HOSPITAL_INFO.phone,
@@ -92,7 +92,7 @@ export default function JsonLd({ pageType = "home", breadcrumbs }: JsonLdProps) 
     name: doc.name,
     jobTitle: doc.designation,
     medicalSpecialty: doc.department,
-    image: doc.image ? `https://geetahospitalmundra.com${doc.image}` : undefined,
+    image: doc.image ? (doc.image.startsWith("http") ? doc.image : `https://geetahospitalmundra.com${doc.image}`) : undefined,
     description: `${doc.name} (${doc.qualification}) - ${doc.designation} at Geeta Hospital Mundra with ${doc.experience} of medical expertise.`,
     worksFor: {
       "@type": "Hospital",

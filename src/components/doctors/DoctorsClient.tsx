@@ -21,7 +21,7 @@ import {
   MapPin,
   MessageCircle,
 } from "lucide-react";
-import { DOCTORS, Doctor, HOSPITAL_INFO } from "@/data/hospitalData";
+import { DOCTORS, Doctor, HOSPITAL_INFO, getDoctorImageUrl } from "@/data/hospitalData";
 import { useCms } from "@/context/CmsContext";
 
 export default function DoctorsClient() {
@@ -118,7 +118,7 @@ export default function DoctorsClient() {
           {/* Doctors Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredDoctors.map((doc) => {
-              const hasPhoto = Boolean(doc.image && doc.image.trim().length > 0);
+              const photoUrl = getDoctorImageUrl(doc);
 
               return (
                 <div
@@ -126,74 +126,50 @@ export default function DoctorsClient() {
                   className="bg-white rounded-3xl border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden group hover:-translate-y-1"
                 >
                   <div>
-                    {/* Header Image or Department Fallback */}
-                    {hasPhoto ? (
-                      <div className="relative h-64 sm:h-72 w-full bg-slate-100 overflow-hidden">
-                        <Image
-                          src={doc.image}
-                          alt={`${doc.name} - ${doc.designation} at Geeta Hospital Mundra`}
-                          fill
-                          className="object-cover object-top group-hover:scale-105 transition-transform duration-500"
-                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent"></div>
+                    {/* Doctor Portrait Header */}
+                    <div className="relative h-64 sm:h-72 w-full bg-slate-100 overflow-hidden">
+                      <Image
+                        src={photoUrl}
+                        alt={`${doc.name} - ${doc.designation} at Geeta Hospital Mundra`}
+                        fill
+                        className="object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        unoptimized
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/20 to-transparent"></div>
 
-                        {/* Badges */}
-                        <div className="absolute top-4 left-4 right-4 flex items-center justify-between">
-                          <span
-                            className={`px-3 py-1 rounded-full text-xs font-bold shadow-sm backdrop-blur-md ${
-                              doc.type === "full-time"
-                                ? "bg-emerald-500/90 text-white"
-                                : "bg-sky-600/90 text-white"
-                            }`}
-                          >
-                            {doc.type === "full-time" ? "Resident Full-Time" : "Visiting Specialist"}
-                          </span>
+                      {/* Badges */}
+                      <div className="absolute top-4 left-4 right-4 flex items-center justify-between">
+                        <span
+                          className={`px-3 py-1 rounded-full text-xs font-bold shadow-sm backdrop-blur-md ${
+                            doc.type === "full-time"
+                              ? "bg-emerald-500/90 text-white"
+                              : "bg-sky-600/90 text-white"
+                          }`}
+                        >
+                          {doc.type === "full-time" ? "Resident Full-Time" : "Visiting Specialist"}
+                        </span>
 
-                          <span className="px-2.5 py-1 rounded-full bg-slate-900/80 text-white text-[11px] font-semibold backdrop-blur-md">
-                            {doc.experience}
-                          </span>
-                        </div>
-
-                        {/* Overlay Details */}
-                        <div className="absolute bottom-3 left-4 right-4 text-white">
-                          <p className="text-xs font-semibold text-sky-300 uppercase tracking-wider">
-                            {doc.department}
-                          </p>
-                          <h3 className="text-xl font-bold leading-tight drop-shadow-xs">{doc.name}</h3>
-                          <p className="text-xs text-slate-200">{doc.qualification}</p>
-                        </div>
+                        <span className="px-2.5 py-1 rounded-full bg-slate-900/80 text-white text-[11px] font-semibold backdrop-blur-md">
+                          {doc.experience}
+                        </span>
                       </div>
-                    ) : (
-                      /* Fallback Department Header */
-                      <div className="relative h-44 w-full bg-gradient-to-br from-slate-900 via-sky-950 to-slate-900 p-6 flex flex-col justify-between text-white overflow-hidden">
-                        <div className="flex items-center justify-between z-10">
-                          <span className="px-3 py-1 rounded-full text-xs font-bold bg-sky-500/30 text-sky-200 border border-sky-400/30">
-                            Visiting Super-Specialist
-                          </span>
-                          <div className="p-2.5 rounded-2xl bg-white/10 backdrop-blur-md">
-                            {getDepartmentIcon(doc.department)}
-                          </div>
-                        </div>
 
-                        <div className="z-10">
-                          <p className="text-xs font-semibold text-sky-400 uppercase tracking-wider">
-                            {doc.department}
-                          </p>
-                          <h3 className="text-xl font-bold leading-tight">{doc.name}</h3>
-                          <p className="text-xs text-slate-300">{doc.qualification}</p>
-                        </div>
-
+                      {/* Overlay Details */}
+                      <div className="absolute bottom-3 left-4 right-4 text-white">
+                        <p className="text-xs font-semibold text-sky-300 uppercase tracking-wider">
+                          {doc.department}
+                        </p>
+                        <h3 className="text-xl font-bold leading-tight drop-shadow-xs">{doc.name}</h3>
+                        <p className="text-xs text-slate-200">{doc.qualification}</p>
                         {doc.clinicAffiliation && (
-                          <div className="z-10 pt-1">
-                            <span className="text-[11px] font-medium text-emerald-400 flex items-center gap-1">
-                              <CheckCircle2 className="w-3 h-3" />
-                              {doc.clinicAffiliation}
-                            </span>
-                          </div>
+                          <p className="text-[11px] font-medium text-emerald-300 flex items-center gap-1 mt-0.5">
+                            <CheckCircle2 className="w-3 h-3" />
+                            {doc.clinicAffiliation}
+                          </p>
                         )}
                       </div>
-                    )}
+                    </div>
 
                     {/* Card Body */}
                     <div className="p-6 space-y-4">

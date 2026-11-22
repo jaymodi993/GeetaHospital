@@ -14,7 +14,7 @@
     "email": "geetahospitalmundra@gmail.com",
     "appointmentUrl": "https://kivihealth.com/clinic/geeta-hospital",
     "logoUrl": "https://res.cloudinary.com/jaymodi/image/upload/v1795354038/geeta-hospital/logo.png",
-    "faviconUrl": "https://res.cloudinary.com/jaymodi/image/upload/v1795354213/geeta-hospitalhttps://res.cloudinary.com/jaymodi/image/upload/v1795354843/geeta-hospital/favicon-32.png",
+    "faviconUrl": "https://res.cloudinary.com/jaymodi/image/upload/v1795354843/geeta-hospital/favicon-32.png",
     "heroBannerUrl": "https://res.cloudinary.com/jaymodi/image/upload/v1795354125/geeta-hospital/hero-banner-1.jpg",
     "address": {
       "street": "3, Ambe Nagar, Nr. Gajanand Complex, Gundala Road",
@@ -114,7 +114,8 @@
         "Vaginal plastic surgeries for prolapse and urinary incontinence (SUI)"
       ],
       "image": "https://res.cloudinary.com/jaymodi/image/upload/v1795354100/geeta-hospital/doctors/dr-kundan-modi.jpg",
-      "bio": "Senior Gynecologist & Obstetrician with 17+ years of clinical excellence in maternal health, laparoscopic surgeries, and high-risk childbirth care in Mundra."
+      "bio": "Senior Gynecologist & Obstetrician with 17+ years of clinical excellence in maternal health, laparoscopic surgeries, and high-risk childbirth care in Mundra.",
+      "gender": "male"
     },
     {
       "id": "dr-vinod-prajapati",
@@ -134,7 +135,8 @@
         "Severe Malaria, Dengue and multi-organ failure resuscitation"
       ],
       "image": "https://res.cloudinary.com/jaymodi/image/upload/v1795354108/geeta-hospital/doctors/dr-vinod-prajapati.jpg",
-      "bio": "Leading Critical Care Specialist with 17+ years experience managing life-threatening medical emergencies, cardiac events, snake bites, and ICU ventilation."
+      "bio": "Leading Critical Care Specialist with 17+ years experience managing life-threatening medical emergencies, cardiac events, snake bites, and ICU ventilation.",
+      "gender": "male"
     },
     {
       "id": "dr-avani-modi",
@@ -154,7 +156,8 @@
         "Comprehensive executive full body health checkups"
       ],
       "image": "https://res.cloudinary.com/jaymodi/image/upload/v1795354097/geeta-hospital/doctors/dr-avani-modi.jpg",
-      "bio": "Senior Pathologist directing Geeta Hospital's 24x7 fully computerized in-house laboratory with 17+ years of diagnostic excellence."
+      "bio": "Senior Pathologist directing Geeta Hospital's 24x7 fully computerized in-house laboratory with 17+ years of diagnostic excellence.",
+      "gender": "female"
     },
     {
       "id": "dr-rahul-patel",
@@ -174,7 +177,8 @@
         "All routine and optional childhood vaccinations"
       ],
       "image": "https://res.cloudinary.com/jaymodi/image/upload/v1795354103/geeta-hospital/doctors/dr-rahul-patel.jpg",
-      "bio": "Gold Medalist Pediatrician & Neonatologist leading Geeta Hospital's advanced NICU with 9+ years experience in premature infant care and childhood health."
+      "bio": "Gold Medalist Pediatrician & Neonatologist leading Geeta Hospital's advanced NICU with 9+ years experience in premature infant care and childhood health.",
+      "gender": "male"
     },
     {
       "id": "dr-omkarsinh-chudasama",
@@ -194,7 +198,8 @@
         "Minimally invasive fracture surgeries using C-ARM"
       ],
       "image": "https://res.cloudinary.com/jaymodi/image/upload/v1795354102/geeta-hospital/doctors/dr-omkarsinh-chudasama.jpg",
-      "bio": "Expert Orthopedic Surgeon specializing in trauma, fracture repair with C-ARM, joint preservation, and sports injury rehabilitation."
+      "bio": "Expert Orthopedic Surgeon specializing in trauma, fracture repair with C-ARM, joint preservation, and sports injury rehabilitation.",
+      "gender": "male"
     },
     {
       "id": "dr-shailesh-chauhan",
@@ -214,7 +219,8 @@
         "Hydrocele, circumcision & acute surgical trauma"
       ],
       "image": "https://res.cloudinary.com/jaymodi/image/upload/v1795354105/geeta-hospital/doctors/dr-shailesh-chauhan.jpg",
-      "bio": "Skilled General and Laparoscopic Surgeon performing modern minimally invasive abdominal procedures and surgical trauma care."
+      "bio": "Skilled General and Laparoscopic Surgeon performing modern minimally invasive abdominal procedures and surgical trauma care.",
+      "gender": "male"
     },
     {
       "id": "dr-tahira-imam",
@@ -233,7 +239,8 @@
         "Lifestyle and integrative health counseling"
       ],
       "image": "https://res.cloudinary.com/jaymodi/image/upload/v1795354107/geeta-hospital/doctors/dr-tahira-imam.jpg",
-      "bio": "Senior Medical Officer with 24+ years of dedicated clinical practice providing round-the-clock primary patient care and inpatient ward oversight."
+      "bio": "Senior Medical Officer with 24+ years of dedicated clinical practice providing round-the-clock primary patient care and inpatient ward oversight.",
+      "gender": "female"
     },
     {
       "id": "dr-gautam-aniyaliya",
@@ -252,7 +259,8 @@
         "Round-the-clock patient monitoring"
       ],
       "image": "https://res.cloudinary.com/jaymodi/image/upload/v1795354099/geeta-hospital/doctors/dr-gautam-aniyaliya.jpg",
-      "bio": "Resident Medical Officer with 5+ years experience ensuring vigilant 24x7 inpatient care, emergency triage, and clinical support."
+      "bio": "Resident Medical Officer with 5+ years experience ensuring vigilant 24x7 inpatient care, emergency triage, and clinical support.",
+      "gender": "male"
     },
     {
       "id": "dr-krupa-nath",
@@ -271,7 +279,8 @@
         "Patient education and medication counseling"
       ],
       "image": "https://res.cloudinary.com/jaymodi/image/upload/v1795354099/geeta-hospital/doctors/dr-krupa-nath.jpg",
-      "bio": "Resident Medical Officer with 4+ years of clinical service dedicated to continuous patient monitoring and inpatient healthcare delivery."
+      "bio": "Resident Medical Officer with 4+ years of clinical service dedicated to continuous patient monitoring and inpatient healthcare delivery.",
+      "gender": "female"
     },
     {
       "id": "dr-jaydatt-tekani",
@@ -294,8 +303,9 @@
         "Echocardiography (ECHO), ECG interpretation & preventive cardiology",
         "Hypertensive heart disease & dyslipidemia management"
       ],
-      "image": "https://res.cloudinary.com/jaymodi/image/upload/v1795354075/geeta-hospital/camp-cardiology.jpg",
-      "bio": "Renowned cardiologist providing monthly super-speciality cardiac consultations and ECG/ECHO assessments at Geeta Hospital."
+      "image": "https://res.cloudinary.com/jaymodi/image/upload/v1795355316/geeta-hospital/doctors/default-doctor-male.jpg",
+      "bio": "Renowned cardiologist providing monthly super-speciality cardiac consultations and ECG/ECHO assessments at Geeta Hospital.",
+      "gender": "male"
     },
     {
       "id": "dr-naushad-ravjani",
@@ -317,8 +327,9 @@
         "Severe migraine, chronic headache & trigeminal neuralgia",
         "Parkinson's disease, tremors & neuropathy disorders"
       ],
-      "image": "https://res.cloudinary.com/jaymodi/image/upload/v1795354079/geeta-hospital/camp-neurology.jpg",
-      "bio": "Leading neurologist with DM from NIMS Hyderabad offering advanced neurological diagnostics and management right here in Mundra."
+      "image": "https://res.cloudinary.com/jaymodi/image/upload/v1795355316/geeta-hospital/doctors/default-doctor-male.jpg",
+      "bio": "Leading neurologist with DM from NIMS Hyderabad offering advanced neurological diagnostics and management right here in Mundra.",
+      "gender": "male"
     },
     {
       "id": "dr-yogesh-patel",
@@ -341,8 +352,9 @@
         "Advanced complex diabetes mellitus & insulin titration",
         "Critical metabolic diseases & bone health management"
       ],
-      "image": "",
-      "bio": "Fellow of EULAR with specialized certifications in diabetes and critical care, leading our bi-weekly joint and diabetes clinics."
+      "image": "https://res.cloudinary.com/jaymodi/image/upload/v1795355316/geeta-hospital/doctors/default-doctor-male.jpg",
+      "bio": "Fellow of EULAR with specialized certifications in diabetes and critical care, leading our bi-weekly joint and diabetes clinics.",
+      "gender": "male"
     },
     {
       "id": "dr-krushnakumar-virda",
@@ -365,8 +377,9 @@
         "Endovascular neurosurgery & cerebrovascular disease consultation",
         "Hydrocephalus, spinal stenosis & spinal cord compression"
       ],
-      "image": "",
-      "bio": "Japan-fellowship trained neurosurgeon offering expert consultations for brain and spine conditions in Mundra."
+      "image": "https://res.cloudinary.com/jaymodi/image/upload/v1795355316/geeta-hospital/doctors/default-doctor-male.jpg",
+      "bio": "Japan-fellowship trained neurosurgeon offering expert consultations for brain and spine conditions in Mundra.",
+      "gender": "male"
     },
     {
       "id": "dr-ankur-dhanani",
@@ -389,8 +402,9 @@
         "Tonsillitis, adenoids, snoring & sleep apnea treatment",
         "Vertigo, dizziness clinic & voice disorder therapy"
       ],
-      "image": "",
-      "bio": "Senior ENT surgeon backed by Geeta Hospital's high-tech ENT operation theater equipped with ear operating microscope and endoscopes."
+      "image": "https://res.cloudinary.com/jaymodi/image/upload/v1795355316/geeta-hospital/doctors/default-doctor-male.jpg",
+      "bio": "Senior ENT surgeon backed by Geeta Hospital's high-tech ENT operation theater equipped with ear operating microscope and endoscopes.",
+      "gender": "male"
     },
     {
       "id": "dr-rajesh-punjabi",
@@ -413,8 +427,9 @@
         "Repeated IVF failure & recurrent pregnancy loss evaluation",
         "Satellite IVF monitoring & ovulation induction"
       ],
-      "image": "",
-      "bio": "Nationally recognized fertility leaders from Ahmedabad offering satellite IVF cycle monitoring and specialized infertility OPD at Geeta Hospital."
+      "image": "https://res.cloudinary.com/jaymodi/image/upload/v1795355316/geeta-hospital/doctors/default-doctor-female.jpg",
+      "bio": "Nationally recognized fertility leaders from Ahmedabad offering satellite IVF cycle monitoring and specialized infertility OPD at Geeta Hospital.",
+      "gender": "female"
     },
     {
       "id": "dr-binal-trivedi",
@@ -437,8 +452,9 @@
         "Ovulation induction & satellite cycle monitoring",
         "Recurrent pregnancy loss counseling"
       ],
-      "image": "",
-      "bio": "Renowned IVF specialist from Sashwat IVF Center, Ahmedabad, conducting dedicated monthly fertility OPD clinics at Geeta Hospital."
+      "image": "https://res.cloudinary.com/jaymodi/image/upload/v1795355316/geeta-hospital/doctors/default-doctor-female.jpg",
+      "bio": "Renowned IVF specialist from Sashwat IVF Center, Ahmedabad, conducting dedicated monthly fertility OPD clinics at Geeta Hospital.",
+      "gender": "female"
     },
     {
       "id": "dr-anvay-gandhi",
@@ -461,8 +477,9 @@
         "Diabetic retinopathy screening & medical retina",
         "Refractive vision error checkup & pediatric eye care"
       ],
-      "image": "",
-      "bio": "Accomplished ophthalmologists providing weekly Sunday eye clinics and state-of-the-art PHACO cataract surgery in our dedicated eye operation theater."
+      "image": "https://res.cloudinary.com/jaymodi/image/upload/v1795355316/geeta-hospital/doctors/default-doctor-female.jpg",
+      "bio": "Accomplished ophthalmologists providing weekly Sunday eye clinics and state-of-the-art PHACO cataract surgery in our dedicated eye operation theater.",
+      "gender": "female"
     }
   ],
   "services": [

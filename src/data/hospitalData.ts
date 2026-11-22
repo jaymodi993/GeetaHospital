@@ -1,6 +1,7 @@
 export interface Doctor {
   id: string;
   name: string;
+  gender?: "male" | "female";
   qualification: string;
   designation: string;
   department: string;
@@ -14,6 +15,38 @@ export interface Doctor {
   expertise: string[];
   image: string;
   bio?: string;
+}
+
+export const DEFAULT_DOCTOR_IMAGES = {
+  male: "https://res.cloudinary.com/jaymodi/image/upload/v1795355316/geeta-hospital/doctors/default-doctor-male.jpg",
+  female: "https://res.cloudinary.com/jaymodi/image/upload/v1795355316/geeta-hospital/doctors/default-doctor-female.jpg",
+  maleFallback: "/images/doctors/default-doctor-male.jpg",
+  femaleFallback: "/images/doctors/default-doctor-female.jpg",
+};
+
+export function getDoctorGender(doctor: { name?: string; gender?: "male" | "female"; department?: string }): "male" | "female" {
+  if (doctor.gender === "female" || doctor.gender === "male") {
+    return doctor.gender;
+  }
+  const name = (doctor.name || "").toLowerCase();
+
+  // Known female doctors & female prefixes
+  if (
+    /\b(mrs|ms|smt|madam|lady|female|women|woman)\b/i.test(name) ||
+    /\b(avani|tahira|krupa|shital|smruti|binal|priya|pooja|anita|neha|sneha|geeta|dharaben|aarti|rekha|dimple|dipti|meena|alka|rupa|swati|vaishali|heena|chetna|jyoti|bhavna|hina|mona)\b/i.test(name)
+  ) {
+    return "female";
+  }
+
+  return "male";
+}
+
+export function getDoctorImageUrl(doctor: { image?: string; name?: string; gender?: "male" | "female"; department?: string }): string {
+  if (doctor.image && doctor.image.trim().length > 0 && !doctor.image.includes("default-doctor")) {
+    return doctor.image;
+  }
+  const gender = getDoctorGender(doctor);
+  return gender === "female" ? DEFAULT_DOCTOR_IMAGES.female : DEFAULT_DOCTOR_IMAGES.male;
 }
 
 export interface ServiceItem {
@@ -150,6 +183,7 @@ export const DOCTORS: Doctor[] = [
   // Full-time Resident Doctors (Exact from Hospital Website)
   {
     id: "dr-kundan-modi",
+    gender: "male",
     name: "Dr. Kundan B. Modi",
     qualification: "M.B.B.S., M.D.",
     designation: "Chief Gynecologist & Obstetrician",
@@ -165,11 +199,11 @@ export const DOCTORS: Doctor[] = [
       "Infertility management & IUI satellite IVF",
       "Vaginal plastic surgeries for prolapse and urinary incontinence (SUI)",
     ],
-    image: "https://res.cloudinary.com/jaymodi/image/upload/v1795354100/geeta-hospital/doctors/dr-kundan-modi.jpg",
-    bio: "Senior Gynecologist & Obstetrician with 17+ years of clinical excellence in maternal health, laparoscopic surgeries, and high-risk childbirth care in Mundra.",
+    image: "https://res.cloudinary.com/jaymodi/image/upload/v1795354100/geeta-hospital/doctors/dr-kundan-modi.jpg",    bio: "Senior Gynecologist & Obstetrician with 17+ years of clinical excellence in maternal health, laparoscopic surgeries, and high-risk childbirth care in Mundra.",
   },
   {
     id: "dr-vinod-prajapati",
+    gender: "male",
     name: "Dr. Vinod Prajapati",
     qualification: "M.B.B.S., D.A.",
     designation: "Critical Care Specialist & Anesthesiologist",
@@ -185,11 +219,11 @@ export const DOCTORS: Doctor[] = [
       "Accidental emergency and polytrauma management",
       "Severe Malaria, Dengue and multi-organ failure resuscitation",
     ],
-    image: "https://res.cloudinary.com/jaymodi/image/upload/v1795354108/geeta-hospital/doctors/dr-vinod-prajapati.jpg",
-    bio: "Leading Critical Care Specialist with 17+ years experience managing life-threatening medical emergencies, cardiac events, snake bites, and ICU ventilation.",
+    image: "https://res.cloudinary.com/jaymodi/image/upload/v1795354108/geeta-hospital/doctors/dr-vinod-prajapati.jpg",    bio: "Leading Critical Care Specialist with 17+ years experience managing life-threatening medical emergencies, cardiac events, snake bites, and ICU ventilation.",
   },
   {
     id: "dr-avani-modi",
+    gender: "female",
     name: "Dr. Avani K. Modi",
     qualification: "M.B.B.S., D.C.P.",
     designation: "Head Consultant Pathologist",
@@ -205,11 +239,11 @@ export const DOCTORS: Doctor[] = [
       "Thalassemia testing by HPLC method",
       "Comprehensive executive full body health checkups",
     ],
-    image: "https://res.cloudinary.com/jaymodi/image/upload/v1795354097/geeta-hospital/doctors/dr-avani-modi.jpg",
-    bio: "Senior Pathologist directing Geeta Hospital's 24x7 fully computerized in-house laboratory with 17+ years of diagnostic excellence.",
+    image: "https://res.cloudinary.com/jaymodi/image/upload/v1795354097/geeta-hospital/doctors/dr-avani-modi.jpg",    bio: "Senior Pathologist directing Geeta Hospital's 24x7 fully computerized in-house laboratory with 17+ years of diagnostic excellence.",
   },
   {
     id: "dr-rahul-patel",
+    gender: "male",
     name: "Dr. Rahul N. Patel",
     qualification: "M.B.B.S., D.C.H. (Gold Medalist)",
     designation: "Senior Pediatrician & Neonatologist",
@@ -225,11 +259,11 @@ export const DOCTORS: Doctor[] = [
       "Pediatric emergencies (convulsions, severe fever, malaria, dengue)",
       "All routine and optional childhood vaccinations",
     ],
-    image: "https://res.cloudinary.com/jaymodi/image/upload/v1795354103/geeta-hospital/doctors/dr-rahul-patel.jpg",
-    bio: "Gold Medalist Pediatrician & Neonatologist leading Geeta Hospital's advanced NICU with 9+ years experience in premature infant care and childhood health.",
+    image: "https://res.cloudinary.com/jaymodi/image/upload/v1795354103/geeta-hospital/doctors/dr-rahul-patel.jpg",    bio: "Gold Medalist Pediatrician & Neonatologist leading Geeta Hospital's advanced NICU with 9+ years experience in premature infant care and childhood health.",
   },
   {
     id: "dr-omkarsinh-chudasama",
+    gender: "male",
     name: "Dr. Omkarsinh Chudasama",
     qualification: "M.B.B.S., D. Ortho",
     designation: "Orthopedic & Trauma Surgeon",
@@ -245,11 +279,11 @@ export const DOCTORS: Doctor[] = [
       "Pediatric trauma and bone deformities",
       "Minimally invasive fracture surgeries using C-ARM",
     ],
-    image: "https://res.cloudinary.com/jaymodi/image/upload/v1795354102/geeta-hospital/doctors/dr-omkarsinh-chudasama.jpg",
-    bio: "Expert Orthopedic Surgeon specializing in trauma, fracture repair with C-ARM, joint preservation, and sports injury rehabilitation.",
+    image: "https://res.cloudinary.com/jaymodi/image/upload/v1795354102/geeta-hospital/doctors/dr-omkarsinh-chudasama.jpg",    bio: "Expert Orthopedic Surgeon specializing in trauma, fracture repair with C-ARM, joint preservation, and sports injury rehabilitation.",
   },
   {
     id: "dr-shailesh-chauhan",
+    gender: "male",
     name: "Dr. Shailesh Chauhan",
     qualification: "M.B.B.S., M.S.",
     designation: "General & Laparoscopic Surgeon",
@@ -265,11 +299,11 @@ export const DOCTORS: Doctor[] = [
       "Anorectal diseases (Piles, Fissure, Fistula)",
       "Hydrocele, circumcision & acute surgical trauma",
     ],
-    image: "https://res.cloudinary.com/jaymodi/image/upload/v1795354105/geeta-hospital/doctors/dr-shailesh-chauhan.jpg",
-    bio: "Skilled General and Laparoscopic Surgeon performing modern minimally invasive abdominal procedures and surgical trauma care.",
+    image: "https://res.cloudinary.com/jaymodi/image/upload/v1795354105/geeta-hospital/doctors/dr-shailesh-chauhan.jpg",    bio: "Skilled General and Laparoscopic Surgeon performing modern minimally invasive abdominal procedures and surgical trauma care.",
   },
   {
     id: "dr-tahira-imam",
+    gender: "female",
     name: "Dr. Tahira Imam",
     qualification: "B.A.M.S.",
     designation: "Senior Resident Medical Officer",
@@ -284,11 +318,11 @@ export const DOCTORS: Doctor[] = [
       "Emergency patient stabilization and continuous care",
       "Lifestyle and integrative health counseling",
     ],
-    image: "https://res.cloudinary.com/jaymodi/image/upload/v1795354107/geeta-hospital/doctors/dr-tahira-imam.jpg",
-    bio: "Senior Medical Officer with 24+ years of dedicated clinical practice providing round-the-clock primary patient care and inpatient ward oversight.",
+    image: "https://res.cloudinary.com/jaymodi/image/upload/v1795354107/geeta-hospital/doctors/dr-tahira-imam.jpg",    bio: "Senior Medical Officer with 24+ years of dedicated clinical practice providing round-the-clock primary patient care and inpatient ward oversight.",
   },
   {
     id: "dr-gautam-aniyaliya",
+    gender: "male",
     name: "Dr. Gautam Aniyaliya",
     qualification: "B.H.M.S.",
     designation: "Resident Medical Officer",
@@ -303,11 +337,11 @@ export const DOCTORS: Doctor[] = [
       "Acute medical conditions and OPD consultations",
       "Round-the-clock patient monitoring",
     ],
-    image: "https://res.cloudinary.com/jaymodi/image/upload/v1795354099/geeta-hospital/doctors/dr-gautam-aniyaliya.jpg",
-    bio: "Resident Medical Officer with 5+ years experience ensuring vigilant 24x7 inpatient care, emergency triage, and clinical support.",
+    image: "https://res.cloudinary.com/jaymodi/image/upload/v1795354099/geeta-hospital/doctors/dr-gautam-aniyaliya.jpg",    bio: "Resident Medical Officer with 5+ years experience ensuring vigilant 24x7 inpatient care, emergency triage, and clinical support.",
   },
   {
     id: "dr-krupa-nath",
+    gender: "female",
     name: "Dr. Krupa Nath",
     qualification: "B.H.M.S.",
     designation: "Resident Medical Officer",
@@ -322,13 +356,13 @@ export const DOCTORS: Doctor[] = [
       "Pre and post-operative patient assessment",
       "Patient education and medication counseling",
     ],
-    image: "https://res.cloudinary.com/jaymodi/image/upload/v1795354099/geeta-hospital/doctors/dr-krupa-nath.jpg",
-    bio: "Resident Medical Officer with 4+ years of clinical service dedicated to continuous patient monitoring and inpatient healthcare delivery.",
+    image: "https://res.cloudinary.com/jaymodi/image/upload/v1795354099/geeta-hospital/doctors/dr-krupa-nath.jpg",    bio: "Resident Medical Officer with 4+ years of clinical service dedicated to continuous patient monitoring and inpatient healthcare delivery.",
   },
 
   // Visiting Super-Specialist Doctors with Official Camp Posters
   {
     id: "dr-jaydatt-tekani",
+    gender: "male",
     name: "Dr. Jaydatt Tekani",
     qualification: "M.D. (Medicine), DNB (Cardiology)",
     designation: "Visiting Interventional Cardiologist",
@@ -346,11 +380,11 @@ export const DOCTORS: Doctor[] = [
       "Echocardiography (ECHO), ECG interpretation & preventive cardiology",
       "Hypertensive heart disease & dyslipidemia management",
     ],
-    image: "https://res.cloudinary.com/jaymodi/image/upload/v1795354075/geeta-hospital/camp-cardiology.jpg",
-    bio: "Renowned cardiologist providing monthly super-speciality cardiac consultations and ECG/ECHO assessments at Geeta Hospital.",
+    image: "https://res.cloudinary.com/jaymodi/image/upload/v1795355316/geeta-hospital/doctors/default-doctor-male.jpg",    bio: "Renowned cardiologist providing monthly super-speciality cardiac consultations and ECG/ECHO assessments at Geeta Hospital.",
   },
   {
     id: "dr-naushad-ravjani",
+    gender: "male",
     name: "Dr. Naushad B. Ravjani",
     qualification: "M.D., D.M. (Neurology - NIMS Hyderabad)",
     designation: "Visiting Super-Specialist Neurologist",
@@ -367,11 +401,11 @@ export const DOCTORS: Doctor[] = [
       "Severe migraine, chronic headache & trigeminal neuralgia",
       "Parkinson's disease, tremors & neuropathy disorders",
     ],
-    image: "https://res.cloudinary.com/jaymodi/image/upload/v1795354079/geeta-hospital/camp-neurology.jpg",
-    bio: "Leading neurologist with DM from NIMS Hyderabad offering advanced neurological diagnostics and management right here in Mundra.",
+    image: "https://res.cloudinary.com/jaymodi/image/upload/v1795355316/geeta-hospital/doctors/default-doctor-male.jpg",    bio: "Leading neurologist with DM from NIMS Hyderabad offering advanced neurological diagnostics and management right here in Mundra.",
   },
   {
     id: "dr-yogesh-patel",
+    gender: "male",
     name: "Dr. Yogesh B. Patel (Valani)",
     qualification: "M.B.B.S., M.D., FCCCM, EULAR CIH, CCEBDM, EMPH",
     designation: "Visiting Consultant Rheumatologist & Diabetologist",
@@ -389,11 +423,11 @@ export const DOCTORS: Doctor[] = [
       "Advanced complex diabetes mellitus & insulin titration",
       "Critical metabolic diseases & bone health management",
     ],
-    image: "",
-    bio: "Fellow of EULAR with specialized certifications in diabetes and critical care, leading our bi-weekly joint and diabetes clinics.",
+    image: "https://res.cloudinary.com/jaymodi/image/upload/v1795355316/geeta-hospital/doctors/default-doctor-male.jpg",    bio: "Fellow of EULAR with specialized certifications in diabetes and critical care, leading our bi-weekly joint and diabetes clinics.",
   },
   {
     id: "dr-krushnakumar-virda",
+    gender: "male",
     name: "Dr. Krushnakumar Virda",
     qualification: "M.Ch. (Neuro Surgery), Endovascular Fellowship (Japan)",
     designation: "Visiting Brain & Spine Neurosurgeon",
@@ -411,11 +445,11 @@ export const DOCTORS: Doctor[] = [
       "Endovascular neurosurgery & cerebrovascular disease consultation",
       "Hydrocephalus, spinal stenosis & spinal cord compression",
     ],
-    image: "",
-    bio: "Japan-fellowship trained neurosurgeon offering expert consultations for brain and spine conditions in Mundra.",
+    image: "https://res.cloudinary.com/jaymodi/image/upload/v1795355316/geeta-hospital/doctors/default-doctor-male.jpg",    bio: "Japan-fellowship trained neurosurgeon offering expert consultations for brain and spine conditions in Mundra.",
   },
   {
     id: "dr-ankur-dhanani",
+    gender: "male",
     name: "Dr. Ankur Dhanani",
     qualification: "M.S. (E.N.T.)",
     designation: "Visiting ENT & Head-Neck Specialist",
@@ -433,11 +467,11 @@ export const DOCTORS: Doctor[] = [
       "Tonsillitis, adenoids, snoring & sleep apnea treatment",
       "Vertigo, dizziness clinic & voice disorder therapy",
     ],
-    image: "",
-    bio: "Senior ENT surgeon backed by Geeta Hospital's high-tech ENT operation theater equipped with ear operating microscope and endoscopes.",
+    image: "https://res.cloudinary.com/jaymodi/image/upload/v1795355316/geeta-hospital/doctors/default-doctor-male.jpg",    bio: "Senior ENT surgeon backed by Geeta Hospital's high-tech ENT operation theater equipped with ear operating microscope and endoscopes.",
   },
   {
     id: "dr-rajesh-punjabi",
+    gender: "female",
     name: "Dr. Rajesh Punjabi & Dr. Shital Punjabi",
     qualification: "M.D., D.G.O., Infertility & IVF Specialists",
     designation: "Visiting Senior IVF & Test Tube Baby Specialists",
@@ -455,11 +489,11 @@ export const DOCTORS: Doctor[] = [
       "Repeated IVF failure & recurrent pregnancy loss evaluation",
       "Satellite IVF monitoring & ovulation induction",
     ],
-    image: "",
-    bio: "Nationally recognized fertility leaders from Ahmedabad offering satellite IVF cycle monitoring and specialized infertility OPD at Geeta Hospital.",
+    image: "https://res.cloudinary.com/jaymodi/image/upload/v1795355316/geeta-hospital/doctors/default-doctor-female.jpg",    bio: "Nationally recognized fertility leaders from Ahmedabad offering satellite IVF cycle monitoring and specialized infertility OPD at Geeta Hospital.",
   },
   {
     id: "dr-binal-trivedi",
+    gender: "female",
     name: "Dr. Binal Trivedi",
     qualification: "IVF Specialist",
     designation: "Visiting IVF & Fertility Specialist",
@@ -477,11 +511,11 @@ export const DOCTORS: Doctor[] = [
       "Ovulation induction & satellite cycle monitoring",
       "Recurrent pregnancy loss counseling",
     ],
-    image: "",
-    bio: "Renowned IVF specialist from Sashwat IVF Center, Ahmedabad, conducting dedicated monthly fertility OPD clinics at Geeta Hospital.",
+    image: "https://res.cloudinary.com/jaymodi/image/upload/v1795355316/geeta-hospital/doctors/default-doctor-female.jpg",    bio: "Renowned IVF specialist from Sashwat IVF Center, Ahmedabad, conducting dedicated monthly fertility OPD clinics at Geeta Hospital.",
   },
   {
     id: "dr-anvay-gandhi",
+    gender: "female",
     name: "Dr. Anvay Gandhi & Dr. Smruti Gandhi",
     qualification: "M.S. (Ophthalmology)",
     designation: "Visiting Eye Surgeons & Cataract Specialists",
@@ -499,8 +533,7 @@ export const DOCTORS: Doctor[] = [
       "Diabetic retinopathy screening & medical retina",
       "Refractive vision error checkup & pediatric eye care",
     ],
-    image: "",
-    bio: "Accomplished ophthalmologists providing weekly Sunday eye clinics and state-of-the-art PHACO cataract surgery in our dedicated eye operation theater.",
+    image: "https://res.cloudinary.com/jaymodi/image/upload/v1795355316/geeta-hospital/doctors/default-doctor-female.jpg",    bio: "Accomplished ophthalmologists providing weekly Sunday eye clinics and state-of-the-art PHACO cataract surgery in our dedicated eye operation theater.",
   },
 ];
 
