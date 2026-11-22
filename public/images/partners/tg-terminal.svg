@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 90" width="320" height="90">
+  <rect width="100%" height="100%" fill="transparent"/>
+  <g transform="translate(10, 10)">
+    <!-- Terminal Tanks & Nautical Anchor motif -->
+    <circle cx="35" cy="35" r="32" fill="#0284c7" opacity="0.12"/>
+    <path d="M22 25 L35 15 L48 25 L48 50 L22 50 Z" fill="#0369a1"/>
+    <rect x="25" y="28" width="20" height="22" rx="3" fill="#0284c7"/>
+    <line x1="20" y1="52" x2="50" y2="52" stroke="#0c4a6e" stroke-width="3" stroke-linecap="round"/>
+    <path d="M30 35 L40 35 M35 30 L35 42" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+    <!-- Waves -->
+    <path d="M16 57 Q 25 54, 35 57 T 54 57" fill="none" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round"/>
+    <!-- Text -->
+    <text x="80" y="36" font-family="system-ui, -apple-system, sans-serif" font-size="24" font-weight="900" fill="#0c4a6e" letter-spacing="1.5">TG TERMINALS</text>
+    <text x="82" y="54" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="700" fill="#0284c7" letter-spacing="2">PORT &amp; LOGISTICS</text>
+  </g>
+</svg>

@@ -31,6 +31,7 @@ export interface InsurancePartner {
   name: string;
   type: "Corporate" | "TPA / Insurance";
   logoText: string;
+  image: string;
 }
 
 export interface FacilityItem {
@@ -632,21 +633,25 @@ export const SERVICES: ServiceItem[] = [
 ];
 
 export const INSURANCE_PARTNERS: InsurancePartner[] = [
-  { name: "Adani Group", type: "Corporate", logoText: "ADANI" },
-  { name: "Jindal SAW Ltd.", type: "Corporate", logoText: "JINDAL" },
-  { name: "Dubai Port World (MICT)", type: "Corporate", logoText: "DP WORLD" },
-  { name: "Tata Power", type: "Corporate", logoText: "TATA POWER" },
-  { name: "Airport Authority of India", type: "Corporate", logoText: "AAI" },
-  { name: "TG Terminal", type: "Corporate", logoText: "TG TERMINAL" },
-  { name: "Inosource", type: "Corporate", logoText: "INOSOURCE" },
-  { name: "Reliance General Insurance", type: "TPA / Insurance", logoText: "RELIANCE" },
-  { name: "HDFC ERGO General Insurance", type: "TPA / Insurance", logoText: "HDFC ERGO" },
-  { name: "Paramount Health TPA", type: "TPA / Insurance", logoText: "PARAMOUNT" },
-  { name: "Medi Assist TPA", type: "TPA / Insurance", logoText: "MEDI ASSIST" },
-  { name: "Star Health & Allied Insurance", type: "TPA / Insurance", logoText: "STAR HEALTH" },
-  { name: "ICICI Lombard", type: "TPA / Insurance", logoText: "ICICI LOMBARD" },
-  { name: "Vipul MedCorp TPA", type: "TPA / Insurance", logoText: "VIPUL TPA" },
-  { name: "MDIndia Health Insurance TPA", type: "TPA / Insurance", logoText: "MDINDIA" },
+  { name: "Adani Group", type: "Corporate", logoText: "ADANI", image: "/images/partners/adani.svg" },
+  { name: "Jindal SAW Ltd.", type: "Corporate", logoText: "JINDAL", image: "/images/partners/jindal-saw.svg" },
+  { name: "Dubai Port World (MICT)", type: "Corporate", logoText: "DP WORLD", image: "/images/partners/dp-world.svg" },
+  { name: "Tata Power", type: "Corporate", logoText: "TATA POWER", image: "/images/partners/tata-power.svg" },
+  { name: "Airport Authority of India", type: "Corporate", logoText: "AAI", image: "/images/partners/aai.svg" },
+  { name: "TG Terminal", type: "Corporate", logoText: "TG TERMINAL", image: "/images/partners/tg-terminal.svg" },
+  { name: "Inosource", type: "Corporate", logoText: "INOSOURCE", image: "/images/partners/inosource.svg" },
+  { name: "Star Health & Allied Insurance", type: "TPA / Insurance", logoText: "STAR HEALTH", image: "/images/partners/star-health.svg" },
+  { name: "HDFC ERGO General Insurance", type: "TPA / Insurance", logoText: "HDFC ERGO", image: "/images/partners/hdfc-ergo.svg" },
+  { name: "ICICI Lombard", type: "TPA / Insurance", logoText: "ICICI LOMBARD", image: "/images/partners/icici-lombard.svg" },
+  { name: "Reliance General Insurance", type: "TPA / Insurance", logoText: "RELIANCE", image: "/images/partners/reliance-general.svg" },
+  { name: "Care Health Insurance", type: "TPA / Insurance", logoText: "CARE HEALTH", image: "/images/partners/care-health.png" },
+  { name: "Bajaj Allianz General Insurance", type: "TPA / Insurance", logoText: "BAJAJ ALLIANZ", image: "/images/partners/bajaj-allianz.svg" },
+  { name: "Niva Bupa Health Insurance", type: "TPA / Insurance", logoText: "NIVA BUPA", image: "/images/partners/niva-bupa.jpg" },
+  { name: "United India Insurance", type: "TPA / Insurance", logoText: "UNITED INDIA", image: "/images/partners/united-india.svg" },
+  { name: "Medi Assist TPA", type: "TPA / Insurance", logoText: "MEDI ASSIST", image: "/images/partners/medi-assist.png" },
+  { name: "Paramount Health TPA", type: "TPA / Insurance", logoText: "PARAMOUNT", image: "/images/partners/paramount-tpa.png" },
+  { name: "MDIndia Health Insurance TPA", type: "TPA / Insurance", logoText: "MDINDIA", image: "/images/partners/mdindia.svg" },
+  { name: "Vipul MedCorp TPA", type: "TPA / Insurance", logoText: "VIPUL TPA", image: "/images/partners/vipul-tpa.svg" },
 ];
 
 export const FACILITIES_LIST: FacilityItem[] = [

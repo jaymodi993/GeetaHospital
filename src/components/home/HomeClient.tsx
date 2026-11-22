@@ -37,7 +37,12 @@ import {
 
 export default function HomeClient() {
   const [activeFaq, setActiveFaq] = useState<number | null>(0);
+  const [partnerCategory, setPartnerCategory] = useState<"All" | "Corporate" | "TPA / Insurance">("All");
   const rawPhone = HOSPITAL_INFO.phone.replace(/[^0-9+]/g, "");
+
+  const filteredPartners = partnerCategory === "All"
+    ? INSURANCE_PARTNERS
+    : INSURANCE_PARTNERS.filter(p => p.type === partnerCategory);
 
   return (
     <>
@@ -100,13 +105,13 @@ export default function HomeClient() {
               </div>
 
               {/* Cashless & Trust Badges */}
-              <div className="pt-4 border-t border-slate-200/80 flex flex-wrap items-center justify-center lg:justify-start gap-y-2 gap-x-6 text-xs text-slate-500">
+              <div className="pt-4 border-t border-slate-200/80 flex flex-wrap items-center justify-center lg:justify-start gap-y-2 gap-x-2 text-xs text-slate-500">
                 <span className="font-semibold text-slate-700">Cashless Partner with:</span>
-                <span className="bg-slate-100 text-slate-700 px-2 py-0.5 rounded font-medium">Adani Group</span>
-                <span className="bg-slate-100 text-slate-700 px-2 py-0.5 rounded font-medium">Jindal Group</span>
-                <span className="bg-slate-100 text-slate-700 px-2 py-0.5 rounded font-medium">DP World (MICT)</span>
-                <span className="bg-slate-100 text-slate-700 px-2 py-0.5 rounded font-medium">Tata Power</span>
-                <span className="bg-slate-100 text-slate-700 px-2 py-0.5 rounded font-medium">All Major TPAs</span>
+                <a href="#cashless-partners" className="bg-slate-100 hover:bg-sky-100 hover:text-sky-800 text-slate-700 px-2 py-0.5 rounded font-medium transition">Adani Group</a>
+                <a href="#cashless-partners" className="bg-slate-100 hover:bg-sky-100 hover:text-sky-800 text-slate-700 px-2 py-0.5 rounded font-medium transition">Jindal SAW</a>
+                <a href="#cashless-partners" className="bg-slate-100 hover:bg-sky-100 hover:text-sky-800 text-slate-700 px-2 py-0.5 rounded font-medium transition">DP World</a>
+                <a href="#cashless-partners" className="bg-slate-100 hover:bg-sky-100 hover:text-sky-800 text-slate-700 px-2 py-0.5 rounded font-medium transition">Tata Power</a>
+                <a href="#cashless-partners" className="bg-emerald-50 hover:bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-bold transition">All Major TPAs &rarr;</a>
               </div>
             </div>
 
@@ -682,49 +687,136 @@ export default function HomeClient() {
       </section>
 
       {/* 6. CASHLESS MEDICLAIM & CORPORATE TIE-UPS */}
-      <section className="py-16 bg-white border-t border-slate-200/80">
+      <section id="cashless-partners" className="py-20 bg-gradient-to-b from-white via-slate-50/70 to-white border-t border-slate-200/80 scroll-mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto space-y-2 mb-10">
-            <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold uppercase tracking-wider">
-              Cashless Hospitalization
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-900">
-              Corporate & Insurance TPA Tie-Ups
+          <div className="text-center max-w-3xl mx-auto space-y-3 mb-10">
+            <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold uppercase tracking-wider shadow-xs">
+              <ShieldCheck className="w-4 h-4 text-emerald-600" />
+              <span>ROHINI &amp; TPA Empanelled Hospital</span>
+            </div>
+            <h2 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight">
+              Corporate &amp; Insurance TPA Tie-Ups
             </h2>
-            <p className="text-slate-600 text-xs sm:text-sm">
-              We provide hassle-free cashless hospitalization for employees and families of leading industrial groups and all major insurance companies.
+            <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+              We provide hassle-free cashless hospitalization for employees and families of leading industrial groups and all major insurance companies &amp; Third-Party Administrators (TPAs).
             </p>
+
+            {/* Filter Tabs */}
+            <div className="pt-3 flex flex-wrap items-center justify-center gap-2">
+              <button
+                type="button"
+                onClick={() => setPartnerCategory("All")}
+                className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+                  partnerCategory === "All"
+                    ? "bg-slate-900 text-white shadow-md scale-105"
+                    : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-100"
+                }`}
+              >
+                All Tie-Ups ({INSURANCE_PARTNERS.length})
+              </button>
+              <button
+                type="button"
+                onClick={() => setPartnerCategory("Corporate")}
+                className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+                  partnerCategory === "Corporate"
+                    ? "bg-indigo-600 text-white shadow-md scale-105"
+                    : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-100"
+                }`}
+              >
+                Corporate Industrial Groups ({INSURANCE_PARTNERS.filter(p => p.type === "Corporate").length})
+              </button>
+              <button
+                type="button"
+                onClick={() => setPartnerCategory("TPA / Insurance")}
+                className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+                  partnerCategory === "TPA / Insurance"
+                    ? "bg-emerald-600 text-white shadow-md scale-105"
+                    : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-100"
+                }`}
+              >
+                Insurance &amp; TPAs ({INSURANCE_PARTNERS.filter(p => p.type === "TPA / Insurance").length})
+              </button>
+            </div>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
-            {INSURANCE_PARTNERS.map((partner, idx) => (
+          {/* Grid of Partners with Official Logos */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
+            {filteredPartners.map((partner, idx) => (
               <div
                 key={idx}
-                className="p-4 rounded-xl border border-slate-200 bg-slate-50/60 hover:bg-white hover:border-sky-300 hover:shadow-md transition text-center flex flex-col justify-center items-center h-24"
+                className="group relative p-3 sm:p-4 rounded-2xl border border-slate-200 bg-white hover:border-sky-400 hover:shadow-lg transition-all duration-300 flex flex-col justify-between items-center text-center overflow-hidden"
               >
-                <span className="text-xs font-black text-slate-800 tracking-tight">
+                {/* Type pill badge */}
+                <div className="w-full flex items-center justify-between gap-1 mb-2">
+                  <span
+                    className={`text-[9px] sm:text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md ${
+                      partner.type === "Corporate"
+                        ? "bg-indigo-50 text-indigo-700 border border-indigo-100"
+                        : "bg-emerald-50 text-emerald-700 border border-emerald-100"
+                    }`}
+                  >
+                    {partner.type === "Corporate" ? "Corporate" : "Cashless TPA"}
+                  </span>
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                </div>
+
+                {/* Brand Logo Container */}
+                <div className="relative w-full h-16 sm:h-20 flex items-center justify-center p-2 rounded-xl bg-slate-50/70 group-hover:bg-sky-50/50 transition">
+                  {partner.image ? (
+                    <Image
+                      src={partner.image}
+                      alt={`${partner.name} logo`}
+                      fill
+                      className="object-contain p-1 filter drop-shadow-xs group-hover:scale-105 transition-transform duration-300"
+                      sizes="(max-width: 640px) 45vw, (max-width: 1024px) 25vw, 16vw"
+                    />
+                  ) : (
+                    <span className="text-xs font-black text-slate-800 tracking-tight">
+                      {partner.logoText}
+                    </span>
+                  )}
+                </div>
+
+                {/* Partner Name */}
+                <span className="mt-2 text-xs font-bold text-slate-800 line-clamp-2 leading-tight group-hover:text-sky-700 transition">
                   {partner.name}
-                </span>
-                <span className="text-[10px] text-slate-400 mt-1 uppercase font-semibold">
-                  {partner.type}
                 </span>
               </div>
             ))}
           </div>
 
-          <div className="mt-8 p-4 rounded-2xl bg-sky-50 border border-sky-100 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
-            <div>
-              <h4 className="text-sm font-bold text-sky-900">Have an insurance policy or corporate health card?</h4>
-              <p className="text-xs text-sky-700">
-                Our in-house Mediclaim Desk assists with prompt pre-authorizations and document submissions.
+          {/* Dedicated Cashless Pre-Auth Assistance Card */}
+          <div className="mt-10 p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-sky-900 via-slate-900 to-sky-950 text-white shadow-xl flex flex-col lg:flex-row items-center justify-between gap-6">
+            <div className="space-y-2 text-center lg:text-left">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-500/20 border border-sky-400/30 text-sky-300 text-xs font-bold">
+                <ShieldCheck className="w-4 h-4 text-sky-400" />
+                <span>On-Site 24x7 Mediclaim Assistance</span>
+              </div>
+              <h3 className="text-xl sm:text-2xl font-black">
+                Have an Insurance Policy or Corporate Health Card?
+              </h3>
+              <p className="text-slate-300 text-xs sm:text-sm max-w-2xl leading-relaxed">
+                Bring your Health Card or E-Card at admission. Our dedicated in-house Mediclaim Desk initiates the cashless pre-authorization with your TPA / insurer within 30 minutes.
               </p>
             </div>
-            <a
-              href={`tel:${rawPhone}`}
-              className="px-5 py-2 rounded-xl bg-sky-700 text-white font-bold text-xs hover:bg-sky-800 transition shrink-0"
-            >
-              Contact Mediclaim Desk
-            </a>
+            <div className="flex flex-col sm:flex-row items-center gap-3 shrink-0 w-full sm:w-auto">
+              <a
+                href={`tel:${rawPhone}`}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-white text-slate-900 font-bold text-xs sm:text-sm hover:bg-slate-100 transition shadow-md"
+              >
+                <Phone className="w-4 h-4 text-sky-600" />
+                <span>Call Mediclaim Desk</span>
+              </a>
+              <a
+                href={`https://wa.me/919979889417?text=${encodeURIComponent("Hello Geeta Hospital, I want to inquire about cashless mediclaim / corporate hospitalization.")}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-emerald-600 text-white font-bold text-xs sm:text-sm hover:bg-emerald-700 transition shadow-md"
+              >
+                <MessageSquare className="w-4 h-4" />
+                <span>WhatsApp Query</span>
+              </a>
+            </div>
           </div>
         </div>
       </section>

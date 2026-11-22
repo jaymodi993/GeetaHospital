@@ -18,7 +18,7 @@ import {
   Ambulance,
   Phone,
 } from "lucide-react";
-import { HOSPITAL_INFO, FACILITIES_LIST } from "@/data/hospitalData";
+import { HOSPITAL_INFO, FACILITIES_LIST, INSURANCE_PARTNERS } from "@/data/hospitalData";
 import JsonLd from "@/components/seo/JsonLd";
 
 export const metadata: Metadata = {
@@ -449,6 +449,48 @@ export default function AboutPage() {
                 Integrated online appointment scheduling, digital medical records, and instant appointment confirmation for patients in Mundra.
               </p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Corporate & Cashless Insurance Network */}
+      <section className="py-16 bg-white border-t border-slate-200/80">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto space-y-2 mb-10">
+            <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold uppercase tracking-wider">
+              Cashless Hospitalization Network
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-900">
+              Corporate &amp; Insurance TPA Tie-Ups
+            </h2>
+            <p className="text-slate-600 text-xs sm:text-sm">
+              Preferred cashless healthcare provider in Mundra &amp; Kutch for leading industrial groups and all major health insurance companies.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
+            {INSURANCE_PARTNERS.map((partner, idx) => (
+              <div
+                key={idx}
+                className="group p-3 rounded-2xl border border-slate-200 bg-white hover:border-sky-400 hover:shadow-md transition-all flex flex-col justify-between items-center text-center"
+              >
+                <div className="relative w-full h-14 sm:h-16 flex items-center justify-center p-2 rounded-xl bg-slate-50/70 group-hover:bg-sky-50/50 transition">
+                  <Image
+                    src={partner.image}
+                    alt={`${partner.name} logo`}
+                    fill
+                    className="object-contain p-1 filter drop-shadow-xs group-hover:scale-105 transition-transform duration-300"
+                    sizes="(max-width: 640px) 45vw, (max-width: 1024px) 25vw, 16vw"
+                  />
+                </div>
+                <span className="mt-2 text-xs font-bold text-slate-800 line-clamp-1 group-hover:text-sky-700 transition">
+                  {partner.name}
+                </span>
+                <span className="text-[10px] text-slate-400 uppercase font-semibold">
+                  {partner.type === "Corporate" ? "Corporate" : "Insurance / TPA"}
+                </span>
+              </div>
+            ))}
           </div>
         </div>
       </section>
