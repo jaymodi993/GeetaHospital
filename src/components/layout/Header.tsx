@@ -22,7 +22,7 @@ import { useCms } from "@/context/CmsContext";
 const NAV_LINKS = [
   { name: "Home", href: "/" },
   { name: "About Us", href: "/about" },
-  { name: "Doctors & OPD", href: "/doctors" },
+  { name: "Doctors", href: "/doctors" },
   { name: "Services & Facilities", href: "/services" },
   { name: "Photo Gallery", href: "/gallery" },
   { name: "Contact & Location", href: "/contact" },

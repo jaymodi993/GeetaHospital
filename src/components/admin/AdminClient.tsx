@@ -36,6 +36,9 @@ import {
   Eye,
   RefreshCw,
   Sliders,
+  Cloud,
+  Database,
+  Key,
 } from "lucide-react";
 import {
   DOCTORS,
@@ -57,7 +60,7 @@ export default function AdminClient() {
   const [loginForm, setLoginForm] = useState({ username: "admin", password: "admin123" });
   const [loginError, setLoginError] = useState("");
   const [activeTab, setActiveTab] = useState<
-    "profile" | "doctors" | "services" | "partners" | "gallery" | "announcements" | "faqs" | "seo"
+    "profile" | "doctors" | "services" | "partners" | "gallery" | "announcements" | "faqs" | "seo" | "storage"
   >("profile");
 
   // CMS Content State
@@ -221,9 +224,141 @@ export default function AdminClient() {
     }
   };
 
+  // Cloudinary Storage State
+  const [storageConfig, setStorageConfig] = useState({
+    cloudName: "",
+    apiKey: "",
+    apiSecret: "",
+    folder: "geeta-hospital",
+  });
+  const [isCloudinaryActive, setIsCloudinaryActive] = useState(false);
+  const [storageLoading, setStorageLoading] = useState(false);
+  const [storageTesting, setStorageTesting] = useState(false);
+  const [storageStatusMsg, setStorageStatusMsg] = useState("");
+
+  const fetchStorageStatus = async () => {
+    try {
+      const res = await fetch("/api/admin/storage");
+      const text = await res.text();
+      let data: any;
+      try { data = JSON.parse(text); } catch { return; }
+      if (data && data.success) {
+        setIsCloudinaryActive(data.configured);
+        if (data.settings) {
+          setStorageConfig((prev) => ({
+            ...prev,
+            cloudName: data.settings.cloudName || "",
+            apiKey: data.settings.apiKey || "",
+            folder: data.settings.folder || "geeta-hospital",
+          }));
+        }
+      }
+    } catch (e) {
+      console.warn("Storage status fetch error:", e);
+    }
+  };
+
   useEffect(() => {
     fetchCmsData();
+    fetchStorageStatus();
   }, []);
+
+  const handleSaveStorageConfig = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStorageLoading(true);
+    setStorageStatusMsg("");
+    try {
+      const res = await fetch("/api/admin/storage", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "save-config",
+          ...storageConfig,
+        }),
+      });
+      const text = await res.text();
+      let data: any;
+      try { data = JSON.parse(text); } catch { data = { success: false, error: text }; }
+      if (data.success) {
+        setIsCloudinaryActive(Boolean(data.connected));
+        setStorageStatusMsg(
+          data.connected
+            ? "Cloudinary connected successfully! All new uploads will stream to Cloudinary CDN."
+            : "Saved settings, but connection test failed: " + (data.connectionError || "Unknown error")
+        );
+        fetchStorageStatus();
+      } else {
+        alert("Failed to save storage settings: " + (data.error || "Unknown error"));
+      }
+    } catch (err: any) {
+      alert("Network error saving storage settings: " + err.message);
+    } finally {
+      setStorageLoading(false);
+    }
+  };
+
+  const handleTestCloudinary = async () => {
+    setStorageTesting(true);
+    setStorageStatusMsg("");
+    try {
+      const res = await fetch("/api/admin/storage", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "test" }),
+      });
+      const text = await res.text();
+      let data: any;
+      try { data = JSON.parse(text); } catch { data = { success: false, error: text }; }
+      if (data.success) {
+        setIsCloudinaryActive(true);
+        setStorageStatusMsg("Cloudinary ping successful! Connected to cloud: " + data.cloudName);
+      } else {
+        setIsCloudinaryActive(false);
+        setStorageStatusMsg("Cloudinary test failed: " + (data.error || "Please verify credentials."));
+      }
+    } catch (err: any) {
+      setStorageStatusMsg("Network error during test: " + err.message);
+    } finally {
+      setStorageTesting(false);
+    }
+  };
+
+  const handleClearStorage = async () => {
+    const confirmed = confirm(
+      "Are you sure you want to empty Cloudinary storage and reset all website media?\n\nThis will permanently delete all uploaded files from your Cloudinary folder and reset all images back to official hospital baseline defaults."
+    );
+    if (!confirmed) return;
+
+    setStorageLoading(true);
+    try {
+      const res = await fetch("/api/admin/storage", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "clear-storage" }),
+      });
+      const text = await res.text();
+      let data: any;
+      try { data = JSON.parse(text); } catch { data = { success: false, error: text }; }
+      if (data.success) {
+        alert(data.message + (data.deletedCount ? ` (${data.deletedCount} files purged from Cloudinary)` : ""));
+        await fetchCmsData();
+        updateLocalCms({
+          hospitalProfile: {
+            ...hospitalProfile,
+            logoUrl: "/images/logo.png",
+            faviconUrl: "/favicon-32.png",
+            heroBannerUrl: "/images/hero-banner-1.jpg",
+          },
+        });
+      } else {
+        alert("Could not clear storage: " + (data.error || "Unknown error"));
+      }
+    } catch (err: any) {
+      alert("Error clearing storage: " + err.message);
+    } finally {
+      setStorageLoading(false);
+    }
+  };
 
   const handleLogin = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -398,9 +533,23 @@ export default function AdminClient() {
 
   // Generic File Upload Handler
   const handleFileUpload = async (rawFile: File, type: string): Promise<string | null> => {
+    if (!rawFile) return null;
+
+    // Hard client-side limit check to prevent Vercel 413 "Request Entity Too Large"
+    if (rawFile.size > 15 * 1024 * 1024) {
+      alert("Selected image is too large (" + (rawFile.size / (1024 * 1024)).toFixed(1) + " MB). Please select an image under 15 MB.");
+      return null;
+    }
+
     setUploadLoading(type);
     try {
       const file = await compressImageIfNeeded(rawFile, type);
+
+      if (file.size > 3.8 * 1024 * 1024) {
+        alert("Compressed file size is " + (file.size / (1024 * 1024)).toFixed(1) + " MB, which exceeds the serverless limit of 3.8 MB. Please select a smaller photo or connect Cloudinary in the Cloud Media Storage tab.");
+        return null;
+      }
+
       const formData = new FormData();
       formData.append("file", file);
       formData.append("type", type);
@@ -416,7 +565,7 @@ export default function AdminClient() {
         data = JSON.parse(text);
       } catch {
         if (res.status === 413 || text.toLowerCase().includes("entity too large")) {
-          alert("File size is too large for upload. The image could not be processed.");
+          alert("Upload request exceeded server payload capacity (413). Please compress your image or connect Cloudinary storage in the Cloud Media tab.");
           return null;
         }
         alert("Upload server returned (" + res.status + "): " + (text.slice(0, 150) || "Unknown error"));
@@ -507,6 +656,27 @@ export default function AdminClient() {
       }
       if (payload.hospitalProfile?.heroBannerUrl?.startsWith("data:") && payload.hospitalProfile.heroBannerUrl.length > 300 * 1024) {
         payload.hospitalProfile.heroBannerUrl = await shrinkDataUrlIfNeeded(payload.hospitalProfile.heroBannerUrl, 1200, 0.8);
+      }
+      if (Array.isArray(payload.doctors)) {
+        for (const doc of payload.doctors) {
+          if (doc.image?.startsWith("data:") && doc.image.length > 180 * 1024) {
+            doc.image = await shrinkDataUrlIfNeeded(doc.image, 400, 0.8);
+          }
+        }
+      }
+      if (Array.isArray(payload.partners)) {
+        for (const p of payload.partners) {
+          if (p.image?.startsWith("data:") && p.image.length > 120 * 1024) {
+            p.image = await shrinkDataUrlIfNeeded(p.image, 300, 0.85);
+          }
+        }
+      }
+      if (Array.isArray(payload.gallery)) {
+        for (const g of payload.gallery) {
+          if (g.image?.startsWith("data:") && g.image.length > 250 * 1024) {
+            g.image = await shrinkDataUrlIfNeeded(g.image, 800, 0.8);
+          }
+        }
       }
     } catch (e) {
       console.warn("Payload sanitization warning:", e);
@@ -1155,6 +1325,27 @@ export default function AdminClient() {
               <Globe className="w-4 h-4" />
               <span>SEO &amp; Meta Tags</span>
             </div>
+          </button>
+
+          <button
+            onClick={() => setActiveTab("storage")}
+            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition ${
+              activeTab === "storage"
+                ? "bg-sky-600 text-white shadow-sm"
+                : "text-slate-700 hover:bg-slate-50"
+            }`}
+          >
+            <div className="flex items-center gap-2.5">
+              <Cloud className="w-4 h-4" />
+              <span>Cloud Storage (CDN)</span>
+            </div>
+            <span
+              className={`text-[9px] px-1.5 py-0.5 rounded-full font-bold ${
+                isCloudinaryActive ? "bg-emerald-100 text-emerald-800" : "bg-slate-100 text-slate-500"
+              }`}
+            >
+              {isCloudinaryActive ? "Cloudinary" : "Setup"}
+            </span>
           </button>
 
           <div className="pt-4 border-t border-slate-100">
@@ -2030,6 +2221,187 @@ export default function AdminClient() {
                     className="px-6 py-2.5 rounded-xl bg-sky-700 hover:bg-sky-800 text-white font-bold text-xs sm:text-sm shadow-md transition"
                   >
                     Save SEO Settings
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ======================================================== */}
+          {/* 9. CLOUD MEDIA STORAGE & CLOUDINARY TAB */}
+          {/* ======================================================== */}
+          {activeTab === "storage" && (
+            <div className="space-y-6">
+              <div className="border-b border-slate-200 pb-4">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
+                      <Cloud className="w-5 h-5 text-sky-600" />
+                      <span>Cloud Media Storage &amp; CDN (Cloudinary)</span>
+                    </h2>
+                    <p className="text-xs text-slate-500 mt-0.5">
+                      Connect your free Cloudinary account to store and serve all website images from worldwide CDN, or empty storage when needed.
+                    </p>
+                  </div>
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs font-bold inline-flex items-center gap-1.5 ${
+                      isCloudinaryActive
+                        ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                        : "bg-amber-50 text-amber-700 border border-amber-200"
+                    }`}
+                  >
+                    <span
+                      className={`w-2 h-2 rounded-full ${
+                        isCloudinaryActive ? "bg-emerald-500 animate-pulse" : "bg-amber-500"
+                      }`}
+                    />
+                    <span>{isCloudinaryActive ? "Cloudinary Connected" : "Local / Serverless Fallback"}</span>
+                  </span>
+                </div>
+              </div>
+
+              {/* Status Message Alert */}
+              {storageStatusMsg && (
+                <div
+                  className={`p-4 rounded-xl text-xs font-medium flex items-center gap-2 ${
+                    storageStatusMsg.toLowerCase().includes("fail") || storageStatusMsg.toLowerCase().includes("error")
+                      ? "bg-red-50 text-red-700 border border-red-200"
+                      : "bg-emerald-50 text-emerald-800 border border-emerald-200"
+                  }`}
+                >
+                  <CheckCircle2 className="w-4 h-4 shrink-0" />
+                  <span>{storageStatusMsg}</span>
+                </div>
+              )}
+
+              {/* Configuration Form Card */}
+              <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200 space-y-6">
+                <div>
+                  <h3 className="text-sm font-black text-slate-900 uppercase tracking-wide">
+                    Cloudinary API Configuration
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Found in your Cloudinary Dashboard under &quot;Product Environment Credentials&quot;.
+                  </p>
+                </div>
+
+                <form onSubmit={handleSaveStorageConfig} className="space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                        Cloud Name *
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="e.g. dxyz123abc"
+                        value={storageConfig.cloudName}
+                        onChange={(e) => setStorageConfig({ ...storageConfig, cloudName: e.target.value })}
+                        required
+                        className="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-mono focus:ring-2 focus:ring-sky-500 focus:outline-hidden bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                        Target Folder
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="geeta-hospital"
+                        value={storageConfig.folder}
+                        onChange={(e) => setStorageConfig({ ...storageConfig, folder: e.target.value })}
+                        className="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-mono focus:ring-2 focus:ring-sky-500 focus:outline-hidden bg-white"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                        API Key *
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="e.g. 123456789012345"
+                        value={storageConfig.apiKey}
+                        onChange={(e) => setStorageConfig({ ...storageConfig, apiKey: e.target.value })}
+                        required
+                        className="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-mono focus:ring-2 focus:ring-sky-500 focus:outline-hidden bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                        API Secret *
+                      </label>
+                      <input
+                        type="password"
+                        placeholder="Enter API Secret"
+                        value={storageConfig.apiSecret}
+                        onChange={(e) => setStorageConfig({ ...storageConfig, apiSecret: e.target.value })}
+                        required
+                        className="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-mono focus:ring-2 focus:ring-sky-500 focus:outline-hidden bg-white"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="submit"
+                        disabled={storageLoading}
+                        className="px-5 py-2 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm transition"
+                      >
+                        <Save className="w-3.5 h-3.5" />
+                        <span>{storageLoading ? "Saving..." : "Save Credentials"}</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={handleTestCloudinary}
+                        disabled={storageTesting}
+                        className="px-4 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold text-xs flex items-center gap-1.5 transition"
+                      >
+                        <RefreshCw className={`w-3.5 h-3.5 ${storageTesting ? "animate-spin" : ""}`} />
+                        <span>{storageTesting ? "Testing..." : "Test Connection"}</span>
+                      </button>
+                    </div>
+
+                    <a
+                      href="https://cloudinary.com/users/register_free"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs text-sky-600 hover:underline font-semibold"
+                    >
+                      Don&apos;t have an account? Sign up free (25 GB free storage) &rarr;
+                    </a>
+                  </div>
+                </form>
+              </div>
+
+              {/* CLEAR STORAGE / RESET SECTION */}
+              <div className="p-6 rounded-2xl bg-rose-50/70 border border-rose-200 space-y-4">
+                <div className="flex items-start gap-3">
+                  <div className="w-9 h-9 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center shrink-0">
+                    <Trash2 className="w-4 h-4" />
+                  </div>
+                  <div className="space-y-1">
+                    <h3 className="text-sm font-black text-rose-950">
+                      Empty Cloud Media Storage &amp; Reset Baseline
+                    </h3>
+                    <p className="text-xs text-rose-800 leading-relaxed">
+                      Need to empty Cloudinary or reset your site? Clicking this button will purge all uploaded images inside the <code className="bg-rose-100 px-1 rounded font-mono font-bold">geeta-hospital</code> Cloudinary folder and restore all website photos, logos, and doctor portraits back to the hospital&apos;s pristine official baseline files.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="pt-2 flex justify-end">
+                  <button
+                    type="button"
+                    onClick={handleClearStorage}
+                    disabled={storageLoading}
+                    className="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs flex items-center gap-2 shadow-sm transition active:scale-95"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>{storageLoading ? "Clearing Storage..." : "Empty Cloud Storage & Reset Media"}</span>
                   </button>
                 </div>
               </div>

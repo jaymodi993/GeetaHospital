@@ -119,7 +119,7 @@ export default function Footer() {
               <li>
                 <Link href="/doctors" className="hover:text-sky-400 transition flex items-center gap-1.5">
                   <ChevronRight className="w-3.5 h-3.5 text-sky-500" />
-                  <span>Doctors & OPD Timetable</span>
+                  <span>Specialist Doctors Roster</span>
                 </Link>
               </li>
               <li>

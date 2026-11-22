@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
+import { isCloudinaryConfigured, getActiveCloudinaryConfig, uploadToCloudinary } from "@/lib/cloudinary";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -53,6 +54,33 @@ export async function POST(request: Request) {
         ? "image/x-icon"
         : "image/jpeg");
     const dataUrl = `data:${mimeType};base64,${buffer.toString("base64")}`;
+
+    // 1. If Cloudinary is configured (either in environment variables or via Admin settings), upload to Cloudinary
+    try {
+      const isConfigured = await isCloudinaryConfigured();
+      if (isConfigured) {
+        const config = await getActiveCloudinaryConfig();
+        const cloudResult = await uploadToCloudinary(
+          buffer,
+          mimeType,
+          config.folder || "geeta-hospital",
+          baseName
+        );
+        if (cloudResult.success && cloudResult.url) {
+          return NextResponse.json({
+            success: true,
+            url: cloudResult.url,
+            publicId: cloudResult.publicId,
+            storage: "cloudinary",
+            fileName: safeFileName,
+            size: buffer.length,
+            mimeType,
+          });
+        }
+      }
+    } catch (cErr) {
+      console.warn("Cloudinary upload attempt warning, using fallback:", cErr);
+    }
 
     let localUrl: string | null = null;
 
