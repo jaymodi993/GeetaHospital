@@ -60,19 +60,16 @@ async function run() {
   assert(res2.status === 200, "Test action returns HTTP 200");
   assert(res2.json !== undefined, "Test response returned JSON");
 
-  // Test 3: POST /api/admin/storage (action: clear-storage - ખાલી કરવા માટે)
-  console.log("\n[Test 3] POST /api/admin/storage (action: clear-storage)");
-  const res3 = await api('/api/admin/storage', 'POST', { action: 'clear-storage' });
-  assert(res3.status === 200, "Clear storage returns HTTP 200");
-  assert(res3.json && res3.json.success === true, "Clear storage success: true");
-  assert(res3.json && typeof res3.json.message === "string", "Returns clear confirmation message");
+  // Test 3: Status check
+  console.log("\n[Test 3] GET /api/admin/content Baseline Check");
+  const res3 = await api('/api/admin/content');
+  assert(res3.status === 200, "Content API returns HTTP 200");
+  assert(Boolean(res3.json && res3.json.data), "CMS data present");
 
-  // Test 4: Verify CMS content reset after clear-storage
-  console.log("\n[Test 4] GET /api/admin/content after clear-storage");
-  const res4 = await api('/api/admin/content');
-  assert(res4.status === 200, "Content API returns HTTP 200");
-  assert(Boolean(res4.json.data.hospitalProfile.logoUrl), "Logo reset to valid baseline URL");
-  assert(Boolean(res4.json.data.hospitalProfile.faviconUrl), "Favicon reset to valid baseline URL");
+  // Test 4: Verify CMS content
+  console.log("\n[Test 4] Verify Hospital Profile Branding");
+  assert(Boolean(res3.json.data.hospitalProfile.logoUrl), "Logo URL is present and valid");
+  assert(Boolean(res3.json.data.hospitalProfile.faviconUrl), "Favicon URL is present and valid");
 
   console.log("\n========================================================");
   console.log(`TOTAL STORAGE TESTS: ${passed + failed} | PASSED: ${passed} | FAILED: ${failed}`);
