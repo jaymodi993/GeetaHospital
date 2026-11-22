@@ -72,6 +72,7 @@ async function testAll() {
   assert(up1.status === 200, "Logo upload returns HTTP 200");
   assert(up1.json && up1.json.success === true, "Logo upload success: true");
   assert(up1.json && (up1.json.url || up1.json.dataUrl), "Logo upload returns valid URL");
+  console.log("  -> Storage provider:", up1.json.storage || "local/fallback", "| URL:", up1.json.url ? up1.json.url.slice(0, 60) + "..." : "none");
 
   // 2. Favicon upload
   console.log("\n[Upload Test 2] Upload Favicon");

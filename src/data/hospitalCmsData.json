@@ -1131,5 +1131,12 @@
       "question": "Where is Geeta Hospital located in Mundra?",
       "answer": "Geeta Hospital is conveniently located at 3, Ambe Nagar, Near Gajanand Complex, Gundala Road, Baroi-Mundra, Kutch, Gujarat 370421. It is situated on a highway road-touch plot with ample parking space."
     }
-  ]
+  ],
+  "storageSettings": {
+    "cloudName": "jaymodi",
+    "apiKey": "225697312197988",
+    "apiSecret": "b8yQCZX0iepW7yo3x1g7KJnfEjk",
+    "folder": "geeta-hospital",
+    "updatedAt": "2026-11-22T13:17:20.509Z"
+  }
 }
