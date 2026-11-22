@@ -22,11 +22,15 @@ import {
   MessageCircle,
 } from "lucide-react";
 import { DOCTORS, Doctor, HOSPITAL_INFO } from "@/data/hospitalData";
+import { useCms } from "@/context/CmsContext";
 
 export default function DoctorsClient() {
+  const { doctors: cmsDoctors, hospitalProfile } = useCms();
+  const doctorsList = cmsDoctors && cmsDoctors.length > 0 ? cmsDoctors : DOCTORS;
+  const profile = hospitalProfile || HOSPITAL_INFO;
   const [filterType, setFilterType] = useState<"all" | "full-time" | "visiting">("all");
 
-  const filteredDoctors = DOCTORS.filter((doc) => {
+  const filteredDoctors = doctorsList.filter((doc) => {
     if (filterType === "all") return true;
     return doc.type === filterType;
   });
@@ -45,7 +49,7 @@ export default function DoctorsClient() {
 
   const getWhatsAppInquiryUrl = (docName: string, dept: string) => {
     const msg = `Namaste Geeta Hospital Mundra, I would like to consult with ${docName} (${dept}). Please share consultation timings and doctor availability.`;
-    return `https://wa.me/${HOSPITAL_INFO.whatsappNumber.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(msg)}`;
+    return `https://wa.me/${(profile.whatsappNumber || HOSPITAL_INFO.whatsappNumber).replace(/[^0-9]/g, "")}?text=${encodeURIComponent(msg)}`;
   };
 
   return (

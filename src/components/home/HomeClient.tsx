@@ -34,15 +34,30 @@ import {
   FACILITIES_LIST,
   FAQS,
 } from "@/data/hospitalData";
+import { useCms } from "@/context/CmsContext";
 
 export default function HomeClient() {
+  const {
+    hospitalProfile,
+    doctors: cmsDoctors,
+    services: cmsServices,
+    partners: cmsPartners,
+    faqs: cmsFaqs,
+  } = useCms();
+
+  const profile = hospitalProfile || HOSPITAL_INFO;
+  const doctorsList = cmsDoctors && cmsDoctors.length > 0 ? cmsDoctors : DOCTORS;
+  const servicesList = cmsServices && cmsServices.length > 0 ? cmsServices : SERVICES;
+  const partnersList = cmsPartners && cmsPartners.length > 0 ? cmsPartners : INSURANCE_PARTNERS;
+  const faqsList = cmsFaqs && cmsFaqs.length > 0 ? cmsFaqs : FAQS;
+
   const [activeFaq, setActiveFaq] = useState<number | null>(0);
   const [partnerCategory, setPartnerCategory] = useState<"All" | "Corporate" | "TPA / Insurance">("All");
-  const rawPhone = HOSPITAL_INFO.phone.replace(/[^0-9+]/g, "");
+  const rawPhone = (profile.phone || HOSPITAL_INFO.phone).replace(/[^0-9+]/g, "");
 
   const filteredPartners = partnerCategory === "All"
-    ? INSURANCE_PARTNERS
-    : INSURANCE_PARTNERS.filter(p => p.type === partnerCategory);
+    ? partnersList
+    : partnersList.filter(p => p.type === partnerCategory);
 
   return (
     <>
@@ -712,7 +727,7 @@ export default function HomeClient() {
                     : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-100"
                 }`}
               >
-                All Tie-Ups ({INSURANCE_PARTNERS.length})
+                All Tie-Ups ({partnersList.length})
               </button>
               <button
                 type="button"
@@ -723,7 +738,7 @@ export default function HomeClient() {
                     : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-100"
                 }`}
               >
-                Corporate Industrial Groups ({INSURANCE_PARTNERS.filter(p => p.type === "Corporate").length})
+                Corporate Industrial Groups ({partnersList.filter(p => p.type === "Corporate").length})
               </button>
               <button
                 type="button"
@@ -734,7 +749,7 @@ export default function HomeClient() {
                     : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-100"
                 }`}
               >
-                Insurance &amp; TPAs ({INSURANCE_PARTNERS.filter(p => p.type === "TPA / Insurance").length})
+                Insurance &amp; TPAs ({partnersList.filter(p => p.type === "TPA / Insurance").length})
               </button>
             </div>
           </div>
@@ -837,7 +852,7 @@ export default function HomeClient() {
           </div>
 
           <div className="space-y-3">
-            {FAQS.map((faq, idx) => {
+            {faqsList.map((faq, idx) => {
               const isOpen = activeFaq === idx;
               return (
                 <div

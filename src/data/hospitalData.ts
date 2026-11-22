@@ -41,7 +41,47 @@ export interface FacilityItem {
   iconName: string;
 }
 
-export const HOSPITAL_INFO = {
+export interface HospitalInfoType {
+  name: string;
+  legalName: string;
+  establishedYear: number;
+  yearsOfExcellence: string;
+  bedCapacity: string;
+  builtUpArea: string;
+  tagline: string;
+  description: string;
+  phone: string;
+  emergencyPhone: string;
+  whatsappNumber: string;
+  email: string;
+  appointmentUrl: string;
+  logoUrl?: string;
+  faviconUrl?: string;
+  heroBannerUrl?: string;
+  address: {
+    street: string;
+    locality: string;
+    district: string;
+    state: string;
+    postalCode: string;
+    country: string;
+    fullAddress: string;
+  };
+  geo: {
+    latitude: number;
+    longitude: number;
+  };
+  openingHours: string;
+  googleMapsUrl?: string;
+  accreditations: {
+    title: string;
+    subtitle: string;
+    code: string;
+    image: string;
+  }[];
+}
+
+export const HOSPITAL_INFO: HospitalInfoType = {
   name: "Geeta Hospital",
   legalName: "Geeta Multi-Speciality Hospital Mundra",
   establishedYear: 2009,
@@ -55,6 +95,9 @@ export const HOSPITAL_INFO = {
   whatsappNumber: "+917874381551",
   email: "geetahospitalmundra@gmail.com",
   appointmentUrl: "https://kivihealth.com/clinic/geeta-hospital",
+  logoUrl: "/images/logo.png",
+  faviconUrl: "/favicon.ico",
+  heroBannerUrl: "/images/hero-banner-1.jpg",
   address: {
     street: "3, Ambe Nagar, Nr. Gajanand Complex, Gundala Road",
     locality: "Baroi-Mundra",

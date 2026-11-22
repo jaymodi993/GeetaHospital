@@ -3,11 +3,14 @@
 import { useState } from "react";
 import Image from "next/image";
 import { GALLERY_ITEMS } from "@/data/hospitalData";
+import { useCms } from "@/context/CmsContext";
 import { X, ZoomIn, Camera, Filter } from "lucide-react";
 
 export default function GalleryClient() {
+  const { gallery: cmsGallery } = useCms();
+  const galleryList = cmsGallery && cmsGallery.length > 0 ? cmsGallery : GALLERY_ITEMS;
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
-  const [activeImage, setActiveImage] = useState<typeof GALLERY_ITEMS[0] | null>(null);
+  const [activeImage, setActiveImage] = useState<any | null>(null);
 
   const categories = [
     "All",
@@ -18,7 +21,7 @@ export default function GalleryClient() {
     "Super-Specialist OPD",
   ];
 
-  const filteredItems = GALLERY_ITEMS.filter((item) => {
+  const filteredItems = galleryList.filter((item) => {
     if (selectedCategory === "All") return true;
     return item.category === selectedCategory;
   });

@@ -14,8 +14,12 @@ import {
   Ambulance,
 } from "lucide-react";
 import { HOSPITAL_INFO } from "@/data/hospitalData";
+import { useCms } from "@/context/CmsContext";
 
 export default function ContactClient() {
+  const { hospitalProfile } = useCms();
+  const profile = hospitalProfile || HOSPITAL_INFO;
+
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -26,8 +30,8 @@ export default function ContactClient() {
 
   const [submitted, setSubmitted] = useState(false);
 
-  const rawPhone = HOSPITAL_INFO.phone.replace(/[^0-9+]/g, "");
-  const whatsappUrl = `https://wa.me/${HOSPITAL_INFO.whatsappNumber.replace(/[^0-9]/g, "")}?text=Hello%20Geeta%20Hospital,%20I%20have%20an%20inquiry%20regarding%20hospital%20services.`;
+  const rawPhone = (profile.phone || HOSPITAL_INFO.phone).replace(/[^0-9+]/g, "");
+  const whatsappUrl = `https://wa.me/${(profile.whatsappNumber || HOSPITAL_INFO.whatsappNumber).replace(/[^0-9]/g, "")}?text=Hello%20Geeta%20Hospital,%20I%20have%20an%20inquiry%20regarding%20hospital%20services.`;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,7 +73,7 @@ export default function ContactClient() {
                 href={`tel:${rawPhone}`}
                 className="text-sm font-extrabold text-red-600 hover:text-red-700 block transition"
               >
-                {HOSPITAL_INFO.phone}
+                {profile.emergencyPhone || profile.phone || HOSPITAL_INFO.phone}
               </a>
               <p className="text-[11px] text-slate-500">
                 Always open for urgent admissions, trauma, and maternal emergencies.
@@ -83,10 +87,10 @@ export default function ContactClient() {
               </div>
               <h3 className="font-bold text-slate-900 text-base">Email Inquiries</h3>
               <a
-                href={`mailto:${HOSPITAL_INFO.email}`}
+                href={`mailto:${profile.email || HOSPITAL_INFO.email}`}
                 className="text-xs sm:text-sm font-bold text-sky-700 hover:text-sky-800 block break-all transition"
               >
-                {HOSPITAL_INFO.email}
+                {profile.email || HOSPITAL_INFO.email}
               </a>
               <p className="text-[11px] text-slate-500">
                 For administrative, mediclaim, and corporate tie-up queries.
@@ -100,7 +104,7 @@ export default function ContactClient() {
               </div>
               <h3 className="font-bold text-slate-900 text-base">Hospital Address</h3>
               <p className="text-xs text-slate-700 leading-relaxed font-medium">
-                3, Ambe Nagar, Nr. Gajanand Complex, Gundala Road, Baroi-Mundra (Kutch), Gujarat 370421
+                {profile.address?.fullAddress || "3, Ambe Nagar, Nr. Gajanand Complex, Gundala Road, Baroi-Mundra (Kutch), Gujarat 370421"}
               </p>
             </div>
 

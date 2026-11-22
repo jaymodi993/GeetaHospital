@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import Image from "next/image";
 import {
   Phone,
   Mail,
@@ -12,9 +15,12 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { HOSPITAL_INFO } from "@/data/hospitalData";
+import { useCms } from "@/context/CmsContext";
 
 export default function Footer() {
-  const rawPhone = HOSPITAL_INFO.phone.replace(/[^0-9+]/g, "");
+  const { hospitalProfile } = useCms();
+  const profile = hospitalProfile || HOSPITAL_INFO;
+  const rawPhone = (profile.phone || HOSPITAL_INFO.phone).replace(/[^0-9+]/g, "");
 
   return (
     <footer className="bg-slate-950 text-slate-300 border-t border-slate-800">
@@ -52,15 +58,21 @@ export default function Footer() {
           {/* Col 1: About Hospital */}
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-tr from-red-600 to-rose-500 text-white font-black text-xl shadow-md">
-                +
+              <div className="relative w-10 h-10 rounded-xl overflow-hidden bg-white border border-slate-700 shadow-md flex items-center justify-center shrink-0">
+                <Image
+                  src={profile.logoUrl || "/images/logo.png"}
+                  alt={`${profile.name || "Geeta Hospital"} Logo`}
+                  width={36}
+                  height={36}
+                  className="object-contain p-0.5"
+                />
               </div>
               <div>
-                <span className="text-xl font-black text-white tracking-tight">
-                  GEETA HOSPITAL
+                <span className="text-xl font-black text-white tracking-tight uppercase">
+                  {profile.name || "GEETA HOSPITAL"}
                 </span>
                 <span className="block text-xs font-semibold text-sky-400">
-                  MUNDRA (KUTCH) • EST. 2009
+                  MUNDRA (KUTCH) • EST. {profile.establishedYear || "2009"}
                 </span>
               </div>
             </div>

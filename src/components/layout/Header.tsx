@@ -17,6 +17,7 @@ import {
   MessageCircle,
 } from "lucide-react";
 import { HOSPITAL_INFO } from "@/data/hospitalData";
+import { useCms } from "@/context/CmsContext";
 
 const NAV_LINKS = [
   { name: "Home", href: "/" },
@@ -29,6 +30,7 @@ const NAV_LINKS = [
 
 export default function Header() {
   const pathname = usePathname();
+  const { hospitalProfile } = useCms();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -40,8 +42,9 @@ export default function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const rawPhone = HOSPITAL_INFO.phone.replace(/[^0-9+]/g, "");
-  const whatsappUrl = `https://wa.me/${HOSPITAL_INFO.whatsappNumber.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(
+  const profile = hospitalProfile || HOSPITAL_INFO;
+  const rawPhone = (profile.phone || HOSPITAL_INFO.phone).replace(/[^0-9+]/g, "");
+  const whatsappUrl = `https://wa.me/${(profile.whatsappNumber || HOSPITAL_INFO.whatsappNumber).replace(/[^0-9]/g, "")}?text=${encodeURIComponent(
     "Namaste Geeta Hospital Mundra, I would like to inquire about hospital services and doctor availability."
   )}`;
 
@@ -104,8 +107,8 @@ export default function Header() {
             <Link href="/" className="flex items-center gap-3 group">
               <div className="relative w-11 h-11 rounded-xl overflow-hidden bg-white border border-slate-200 shadow-xs flex items-center justify-center group-hover:scale-105 transition-transform">
                 <Image
-                  src="/images/logo.png"
-                  alt="Geeta Hospital Logo"
+                  src={profile.logoUrl || "/images/logo.png"}
+                  alt={`${profile.name || "Geeta Hospital"} Logo`}
                   width={44}
                   height={44}
                   className="object-contain p-0.5"
@@ -116,15 +119,15 @@ export default function Header() {
               {/* Title & Tag */}
               <div className="flex flex-col">
                 <div className="flex items-center gap-1.5">
-                  <span className="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900 group-hover:text-sky-700 transition">
-                    GEETA HOSPITAL
+                  <span className="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900 group-hover:text-sky-700 transition uppercase">
+                    {profile.name || "GEETA HOSPITAL"}
                   </span>
                   <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-sky-100 text-sky-800 tracking-wider">
                     MUNDRA
                   </span>
                 </div>
                 <span className="text-[11px] font-medium text-slate-500 -mt-0.5">
-                  45-Bed Multi-Speciality • Since 2009
+                  {profile.tagline || "45-Bed Multi-Speciality • Since 2009"}
                 </span>
               </div>
             </Link>

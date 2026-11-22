@@ -5,6 +5,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import FloatingActions from "@/components/common/FloatingActions";
 import JsonLd from "@/components/seo/JsonLd";
+import { CmsProvider } from "@/context/CmsContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -93,6 +94,16 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
+  icons: {
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/images/logo.png", type: "image/png" },
+    ],
+    shortcut: ["/favicon.ico"],
+    apple: [
+      { url: "/images/logo.png" },
+    ],
+  },
 };
 
 export default function RootLayout({
@@ -106,10 +117,12 @@ export default function RootLayout({
         <JsonLd pageType="home" />
       </head>
       <body className="min-h-screen flex flex-col bg-slate-50 text-slate-900 antialiased selection:bg-sky-600 selection:text-white">
-        <Header />
-        <main className="flex-grow">{children}</main>
-        <Footer />
-        <FloatingActions />
+        <CmsProvider>
+          <Header />
+          <main className="flex-grow">{children}</main>
+          <Footer />
+          <FloatingActions />
+        </CmsProvider>
       </body>
     </html>
   );

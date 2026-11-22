@@ -22,7 +22,9 @@
       "country": "India",
       "fullAddress": "3, Ambe Nagar, Nr. Gajanand Complex, Gundala Road, Baroi-Mundra, Kutch, Gujarat 370421, India"
     },
-    "googleMapsUrl": "https://maps.google.com/?q=Geeta+Hospital+Mundra"
+    "googleMapsUrl": "https://maps.google.com/?q=Geeta+Hospital+Mundra",
+    "faviconUrl": "/favicon.ico",
+    "heroBannerUrl": "/images/hero-banner-1.jpg"
   },
   "announcements": [
     {

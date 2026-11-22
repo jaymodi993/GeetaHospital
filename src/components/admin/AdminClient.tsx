@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -24,57 +24,147 @@ import {
   Share2,
   Calendar,
   X,
+  Edit2,
+  Upload,
+  ShieldCheck,
+  HelpCircle,
+  Activity,
+  Layers,
+  Briefcase,
+  Clock,
+  ChevronRight,
+  Eye,
+  RefreshCw,
+  Sliders,
 } from "lucide-react";
-import { DOCTORS, Doctor, HOSPITAL_INFO, GALLERY_ITEMS } from "@/data/hospitalData";
+import {
+  DOCTORS,
+  Doctor,
+  HOSPITAL_INFO,
+  GALLERY_ITEMS,
+  SERVICES,
+  ServiceItem,
+  INSURANCE_PARTNERS,
+  InsurancePartner,
+  FAQS,
+} from "@/data/hospitalData";
+import { useCms } from "@/context/CmsContext";
 
 export default function AdminClient() {
+  const { updateLocalCms } = useCms();
+
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [loginForm, setLoginForm] = useState({ username: "admin", password: "admin123" });
   const [loginError, setLoginError] = useState("");
-  const [activeTab, setActiveTab] = useState<"profile" | "announcements" | "doctors" | "gallery" | "seo">("profile");
+  const [activeTab, setActiveTab] = useState<
+    "profile" | "doctors" | "services" | "partners" | "gallery" | "announcements" | "faqs" | "seo"
+  >("profile");
 
   // CMS Content State
   const [hospitalProfile, setHospitalProfile] = useState<any>(HOSPITAL_INFO);
-  const [announcements, setAnnouncements] = useState<any[]>([]);
   const [doctorsList, setDoctorsList] = useState<Doctor[]>(DOCTORS);
+  const [servicesList, setServicesList] = useState<ServiceItem[]>(SERVICES);
+  const [partnersList, setPartnersList] = useState<InsurancePartner[]>(INSURANCE_PARTNERS);
   const [galleryList, setGalleryList] = useState<any[]>(GALLERY_ITEMS);
+  const [announcementsList, setAnnouncementsList] = useState<any[]>([]);
+  const [faqsList, setFaqsList] = useState<any[]>(FAQS);
   const [seoSettings, setSeoSettings] = useState({
     title: "Geeta Multi-Speciality Hospital Mundra | 24x7 Emergency & Critical Care",
     description: "Premier 45-bed multi-speciality hospital in Mundra (Kutch). 24x7 Emergency, Gynecology, Pediatrics, Adult & Neonatal ICU, Orthopedics, Cashless Mediclaim. ISO 9001:2015 & ROHINI registered.",
-    keywords: "Hospital in Mundra, Geeta Hospital Mundra, Emergency hospital Mundra, Gynecologist in Mundra, Pediatrician Mundra, ICU hospital Kutch, Dr Kundan Modi",
+    keywords: "Hospital in Mundra, Geeta Hospital Mundra, Emergency hospital Mundra, Gynecologist in Mundra, Pediatrician Mundra, ICU hospital Kutch, Dr Kundan Modi, Cashless mediclaim hospital Mundra",
   });
 
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [uploadLoading, setUploadLoading] = useState<string | null>(null);
 
-  // New Doctor Form Modal
-  const [isAddDocModalOpen, setIsAddDocModalOpen] = useState(false);
-  const [newDocForm, setNewDocForm] = useState({
+  // File Input References
+  const logoInputRef = useRef<HTMLInputElement>(null);
+  const faviconInputRef = useRef<HTMLInputElement>(null);
+  const heroBannerInputRef = useRef<HTMLInputElement>(null);
+  const doctorPhotoInputRef = useRef<HTMLInputElement>(null);
+  const partnerLogoInputRef = useRef<HTMLInputElement>(null);
+  const galleryImageInputRef = useRef<HTMLInputElement>(null);
+
+  // Search & Filter
+  const [doctorSearch, setDoctorSearch] = useState("");
+  const [serviceSearch, setServiceSearch] = useState("");
+  const [partnerSearch, setPartnerSearch] = useState("");
+
+  // Doctor Modal State
+  const [docModalOpen, setDocModalOpen] = useState(false);
+  const [docModalMode, setDocModalMode] = useState<"add" | "edit">("add");
+  const [docForm, setDocForm] = useState<Doctor>({
+    id: "",
     name: "",
     qualification: "",
     designation: "",
     department: "",
-    type: "full-time" as "full-time" | "visiting",
+    type: "full-time",
     experience: "5+ Years",
     opdSchedule: "Monday to Saturday",
     opdTiming: "10:00 AM - 1:30 PM & 5:00 PM - 8:00 PM",
-    expertise: "Specialist consultation",
+    expertise: ["General Consultation"],
     image: "/images/doctors/dr-kundan-modi.jpg",
+    contactNumber: "+91 78743 81551",
+    bio: "",
   });
 
-  // New Photo Form Modal
-  const [isAddPhotoModalOpen, setIsAddPhotoModalOpen] = useState(false);
-  const [newPhotoForm, setNewPhotoForm] = useState({
+  // Service Modal State
+  const [serviceModalOpen, setServiceModalOpen] = useState(false);
+  const [serviceModalMode, setServiceModalMode] = useState<"add" | "edit">("add");
+  const [serviceForm, setServiceForm] = useState<ServiceItem>({
+    id: "",
+    title: "",
+    category: "Critical Care",
+    description: "",
+    shortDescription: "",
+    iconName: "Stethoscope",
+    features: ["24x7 Medical Supervision"],
+    isEmergency24x7: false,
+  });
+  const [serviceFeaturesInput, setServiceFeaturesInput] = useState("");
+
+  // Partner Modal State
+  const [partnerModalOpen, setPartnerModalOpen] = useState(false);
+  const [partnerModalMode, setPartnerModalMode] = useState<"add" | "edit">("add");
+  const [partnerForm, setPartnerForm] = useState<InsurancePartner>({
+    name: "",
+    type: "Corporate",
+    logoText: "",
+    image: "/images/partners/adani.svg",
+  });
+
+  // Gallery Modal State
+  const [galleryModalOpen, setGalleryModalOpen] = useState(false);
+  const [galleryModalMode, setGalleryModalMode] = useState<"add" | "edit">("add");
+  const [galleryForm, setGalleryForm] = useState({
+    id: "",
     title: "",
     category: "Infrastructure",
     image: "/images/hospital-building.jpg",
+    description: "",
   });
 
-  // New Announcement
-  const [newAnnForm, setNewAnnForm] = useState({
+  // Announcement Modal State
+  const [annModalOpen, setAnnModalOpen] = useState(false);
+  const [annModalMode, setAnnModalMode] = useState<"add" | "edit">("add");
+  const [annForm, setAnnForm] = useState({
+    id: "",
     title: "",
     content: "",
-    category: "General Notice",
+    category: "Emergency",
+    isActive: true,
+    date: new Date().toISOString().split("T")[0],
+  });
+
+  // FAQ Modal State
+  const [faqModalOpen, setFaqModalOpen] = useState(false);
+  const [faqModalMode, setFaqModalMode] = useState<"add" | "edit">("add");
+  const [faqForm, setFaqForm] = useState({
+    index: -1,
+    question: "",
+    answer: "",
   });
 
   // Check login session
@@ -92,20 +182,29 @@ export default function AdminClient() {
   // Fetch CMS data
   const fetchCmsData = async () => {
     try {
-      const res = await fetch("/api/admin/content");
+      const res = await fetch("/api/admin/content", { cache: "no-store" });
       const data = await res.json();
       if (data.success && data.data) {
-        if (data.data.hospitalProfile && Object.keys(data.data.hospitalProfile).length > 0) {
+        if (data.data.hospitalProfile) {
           setHospitalProfile((prev: any) => ({ ...prev, ...data.data.hospitalProfile }));
-        }
-        if (data.data.announcements && data.data.announcements.length > 0) {
-          setAnnouncements(data.data.announcements);
         }
         if (data.data.doctors && data.data.doctors.length > 0) {
           setDoctorsList(data.data.doctors);
         }
+        if (data.data.services && data.data.services.length > 0) {
+          setServicesList(data.data.services);
+        }
+        if (data.data.partners && data.data.partners.length > 0) {
+          setPartnersList(data.data.partners);
+        }
         if (data.data.gallery && data.data.gallery.length > 0) {
           setGalleryList(data.data.gallery);
+        }
+        if (data.data.announcements && Array.isArray(data.data.announcements)) {
+          setAnnouncementsList(data.data.announcements);
+        }
+        if (data.data.faqs && data.data.faqs.length > 0) {
+          setFaqsList(data.data.faqs);
         }
         if (data.data.seoSettings) {
           setSeoSettings(data.data.seoSettings);
@@ -130,7 +229,7 @@ export default function AdminClient() {
       localStorage.setItem("gh_admin_auth", "true");
       setLoginError("");
     } else {
-      setLoginError("Invalid Admin credentials. Try 'admin' and 'admin123'");
+      setLoginError("Invalid Admin credentials. Try username 'admin' and password 'admin123'");
     }
   };
 
@@ -139,17 +238,84 @@ export default function AdminClient() {
     localStorage.removeItem("gh_admin_auth");
   };
 
+  // Generic File Upload Handler
+  const handleFileUpload = async (file: File, type: string): Promise<string | null> => {
+    setUploadLoading(type);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("type", type);
+
+      const res = await fetch("/api/admin/upload", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await res.json();
+      if (data.success && data.url) {
+        return data.url;
+      } else {
+        alert("Upload error: " + (data.error || "Failed to upload file"));
+        return null;
+      }
+    } catch (err: any) {
+      console.error("File upload error:", err);
+      alert("Network error while uploading file: " + err.message);
+      return null;
+    } finally {
+      setUploadLoading(null);
+    }
+  };
+
+  // Direct Upload for Logo
+  const onLogoFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const url = await handleFileUpload(file, "logo");
+    if (url) {
+      const updated = { ...hospitalProfile, logoUrl: url };
+      setHospitalProfile(updated);
+      handleSaveAll({ hospitalProfile: updated });
+    }
+  };
+
+  // Direct Upload for Favicon
+  const onFaviconFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const url = await handleFileUpload(file, "favicon");
+    if (url) {
+      const updated = { ...hospitalProfile, faviconUrl: url };
+      setHospitalProfile(updated);
+      handleSaveAll({ hospitalProfile: updated });
+    }
+  };
+
+  // Direct Upload for Hero Banner
+  const onHeroBannerFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const url = await handleFileUpload(file, "banner");
+    if (url) {
+      const updated = { ...hospitalProfile, heroBannerUrl: url };
+      setHospitalProfile(updated);
+    }
+  };
+
   // Save all CMS changes
-  const handleSaveAll = async () => {
+  const handleSaveAll = async (overridePayload?: any) => {
     setIsSaving(true);
     setSaveSuccess(false);
 
     const payload = {
       hospitalProfile,
-      announcements,
       doctors: doctorsList,
+      services: servicesList,
+      partners: partnersList,
       gallery: galleryList,
+      announcements: announcementsList,
+      faqs: faqsList,
       seoSettings,
+      ...(overridePayload || {}),
     };
 
     try {
@@ -162,37 +328,24 @@ export default function AdminClient() {
       const data = await res.json();
       if (data.success) {
         setSaveSuccess(true);
-        // Also save to localStorage for client-side persistence
-        localStorage.setItem("gh_cms_content", JSON.stringify(payload));
+        updateLocalCms(payload);
         setTimeout(() => setSaveSuccess(false), 4000);
+      } else {
+        alert("Could not save changes: " + (data.error || "Unknown error"));
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error("Error saving CMS:", err);
+      alert("Network error saving changes: " + err.message);
     } finally {
       setIsSaving(false);
     }
   };
 
-  // Add doctor
-  const handleAddDoctor = (e: React.FormEvent) => {
-    e.preventDefault();
-    const newDoc: Doctor = {
+  // ==================== DOCTORS CRUD ====================
+  const openAddDoctorModal = () => {
+    setDocModalMode("add");
+    setDocForm({
       id: `doc-${Date.now()}`,
-      name: newDocForm.name.trim(),
-      qualification: newDocForm.qualification.trim(),
-      designation: newDocForm.designation.trim(),
-      department: newDocForm.department.trim(),
-      type: newDocForm.type,
-      experience: newDocForm.experience.trim(),
-      opdSchedule: newDocForm.opdSchedule.trim(),
-      opdTiming: newDocForm.opdTiming.trim(),
-      expertise: newDocForm.expertise.split(",").map((s) => s.trim()),
-      image: newDocForm.image.trim(),
-    };
-
-    setDoctorsList([newDoc, ...doctorsList]);
-    setIsAddDocModalOpen(false);
-    setNewDocForm({
       name: "",
       qualification: "",
       designation: "",
@@ -201,54 +354,298 @@ export default function AdminClient() {
       experience: "5+ Years",
       opdSchedule: "Monday to Saturday",
       opdTiming: "10:00 AM - 1:30 PM & 5:00 PM - 8:00 PM",
-      expertise: "Specialist consultation",
+      expertise: ["General Consultation"],
       image: "/images/doctors/dr-kundan-modi.jpg",
+      contactNumber: "+91 78743 81551",
+      bio: "",
     });
+    setDocModalOpen(true);
   };
 
-  // Delete doctor
-  const handleDeleteDoctor = (id: string) => {
-    setDoctorsList(doctorsList.filter((d) => d.id !== id));
+  const openEditDoctorModal = (doc: Doctor) => {
+    setDocModalMode("edit");
+    setDocForm({ ...doc });
+    setDocModalOpen(true);
   };
 
-  // Add gallery photo
-  const handleAddPhoto = (e: React.FormEvent) => {
+  const handleSaveDoctor = (e: React.FormEvent) => {
     e.preventDefault();
-    const newPhoto = {
-      id: `photo-${Date.now()}`,
-      title: newPhotoForm.title.trim(),
-      category: newPhotoForm.category,
-      src: newPhotoForm.image.trim(),
+    if (!docForm.name.trim()) return alert("Please enter Doctor Name");
+
+    let updated: Doctor[];
+    if (docModalMode === "add") {
+      const newDoc: Doctor = {
+        ...docForm,
+        id: docForm.id || `doc-${Date.now()}`,
+      };
+      updated = [newDoc, ...doctorsList];
+    } else {
+      updated = doctorsList.map((d) => (d.id === docForm.id ? { ...docForm } : d));
+    }
+    setDoctorsList(updated);
+    setDocModalOpen(false);
+    handleSaveAll({ doctors: updated });
+  };
+
+  const handleDeleteDoctor = (id: string, name: string) => {
+    if (confirm(`Are you sure you want to remove ${name} from doctors roster?`)) {
+      const updated = doctorsList.filter((d) => d.id !== id);
+      setDoctorsList(updated);
+      handleSaveAll({ doctors: updated });
+    }
+  };
+
+  // ==================== SERVICES CRUD ====================
+  const openAddServiceModal = () => {
+    setServiceModalMode("add");
+    setServiceForm({
+      id: `srv-${Date.now()}`,
+      title: "",
+      category: "Critical Care",
+      description: "",
+      shortDescription: "",
+      iconName: "Stethoscope",
+      features: ["24x7 Emergency Supervision"],
+      isEmergency24x7: false,
+    });
+    setServiceFeaturesInput("24x7 Medical Supervision\nSpecialist doctor on duty");
+    setServiceModalOpen(true);
+  };
+
+  const openEditServiceModal = (srv: ServiceItem) => {
+    setServiceModalMode("edit");
+    setServiceForm({ ...srv });
+    setServiceFeaturesInput((srv.features || []).join("\n"));
+    setServiceModalOpen(true);
+  };
+
+  const handleSaveService = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!serviceForm.title.trim()) return alert("Please enter Service Title");
+
+    const features = serviceFeaturesInput
+      .split("\n")
+      .map((s) => s.trim())
+      .filter(Boolean);
+
+    const itemToSave: ServiceItem = {
+      ...serviceForm,
+      features: features.length > 0 ? features : ["24x7 Care"],
+      shortDescription: serviceForm.shortDescription || serviceForm.description.slice(0, 100),
     };
-    setGalleryList([newPhoto, ...galleryList]);
-    setIsAddPhotoModalOpen(false);
-    setNewPhotoForm({ title: "", category: "Infrastructure", image: "/images/hospital-building.jpg" });
+
+    let updated: ServiceItem[];
+    if (serviceModalMode === "add") {
+      updated = [...servicesList, itemToSave];
+    } else {
+      updated = servicesList.map((s) => (s.id === itemToSave.id ? itemToSave : s));
+    }
+
+    setServicesList(updated);
+    setServiceModalOpen(false);
+    handleSaveAll({ services: updated });
   };
 
-  // Delete gallery photo
-  const handleDeletePhoto = (idx: number) => {
-    setGalleryList(galleryList.filter((_, i) => i !== idx));
+  const handleDeleteService = (id: string, title: string) => {
+    if (confirm(`Are you sure you want to remove the service "${title}"?`)) {
+      const updated = servicesList.filter((s) => s.id !== id);
+      setServicesList(updated);
+      handleSaveAll({ services: updated });
+    }
   };
 
-  // Add announcement
-  const handleAddAnnouncement = (e: React.FormEvent) => {
+  // ==================== PARTNERS CRUD ====================
+  const openAddPartnerModal = () => {
+    setPartnerModalMode("add");
+    setPartnerForm({
+      name: "",
+      type: "Corporate",
+      logoText: "",
+      image: "/images/partners/adani.svg",
+    });
+    setPartnerModalOpen(true);
+  };
+
+  const openEditPartnerModal = (partner: InsurancePartner) => {
+    setPartnerModalMode("edit");
+    setPartnerForm({ ...partner });
+    setPartnerModalOpen(true);
+  };
+
+  const handleSavePartner = (e: React.FormEvent) => {
     e.preventDefault();
-    const newAnn = {
+    if (!partnerForm.name.trim()) return alert("Please enter Partner Name");
+
+    let updated: InsurancePartner[];
+    if (partnerModalMode === "add") {
+      updated = [...partnersList, { ...partnerForm }];
+    } else {
+      updated = partnersList.map((p) =>
+        p.name.toLowerCase() === partnerForm.name.toLowerCase() || p === partnerForm
+          ? { ...partnerForm }
+          : p
+      );
+    }
+    setPartnersList(updated);
+    setPartnerModalOpen(false);
+    handleSaveAll({ partners: updated });
+  };
+
+  const handleDeletePartner = (name: string) => {
+    if (confirm(`Are you sure you want to remove tie-up partner "${name}"?`)) {
+      const updated = partnersList.filter((p) => p.name !== name);
+      setPartnersList(updated);
+      handleSaveAll({ partners: updated });
+    }
+  };
+
+  // ==================== GALLERY CRUD ====================
+  const openAddGalleryModal = () => {
+    setGalleryModalMode("add");
+    setGalleryForm({
+      id: `img-${Date.now()}`,
+      title: "",
+      category: "Infrastructure",
+      image: "/images/hospital-building.jpg",
+      description: "",
+    });
+    setGalleryModalOpen(true);
+  };
+
+  const openEditGalleryModal = (item: any) => {
+    setGalleryModalMode("edit");
+    setGalleryForm({ ...item });
+    setGalleryModalOpen(true);
+  };
+
+  const handleSaveGallery = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!galleryForm.title.trim()) return alert("Please enter Photo Title");
+
+    let updated: any[];
+    if (galleryModalMode === "add") {
+      updated = [galleryForm, ...galleryList];
+    } else {
+      updated = galleryList.map((item) => (item.id === galleryForm.id ? { ...galleryForm } : item));
+    }
+    setGalleryList(updated);
+    setGalleryModalOpen(false);
+    handleSaveAll({ gallery: updated });
+  };
+
+  const handleDeleteGallery = (id: string, title: string) => {
+    if (confirm(`Are you sure you want to remove photo "${title}"?`)) {
+      const updated = galleryList.filter((item) => item.id !== id);
+      setGalleryList(updated);
+      handleSaveAll({ gallery: updated });
+    }
+  };
+
+  // ==================== ANNOUNCEMENTS CRUD ====================
+  const openAddAnnouncementModal = () => {
+    setAnnModalMode("add");
+    setAnnForm({
       id: `ann-${Date.now()}`,
-      title: newAnnForm.title.trim(),
-      content: newAnnForm.content.trim(),
-      category: newAnnForm.category,
+      title: "",
+      content: "",
+      category: "Emergency",
       isActive: true,
       date: new Date().toISOString().split("T")[0],
-    };
-    setAnnouncements([newAnn, ...announcements]);
-    setNewAnnForm({ title: "", content: "", category: "General Notice" });
+    });
+    setAnnModalOpen(true);
   };
 
-  // Delete announcement
-  const handleDeleteAnnouncement = (id: string) => {
-    setAnnouncements(announcements.filter((a) => a.id !== id));
+  const openEditAnnouncementModal = (ann: any) => {
+    setAnnModalMode("edit");
+    setAnnForm({ ...ann });
+    setAnnModalOpen(true);
   };
+
+  const handleSaveAnnouncement = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!annForm.title.trim()) return alert("Please enter Announcement Title");
+
+    let updated: any[];
+    if (annModalMode === "add") {
+      updated = [annForm, ...announcementsList];
+    } else {
+      updated = announcementsList.map((a) => (a.id === annForm.id ? { ...annForm } : a));
+    }
+    setAnnouncementsList(updated);
+    setAnnModalOpen(false);
+    handleSaveAll({ announcements: updated });
+  };
+
+  const handleToggleAnnActive = (id: string) => {
+    const updated = announcementsList.map((a) => (a.id === id ? { ...a, isActive: !a.isActive } : a));
+    setAnnouncementsList(updated);
+    handleSaveAll({ announcements: updated });
+  };
+
+  const handleDeleteAnnouncement = (id: string) => {
+    if (confirm("Are you sure you want to delete this notice?")) {
+      const updated = announcementsList.filter((a) => a.id !== id);
+      setAnnouncementsList(updated);
+      handleSaveAll({ announcements: updated });
+    }
+  };
+
+  // ==================== FAQS CRUD ====================
+  const openAddFaqModal = () => {
+    setFaqModalMode("add");
+    setFaqForm({ index: -1, question: "", answer: "" });
+    setFaqModalOpen(true);
+  };
+
+  const openEditFaqModal = (faq: any, index: number) => {
+    setFaqModalMode("edit");
+    setFaqForm({ index, question: faq.question, answer: faq.answer });
+    setFaqModalOpen(true);
+  };
+
+  const handleSaveFaq = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!faqForm.question.trim()) return alert("Please enter Question");
+    if (!faqForm.answer.trim()) return alert("Please enter Answer");
+
+    let updated: any[];
+    if (faqModalMode === "add") {
+      updated = [...faqsList, { question: faqForm.question, answer: faqForm.answer }];
+    } else {
+      updated = faqsList.map((f, idx) =>
+        idx === faqForm.index ? { question: faqForm.question, answer: faqForm.answer } : f
+      );
+    }
+    setFaqsList(updated);
+    setFaqModalOpen(false);
+    handleSaveAll({ faqs: updated });
+  };
+
+  const handleDeleteFaq = (index: number) => {
+    if (confirm("Are you sure you want to delete this FAQ?")) {
+      const updated = faqsList.filter((_, idx) => idx !== index);
+      setFaqsList(updated);
+      handleSaveAll({ faqs: updated });
+    }
+  };
+
+  // Filtered Lists
+  const filteredDoctors = doctorsList.filter(
+    (d) =>
+      d.name.toLowerCase().includes(doctorSearch.toLowerCase()) ||
+      d.department.toLowerCase().includes(doctorSearch.toLowerCase()) ||
+      d.qualification.toLowerCase().includes(doctorSearch.toLowerCase())
+  );
+
+  const filteredServices = servicesList.filter(
+    (s) =>
+      s.title.toLowerCase().includes(serviceSearch.toLowerCase()) ||
+      s.category.toLowerCase().includes(serviceSearch.toLowerCase())
+  );
+
+  const filteredPartners = partnersList.filter((p) =>
+    p.name.toLowerCase().includes(partnerSearch.toLowerCase())
+  );
 
   // -------------------------------------------------------------
   // LOGIN SCREEN
@@ -256,77 +653,71 @@ export default function AdminClient() {
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-sky-950 to-slate-900 flex items-center justify-center p-4">
-        <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden animate-fade-in">
-          <div className="bg-gradient-to-r from-sky-800 to-teal-800 p-8 text-white text-center">
-            <div className="w-16 h-16 mx-auto mb-3 rounded-2xl bg-white p-2 shadow-md flex items-center justify-center">
-              <Image src="/images/logo.png" alt="Geeta Hospital" width={48} height={48} className="object-contain" />
+        <div className="w-full max-w-md bg-white rounded-3xl p-8 sm:p-10 shadow-2xl border border-slate-100">
+          <div className="text-center space-y-3 mb-8">
+            <div className="w-16 h-16 bg-sky-100 text-sky-700 rounded-2xl flex items-center justify-center mx-auto shadow-inner">
+              <Lock className="w-8 h-8" />
             </div>
-            <h2 className="text-xl font-black tracking-tight">GEETA HOSPITAL CMS</h2>
-            <p className="text-sky-100 text-xs mt-1 font-medium">Hospital Content & Website Management System</p>
+            <div>
+              <h1 className="text-2xl font-black text-slate-900">Hospital CMS Admin</h1>
+              <p className="text-xs text-slate-500 mt-1">
+                Geeta Hospital Mundra • Master Content Control
+              </p>
+            </div>
           </div>
 
-          <div className="p-8">
-            {loginError && (
-              <div className="mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-semibold flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 flex-shrink-0" />
-                <span>{loginError}</span>
-              </div>
-            )}
+          {loginError && (
+            <div className="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 shrink-0" />
+              <span>{loginError}</span>
+            </div>
+          )}
 
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                  Admin Username
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={loginForm.username}
-                  onChange={(e) => setLoginForm({ ...loginForm, username: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500 bg-slate-50 font-medium"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                  Admin Password
-                </label>
-                <input
-                  type="password"
-                  required
-                  value={loginForm.password}
-                  onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500 bg-slate-50 font-medium"
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="w-full py-3 rounded-xl bg-gradient-to-r from-sky-600 to-teal-600 hover:from-sky-700 hover:to-teal-700 text-white font-bold text-sm shadow-md transition active:scale-[0.99] flex items-center justify-center gap-2"
-              >
-                <Lock className="w-4 h-4" />
-                <span>Login to Admin Dashboard</span>
-              </button>
-            </form>
-
-            <div className="mt-6 pt-5 border-t border-slate-100 text-center">
-              <button
-                type="button"
-                onClick={() => {
-                  setLoginForm({ username: "admin", password: "admin123" });
-                  setTimeout(() => handleLogin(), 100);
-                }}
-                className="w-full p-2.5 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-800 font-bold text-xs border border-sky-200 transition"
-              >
-                ⚡ 1-Click Demo Login
-              </button>
+          <form onSubmit={handleLogin} className="space-y-5">
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                Admin Username
+              </label>
+              <input
+                type="text"
+                value={loginForm.username}
+                onChange={(e) => setLoginForm({ ...loginForm, username: e.target.value })}
+                className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-sky-500 focus:outline-hidden text-sm"
+                placeholder="admin"
+                required
+              />
             </div>
 
-            <div className="mt-4 text-center">
-              <Link href="/" className="text-xs text-sky-600 hover:underline font-semibold">
-                ← Return to Public Showcase Website
-              </Link>
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                Admin Password
+              </label>
+              <input
+                type="password"
+                value={loginForm.password}
+                onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
+                className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-sky-500 focus:outline-hidden text-sm"
+                placeholder="admin123"
+                required
+              />
             </div>
+
+            <button
+              type="submit"
+              className="w-full py-3.5 rounded-xl bg-sky-700 hover:bg-sky-800 text-white font-bold text-sm shadow-lg shadow-sky-700/20 transition active:scale-98"
+            >
+              Sign In to Admin Panel
+            </button>
+          </form>
+
+          <div className="mt-8 pt-6 border-t border-slate-100 text-center">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-sky-700 transition"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Back to Hospital Website</span>
+            </Link>
           </div>
         </div>
       </div>
@@ -334,703 +725,1319 @@ export default function AdminClient() {
   }
 
   // -------------------------------------------------------------
-  // AUTHENTICATED CMS DASHBOARD
+  // AUTHENTICATED ADMIN DASHBOARD
   // -------------------------------------------------------------
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 pb-20">
-      {/* Top Admin Header */}
-      <div className="bg-gradient-to-r from-slate-900 via-sky-950 to-slate-900 text-white px-4 sm:px-6 lg:px-8 py-3.5 border-b border-slate-800 sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+    <div className="min-h-screen bg-slate-100 text-slate-800 flex flex-col">
+      {/* Top Admin Navbar */}
+      <header className="bg-slate-900 text-white sticky top-0 z-40 border-b border-slate-800 shadow-md">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Link
-              href="/"
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-xs font-semibold transition"
-            >
-              <ArrowLeft className="w-3.5 h-3.5" />
-              <span>Back to Website</span>
-            </Link>
-            <div className="flex items-center gap-2">
-              <span className="font-extrabold text-sm sm:text-base tracking-tight text-white">
-                GEETA HOSPITAL
-              </span>
-              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-400/20 text-amber-300 border border-amber-400/30">
-                ADMIN CMS
+            <div className="relative w-9 h-9 rounded-xl overflow-hidden bg-white p-1">
+              <Image
+                src={hospitalProfile.logoUrl || "/images/logo.png"}
+                alt="Logo"
+                width={36}
+                height={36}
+                className="object-contain"
+              />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="font-black text-sm tracking-wide text-white uppercase">
+                  {hospitalProfile.name || "Geeta Hospital"}
+                </span>
+                <span className="bg-sky-500 text-[10px] font-bold px-2 py-0.5 rounded text-white tracking-widest uppercase">
+                  Admin CMS
+                </span>
+              </div>
+              <span className="text-[11px] text-slate-400 hidden sm:block">
+                Master Website Customizer • Live Sync Active
               </span>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
-            <button
-              onClick={handleSaveAll}
-              disabled={isSaving}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white text-xs font-bold shadow-md transition active:scale-95 disabled:opacity-70"
+            <Link
+              href="/"
+              target="_blank"
+              className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition"
             >
-              <Save className="w-4 h-4" />
-              <span>{isSaving ? "Saving..." : "Save All Changes"}</span>
+              <Eye className="w-3.5 h-3.5" />
+              <span>View Live Website</span>
+            </Link>
+
+            <button
+              onClick={() => handleSaveAll()}
+              disabled={isSaving}
+              className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold shadow-md transition ${
+                saveSuccess
+                  ? "bg-emerald-600 text-white"
+                  : "bg-sky-600 hover:bg-sky-500 text-white active:scale-95"
+              }`}
+            >
+              {isSaving ? (
+                <>
+                  <RefreshCw className="w-4 h-4 animate-spin" />
+                  <span>Saving Changes...</span>
+                </>
+              ) : saveSuccess ? (
+                <>
+                  <CheckCircle2 className="w-4 h-4" />
+                  <span>Changes Saved Live!</span>
+                </>
+              ) : (
+                <>
+                  <Save className="w-4 h-4" />
+                  <span>Save All Changes</span>
+                </>
+              )}
             </button>
 
             <button
               onClick={handleLogout}
-              className="p-2 rounded-xl bg-red-600/80 hover:bg-red-700 text-white text-xs transition"
+              className="p-2 rounded-xl text-slate-400 hover:text-red-400 hover:bg-slate-800 transition"
               title="Logout"
             >
               <LogOut className="w-4 h-4" />
             </button>
           </div>
         </div>
-      </div>
+      </header>
 
-      {/* Save Success Toast */}
-      {saveSuccess && (
-        <div className="bg-emerald-600 text-white px-4 py-2 text-xs font-bold text-center flex items-center justify-center gap-2 animate-fade-in">
-          <CheckCircle2 className="w-4 h-4" />
-          <span>All hospital content, logo, photos, and settings have been saved successfully!</span>
-        </div>
-      )}
+      {/* Main Admin Workspace */}
+      <div className="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 flex flex-col lg:flex-row gap-6">
+        {/* Navigation Sidebar Tabs */}
+        <aside className="lg:w-64 shrink-0 bg-white rounded-2xl p-3 border border-slate-200 shadow-xs h-fit space-y-1">
+          <div className="px-3 py-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+            Website Modules
+          </div>
 
-      {/* Navigation Tabs Bar */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-        <div className="flex items-center gap-2 border-b border-slate-200 pb-3 overflow-x-auto">
           <button
             onClick={() => setActiveTab("profile")}
-            className={`px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 whitespace-nowrap ${
+            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition ${
               activeTab === "profile"
                 ? "bg-sky-600 text-white shadow-sm"
-                : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200"
+                : "text-slate-700 hover:bg-slate-50"
             }`}
           >
-            <Building2 className="w-4 h-4" />
-            <span>Hospital Profile & Logo</span>
+            <div className="flex items-center gap-2.5">
+              <Building2 className="w-4 h-4" />
+              <span>Logo &amp; Hospital Info</span>
+            </div>
+            {hospitalProfile.logoUrl && <CheckCircle2 className="w-3.5 h-3.5 opacity-60" />}
           </button>
 
           <button
             onClick={() => setActiveTab("doctors")}
-            className={`px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 whitespace-nowrap ${
+            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition ${
               activeTab === "doctors"
                 ? "bg-sky-600 text-white shadow-sm"
-                : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200"
+                : "text-slate-700 hover:bg-slate-50"
             }`}
           >
-            <Stethoscope className="w-4 h-4" />
-            <span>Doctors Directory ({doctorsList.length})</span>
+            <div className="flex items-center gap-2.5">
+              <Stethoscope className="w-4 h-4" />
+              <span>Doctors Roster</span>
+            </div>
+            <span className="text-[10px] bg-slate-100 text-slate-700 px-2 py-0.5 rounded-full font-bold">
+              {doctorsList.length}
+            </span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab("services")}
+            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition ${
+              activeTab === "services"
+                ? "bg-sky-600 text-white shadow-sm"
+                : "text-slate-700 hover:bg-slate-50"
+            }`}
+          >
+            <div className="flex items-center gap-2.5">
+              <Layers className="w-4 h-4" />
+              <span>Services &amp; Depts</span>
+            </div>
+            <span className="text-[10px] bg-slate-100 text-slate-700 px-2 py-0.5 rounded-full font-bold">
+              {servicesList.length}
+            </span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab("partners")}
+            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition ${
+              activeTab === "partners"
+                ? "bg-sky-600 text-white shadow-sm"
+                : "text-slate-700 hover:bg-slate-50"
+            }`}
+          >
+            <div className="flex items-center gap-2.5">
+              <Briefcase className="w-4 h-4" />
+              <span>Cashless Partners</span>
+            </div>
+            <span className="text-[10px] bg-slate-100 text-slate-700 px-2 py-0.5 rounded-full font-bold">
+              {partnersList.length}
+            </span>
           </button>
 
           <button
             onClick={() => setActiveTab("gallery")}
-            className={`px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 whitespace-nowrap ${
+            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition ${
               activeTab === "gallery"
                 ? "bg-sky-600 text-white shadow-sm"
-                : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200"
+                : "text-slate-700 hover:bg-slate-50"
             }`}
           >
-            <ImageIcon className="w-4 h-4" />
-            <span>Photo Gallery ({galleryList.length})</span>
+            <div className="flex items-center gap-2.5">
+              <ImageIcon className="w-4 h-4" />
+              <span>Photo Gallery</span>
+            </div>
+            <span className="text-[10px] bg-slate-100 text-slate-700 px-2 py-0.5 rounded-full font-bold">
+              {galleryList.length}
+            </span>
           </button>
 
           <button
             onClick={() => setActiveTab("announcements")}
-            className={`px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 whitespace-nowrap ${
+            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition ${
               activeTab === "announcements"
                 ? "bg-sky-600 text-white shadow-sm"
-                : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200"
+                : "text-slate-700 hover:bg-slate-50"
             }`}
           >
-            <Sparkles className="w-4 h-4" />
-            <span>Announcements & Camps ({announcements.length})</span>
+            <div className="flex items-center gap-2.5">
+              <AlertCircle className="w-4 h-4" />
+              <span>Notice &amp; Camps</span>
+            </div>
+            <span className="text-[10px] bg-slate-100 text-slate-700 px-2 py-0.5 rounded-full font-bold">
+              {announcementsList.length}
+            </span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab("faqs")}
+            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition ${
+              activeTab === "faqs"
+                ? "bg-sky-600 text-white shadow-sm"
+                : "text-slate-700 hover:bg-slate-50"
+            }`}
+          >
+            <div className="flex items-center gap-2.5">
+              <HelpCircle className="w-4 h-4" />
+              <span>FAQs Editor</span>
+            </div>
+            <span className="text-[10px] bg-slate-100 text-slate-700 px-2 py-0.5 rounded-full font-bold">
+              {faqsList.length}
+            </span>
           </button>
 
           <button
             onClick={() => setActiveTab("seo")}
-            className={`px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 whitespace-nowrap ${
+            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition ${
               activeTab === "seo"
                 ? "bg-sky-600 text-white shadow-sm"
-                : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200"
+                : "text-slate-700 hover:bg-slate-50"
             }`}
           >
-            <Globe className="w-4 h-4" />
-            <span>SEO & Meta Tags</span>
+            <div className="flex items-center gap-2.5">
+              <Globe className="w-4 h-4" />
+              <span>SEO &amp; Meta Tags</span>
+            </div>
           </button>
-        </div>
 
-        {/* ----------------------------------------------------------- */}
-        {/* TAB 1: HOSPITAL PROFILE & LOGO */}
-        {/* ----------------------------------------------------------- */}
-        {activeTab === "profile" && (
-          <div className="mt-6 space-y-6 animate-fade-in">
-            <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-xs space-y-5">
-              <div>
-                <h3 className="text-base font-bold text-slate-900">Hospital Branding, Identity & Logo</h3>
-                <p className="text-xs text-slate-500">
-                  Update the hospital name, logo URL, bed capacity, and contact numbers.
+          <div className="pt-4 border-t border-slate-100">
+            <button
+              onClick={() => handleSaveAll()}
+              className="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm transition"
+            >
+              <Save className="w-3.5 h-3.5" />
+              <span>Save Website</span>
+            </button>
+          </div>
+        </aside>
+
+        {/* Tab Content Body */}
+        <main className="flex-grow bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-xs min-h-[600px]">
+          {/* ======================================================== */}
+          {/* 1. BRANDING & HOSPITAL INFO TAB */}
+          {/* ======================================================== */}
+          {activeTab === "profile" && (
+            <div className="space-y-8">
+              <div className="border-b border-slate-200 pb-4">
+                <h2 className="text-xl font-black text-slate-900">Hospital Branding &amp; Profile</h2>
+                <p className="text-xs text-slate-500 mt-1">
+                  Upload your hospital logo, favicon, campus banner, and update general contact info.
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Direct File Uploads Row */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-5 rounded-2xl bg-slate-50 border border-slate-200/80">
+                {/* Logo Upload Card */}
+                <div className="space-y-3">
+                  <span className="text-xs font-bold uppercase tracking-wider text-slate-700 block">
+                    1. Main Logo
+                  </span>
+                  <div className="relative w-full h-28 rounded-xl border border-slate-300 bg-white flex items-center justify-center p-3 overflow-hidden shadow-xs">
+                    <Image
+                      src={hospitalProfile.logoUrl || "/images/logo.png"}
+                      alt="Logo Preview"
+                      width={120}
+                      height={70}
+                      className="object-contain max-h-24"
+                    />
+                  </div>
+                  <input
+                    type="file"
+                    ref={logoInputRef}
+                    onChange={onLogoFileChange}
+                    accept="image/*"
+                    className="hidden"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => logoInputRef.current?.click()}
+                    disabled={uploadLoading === "logo"}
+                    className="w-full py-2 px-3 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 transition"
+                  >
+                    <Upload className="w-3.5 h-3.5" />
+                    <span>{uploadLoading === "logo" ? "Uploading..." : "Upload / Replace Logo"}</span>
+                  </button>
+                  <p className="text-[10px] text-slate-500 text-center">PNG, SVG or JPG (Recommended: Transparent)</p>
+                </div>
+
+                {/* Favicon Upload Card */}
+                <div className="space-y-3">
+                  <span className="text-xs font-bold uppercase tracking-wider text-slate-700 block">
+                    2. Browser Favicon
+                  </span>
+                  <div className="relative w-full h-28 rounded-xl border border-slate-300 bg-white flex flex-col items-center justify-center p-3 overflow-hidden shadow-xs">
+                    <div className="w-12 h-12 rounded-lg border border-slate-200 bg-slate-50 p-2 flex items-center justify-center">
+                      <Image
+                        src={hospitalProfile.faviconUrl || "/favicon.ico"}
+                        alt="Favicon Preview"
+                        width={32}
+                        height={32}
+                        className="object-contain"
+                      />
+                    </div>
+                    <span className="text-[10px] text-slate-500 mt-2 font-mono">
+                      {hospitalProfile.faviconUrl || "/favicon.ico"}
+                    </span>
+                  </div>
+                  <input
+                    type="file"
+                    ref={faviconInputRef}
+                    onChange={onFaviconFileChange}
+                    accept=".ico,image/x-icon,image/png,image/svg+xml"
+                    className="hidden"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => faviconInputRef.current?.click()}
+                    disabled={uploadLoading === "favicon"}
+                    className="w-full py-2 px-3 rounded-xl bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold flex items-center justify-center gap-1.5 transition"
+                  >
+                    <Upload className="w-3.5 h-3.5" />
+                    <span>{uploadLoading === "favicon" ? "Uploading..." : "Upload / Replace Favicon"}</span>
+                  </button>
+                  <p className="text-[10px] text-slate-500 text-center">.ico, .png, or .svg (16x16 or 32x32)</p>
+                </div>
+
+                {/* Hero Banner Upload Card */}
+                <div className="space-y-3">
+                  <span className="text-xs font-bold uppercase tracking-wider text-slate-700 block">
+                    3. Campus / Hero Photo
+                  </span>
+                  <div className="relative w-full h-28 rounded-xl border border-slate-300 bg-slate-900 overflow-hidden shadow-xs">
+                    <Image
+                      src={hospitalProfile.heroBannerUrl || "/images/hospital-building.jpg"}
+                      alt="Banner Preview"
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                  <input
+                    type="file"
+                    ref={heroBannerInputRef}
+                    onChange={onHeroBannerFileChange}
+                    accept="image/*"
+                    className="hidden"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => heroBannerInputRef.current?.click()}
+                    disabled={uploadLoading === "banner"}
+                    className="w-full py-2 px-3 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 transition"
+                  >
+                    <Upload className="w-3.5 h-3.5" />
+                    <span>{uploadLoading === "banner" ? "Uploading..." : "Upload Campus Photo"}</span>
+                  </button>
+                  <p className="text-[10px] text-slate-500 text-center">High resolution hospital building/hero image</p>
+                </div>
+              </div>
+
+              {/* General Hospital Information */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Hospital Display Name *</label>
+                  <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                    Hospital Brand Name
+                  </label>
                   <input
                     type="text"
                     value={hospitalProfile.name || ""}
                     onChange={(e) => setHospitalProfile({ ...hospitalProfile, name: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500 bg-slate-50 font-semibold"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-sky-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Legal Registered Name</label>
+                  <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                    Legal / Registered Name
+                  </label>
                   <input
                     type="text"
                     value={hospitalProfile.legalName || ""}
                     onChange={(e) => setHospitalProfile({ ...hospitalProfile, legalName: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500 bg-slate-50"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-sky-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Logo URL / Image Path *</label>
-                  <input
-                    type="text"
-                    value={hospitalProfile.logoUrl || "/images/logo.png"}
-                    onChange={(e) => setHospitalProfile({ ...hospitalProfile, logoUrl: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500 bg-slate-50 font-mono text-xs"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Bed Capacity & Experience</label>
-                  <div className="grid grid-cols-2 gap-2">
-                    <input
-                      type="text"
-                      placeholder="e.g. 45 Beds"
-                      value={hospitalProfile.bedCapacity || "45 Beds"}
-                      onChange={(e) => setHospitalProfile({ ...hospitalProfile, bedCapacity: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500 bg-slate-50 font-medium"
-                    />
-                    <input
-                      type="text"
-                      placeholder="e.g. 15+ Years"
-                      value={hospitalProfile.yearsOfExcellence || "15+"}
-                      onChange={(e) => setHospitalProfile({ ...hospitalProfile, yearsOfExcellence: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500 bg-slate-50 font-medium"
-                    />
-                  </div>
-                </div>
-
-                <div className="md:col-span-2">
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Tagline</label>
+                  <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                    Tagline / Subheading
+                  </label>
                   <input
                     type="text"
                     value={hospitalProfile.tagline || ""}
                     onChange={(e) => setHospitalProfile({ ...hospitalProfile, tagline: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500 bg-slate-50"
-                  />
-                </div>
-
-                <div className="md:col-span-2">
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Hospital Showcase Description</label>
-                  <textarea
-                    rows={3}
-                    value={hospitalProfile.description || ""}
-                    onChange={(e) => setHospitalProfile({ ...hospitalProfile, description: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500 bg-slate-50"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Contact & Location Settings */}
-            <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-xs space-y-4">
-              <h3 className="text-base font-bold text-slate-900">Hospital Contact & Emergency Lines</h3>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">24x7 Emergency Phone *</label>
-                  <input
-                    type="text"
-                    value={hospitalProfile.phone || ""}
-                    onChange={(e) => setHospitalProfile({ ...hospitalProfile, phone: e.target.value, emergencyPhone: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500 bg-slate-50 font-semibold text-red-600"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-sky-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Official WhatsApp Number *</label>
+                  <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                    Bed Capacity Highlight
+                  </label>
                   <input
                     type="text"
-                    value={hospitalProfile.whatsappNumber || ""}
-                    onChange={(e) => setHospitalProfile({ ...hospitalProfile, whatsappNumber: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500 bg-slate-50 font-semibold text-emerald-600"
+                    value={hospitalProfile.bedCapacity || ""}
+                    onChange={(e) => setHospitalProfile({ ...hospitalProfile, bedCapacity: e.target.value })}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-sky-500"
+                    placeholder="45 Beds"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Official Email Address</label>
-                  <input
-                    type="email"
-                    value={hospitalProfile.email || ""}
-                    onChange={(e) => setHospitalProfile({ ...hospitalProfile, email: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500 bg-slate-50"
-                  />
-                </div>
-
-                <div className="md:col-span-2">
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Physical Address</label>
+                  <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                    Built-up Area
+                  </label>
                   <input
                     type="text"
-                    value={hospitalProfile.address?.fullAddress || "3, Ambe Nagar, Gundala Road, Baroi-Mundra, Kutch"}
-                    onChange={(e) =>
-                      setHospitalProfile({
-                        ...hospitalProfile,
-                        address: { ...hospitalProfile.address, fullAddress: e.target.value },
-                      })
-                    }
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500 bg-slate-50"
+                    value={hospitalProfile.builtUpArea || ""}
+                    onChange={(e) => setHospitalProfile({ ...hospitalProfile, builtUpArea: e.target.value })}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-sky-500"
+                    placeholder="9,500+ Sq. Ft."
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Google Maps Link</label>
+                  <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                    Years of Excellence
+                  </label>
                   <input
                     type="text"
-                    value={hospitalProfile.googleMapsUrl || "https://maps.google.com/?q=Geeta+Hospital+Mundra"}
-                    onChange={(e) => setHospitalProfile({ ...hospitalProfile, googleMapsUrl: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500 bg-slate-50 text-xs font-mono"
+                    value={hospitalProfile.yearsOfExcellence || ""}
+                    onChange={(e) => setHospitalProfile({ ...hospitalProfile, yearsOfExcellence: e.target.value })}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-sky-500"
+                    placeholder="15+"
                   />
                 </div>
               </div>
-            </div>
-          </div>
-        )}
 
-        {/* ----------------------------------------------------------- */}
-        {/* TAB 2: DOCTORS DIRECTORY */}
-        {/* ----------------------------------------------------------- */}
-        {activeTab === "doctors" && (
-          <div className="mt-6 space-y-6 animate-fade-in">
-            <div className="flex items-center justify-between flex-wrap gap-4">
-              <div>
-                <h3 className="text-base font-bold text-slate-900">Hospital Doctors & Visiting Specialists</h3>
-                <p className="text-xs text-slate-500">Manage names, qualifications, photos, and OPD timetables.</p>
-              </div>
-
-              <button
-                onClick={() => setIsAddDocModalOpen(true)}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs shadow-xs transition"
-              >
-                <PlusCircle className="w-4 h-4" />
-                <span>+ Add New Doctor</span>
-              </button>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {doctorsList.map((doc) => (
-                <div
-                  key={doc.id}
-                  className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs flex flex-col justify-between space-y-4 relative group"
-                >
-                  <div className="flex items-start gap-3.5">
-                    <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-slate-100 flex-shrink-0 border border-slate-200">
-                      {doc.image ? (
-                        <Image src={doc.image} alt={doc.name} fill className="object-cover object-top" />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center bg-sky-100 text-sky-700 font-bold text-xl">
-                          {doc.name[0]}
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="flex-1">
-                      <span
-                        className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                          doc.type === "full-time" ? "bg-emerald-100 text-emerald-800" : "bg-sky-100 text-sky-800"
-                        }`}
-                      >
-                        {doc.type === "full-time" ? "Resident Doctor" : "Visiting Specialist"}
-                      </span>
-                      <h4 className="text-base font-bold text-slate-900 mt-1">{doc.name}</h4>
-                      <p className="text-xs text-sky-800 font-medium">{doc.qualification}</p>
-                      <p className="text-xs text-slate-500">{doc.department}</p>
-                    </div>
-                  </div>
-
-                  <div className="p-3 rounded-xl bg-slate-50 border border-slate-100 text-xs text-slate-600 space-y-0.5">
-                    <p className="font-semibold text-slate-800">Schedule: {doc.opdSchedule}</p>
-                    <p className="text-[11px] text-slate-500">{doc.opdTiming}</p>
-                  </div>
-
-                  <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
-                    <span className="text-slate-400 font-mono text-[11px]">{doc.experience} Exp</span>
-                    <button
-                      onClick={() => handleDeleteDoctor(doc.id)}
-                      className="p-1.5 rounded-lg text-red-600 hover:bg-red-50 transition"
-                      title="Delete doctor"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* ----------------------------------------------------------- */}
-        {/* TAB 3: PHOTO GALLERY */}
-        {/* ----------------------------------------------------------- */}
-        {activeTab === "gallery" && (
-          <div className="mt-6 space-y-6 animate-fade-in">
-            <div className="flex items-center justify-between flex-wrap gap-4">
-              <div>
-                <h3 className="text-base font-bold text-slate-900">Hospital Photo Gallery CMS</h3>
-                <p className="text-xs text-slate-500">Showcase operation theatres, camps, ICU, and facilities.</p>
-              </div>
-
-              <button
-                onClick={() => setIsAddPhotoModalOpen(true)}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs shadow-xs transition"
-              >
-                <PlusCircle className="w-4 h-4" />
-                <span>+ Add Photo to Gallery</span>
-              </button>
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-              {galleryList.map((item, idx) => (
-                <div key={idx} className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs group">
-                  <div className="relative h-44 w-full bg-slate-100">
-                    <Image src={item.src} alt={item.title} fill className="object-cover group-hover:scale-105 transition duration-300" />
-                    <button
-                      onClick={() => handleDeletePhoto(idx)}
-                      className="absolute top-2 right-2 p-1.5 rounded-lg bg-red-600 text-white opacity-0 group-hover:opacity-100 transition shadow-md"
-                      title="Remove from gallery"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
-                    <span className="absolute bottom-2 left-2 px-2 py-0.5 rounded text-[10px] font-bold bg-slate-900/80 text-white backdrop-blur-xs">
-                      {item.category}
-                    </span>
-                  </div>
-                  <div className="p-3">
-                    <p className="text-xs font-bold text-slate-800 truncate">{item.title}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* ----------------------------------------------------------- */}
-        {/* TAB 4: ANNOUNCEMENTS & HEALTH CAMPS */}
-        {/* ----------------------------------------------------------- */}
-        {activeTab === "announcements" && (
-          <div className="mt-6 space-y-6 animate-fade-in">
-            {/* Create Announcement */}
-            <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-xs space-y-4">
-              <h3 className="text-sm font-bold text-slate-900">Post New Medical Camp or Hospital Notice</h3>
-              <form onSubmit={handleAddAnnouncement} className="space-y-3">
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <div className="sm:col-span-2">
-                    <label className="block text-xs font-bold text-slate-700 mb-1">Notice Title *</label>
+              {/* Contact Numbers */}
+              <div className="pt-4 border-t border-slate-200">
+                <h3 className="text-sm font-bold text-slate-900 mb-3">Helplines &amp; Digital Numbers</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                      Main Phone Number
+                    </label>
                     <input
                       type="text"
-                      required
-                      placeholder="e.g. Free Mega Gynecology & Sonography Camp"
-                      value={newAnnForm.title}
-                      onChange={(e) => setNewAnnForm({ ...newAnnForm, title: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-sky-500 bg-slate-50"
+                      value={hospitalProfile.phone || ""}
+                      onChange={(e) => setHospitalProfile({ ...hospitalProfile, phone: e.target.value })}
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-sky-500"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1">Category</label>
-                    <select
-                      value={newAnnForm.category}
-                      onChange={(e) => setNewAnnForm({ ...newAnnForm, category: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-sky-500 bg-slate-50"
-                    >
-                      <option value="General Notice">General Notice</option>
-                      <option value="Camp">Health Camp</option>
-                      <option value="Emergency">Emergency Update</option>
-                      <option value="TPA / Cashless">TPA / Cashless Mediclaim</option>
-                    </select>
+                    <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                      24x7 Emergency Hotline
+                    </label>
+                    <input
+                      type="text"
+                      value={hospitalProfile.emergencyPhone || ""}
+                      onChange={(e) => setHospitalProfile({ ...hospitalProfile, emergencyPhone: e.target.value })}
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-sky-500"
+                    />
                   </div>
-                </div>
 
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Announcement Details *</label>
-                  <textarea
-                    rows={2}
-                    required
-                    placeholder="Details about date, timing, participating doctors, or emergency service..."
-                    value={newAnnForm.content}
-                    onChange={(e) => setNewAnnForm({ ...newAnnForm, content: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-sky-500 bg-slate-50"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  className="px-5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs shadow-xs transition"
-                >
-                  Publish Announcement
-                </button>
-              </form>
-            </div>
-
-            {/* List Announcements */}
-            <div className="space-y-3">
-              <h4 className="text-sm font-bold text-slate-800">Active Hospital Notices ({announcements.length})</h4>
-              {announcements.map((ann) => (
-                <div
-                  key={ann.id}
-                  className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex items-start justify-between gap-4"
-                >
                   <div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-bold text-slate-900">{ann.title}</span>
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-sky-100 text-sky-800">
-                        {ann.category}
-                      </span>
-                      <span className="text-[10px] text-slate-400">{ann.date}</span>
-                    </div>
-                    <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">{ann.content}</p>
+                    <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                      WhatsApp Inquiry Number
+                    </label>
+                    <input
+                      type="text"
+                      value={hospitalProfile.whatsappNumber || ""}
+                      onChange={(e) => setHospitalProfile({ ...hospitalProfile, whatsappNumber: e.target.value })}
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-sky-500"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Address & Email */}
+              <div className="pt-4 border-t border-slate-200">
+                <h3 className="text-sm font-bold text-slate-900 mb-3">Location &amp; Email</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                      Hospital Official Email
+                    </label>
+                    <input
+                      type="email"
+                      value={hospitalProfile.email || ""}
+                      onChange={(e) => setHospitalProfile({ ...hospitalProfile, email: e.target.value })}
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-sky-500"
+                    />
                   </div>
 
-                  <button
-                    onClick={() => handleDeleteAnnouncement(ann.id)}
-                    className="p-2 rounded-xl text-red-600 hover:bg-red-50 transition"
-                    title="Delete notice"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+                  <div>
+                    <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                      Google Maps Link / URL
+                    </label>
+                    <input
+                      type="text"
+                      value={hospitalProfile.googleMapsUrl || ""}
+                      onChange={(e) => setHospitalProfile({ ...hospitalProfile, googleMapsUrl: e.target.value })}
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-sky-500"
+                    />
+                  </div>
 
-        {/* ----------------------------------------------------------- */}
-        {/* TAB 5: SEO & META SETTINGS */}
-        {/* ----------------------------------------------------------- */}
-        {activeTab === "seo" && (
-          <div className="mt-6 space-y-6 animate-fade-in">
-            <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-xs space-y-5">
-              <div>
-                <h3 className="text-base font-bold text-slate-900">Hospital Showcase Search Engine Optimization (SEO)</h3>
-                <p className="text-xs text-slate-500">
-                  Configure high-ranking meta title, description, and local search keywords for Google, Bing, and WhatsApp previews.
+                  <div className="sm:col-span-2">
+                    <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                      Full Address
+                    </label>
+                    <input
+                      type="text"
+                      value={hospitalProfile.address?.fullAddress || ""}
+                      onChange={(e) =>
+                        setHospitalProfile({
+                          ...hospitalProfile,
+                          address: { ...hospitalProfile.address, fullAddress: e.target.value },
+                        })
+                      }
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-sky-500"
+                    />
+                  </div>
+
+                  <div className="sm:col-span-2">
+                    <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                      Hospital Description (About Us)
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={hospitalProfile.description || ""}
+                      onChange={(e) => setHospitalProfile({ ...hospitalProfile, description: e.target.value })}
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-sky-500"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-4 flex justify-end">
+                <button
+                  type="button"
+                  onClick={() => handleSaveAll()}
+                  className="px-6 py-2.5 rounded-xl bg-sky-700 hover:bg-sky-800 text-white font-bold text-xs sm:text-sm shadow-md transition"
+                >
+                  Save Profile Changes
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* ======================================================== */}
+          {/* 2. DOCTORS ROSTER (FULL CRUD) */}
+          {/* ======================================================== */}
+          {activeTab === "doctors" && (
+            <div className="space-y-6">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
+                <div>
+                  <h2 className="text-xl font-black text-slate-900">Doctors &amp; Specialists Roster</h2>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Manage full-time consultants and visiting super-specialist doctors.
+                  </p>
+                </div>
+                <button
+                  onClick={openAddDoctorModal}
+                  className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-md transition"
+                >
+                  <PlusCircle className="w-4 h-4" />
+                  <span>Add New Doctor</span>
+                </button>
+              </div>
+
+              {/* Search Bar */}
+              <div className="relative">
+                <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+                <input
+                  type="text"
+                  placeholder="Search doctors by name, department, or qualification..."
+                  value={doctorSearch}
+                  onChange={(e) => setDoctorSearch(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 text-xs sm:text-sm focus:ring-2 focus:ring-sky-500 focus:bg-white"
+                />
+              </div>
+
+              {/* Doctors Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {filteredDoctors.map((doc) => (
+                  <div
+                    key={doc.id}
+                    className="p-4 rounded-2xl border border-slate-200 bg-white hover:border-sky-300 hover:shadow-md transition flex flex-col justify-between"
+                  >
+                    <div className="flex items-start gap-4">
+                      <div className="relative w-16 h-20 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 shrink-0">
+                        <Image src={doc.image} alt={doc.name} fill className="object-cover" />
+                      </div>
+                      <div className="space-y-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <h4 className="font-extrabold text-sm text-slate-900 truncate">{doc.name}</h4>
+                          <span
+                            className={`text-[9px] font-bold px-2 py-0.5 rounded uppercase ${
+                              doc.type === "full-time"
+                                ? "bg-emerald-100 text-emerald-800"
+                                : "bg-sky-100 text-sky-800"
+                            }`}
+                          >
+                            {doc.type}
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-500 font-medium truncate">{doc.qualification}</p>
+                        <p className="text-xs font-bold text-sky-700">{doc.department}</p>
+                        <p className="text-[11px] text-slate-600 flex items-center gap-1">
+                          <Clock className="w-3 h-3 text-slate-400 shrink-0" />
+                          <span>{doc.opdTiming}</span>
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+                      <span className="text-[11px] text-slate-500 font-medium">
+                        Schedule: {doc.opdSchedule}
+                      </span>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => openEditDoctorModal(doc)}
+                          className="px-3 py-1.5 rounded-lg bg-sky-50 hover:bg-sky-100 text-sky-700 font-bold flex items-center gap-1 transition"
+                        >
+                          <Edit2 className="w-3.5 h-3.5" />
+                          <span>Edit</span>
+                        </button>
+                        <button
+                          onClick={() => handleDeleteDoctor(doc.id, doc.name)}
+                          className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition"
+                          title="Delete Doctor"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ======================================================== */}
+          {/* 3. SERVICES & DEPARTMENTS (FULL CRUD) */}
+          {/* ======================================================== */}
+          {activeTab === "services" && (
+            <div className="space-y-6">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
+                <div>
+                  <h2 className="text-xl font-black text-slate-900">Services &amp; Medical Facilities</h2>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Add and customize hospital wings, clinical services, and departments.
+                  </p>
+                </div>
+                <button
+                  onClick={openAddServiceModal}
+                  className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-md transition"
+                >
+                  <PlusCircle className="w-4 h-4" />
+                  <span>Add New Service</span>
+                </button>
+              </div>
+
+              {/* Search Bar */}
+              <div className="relative">
+                <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+                <input
+                  type="text"
+                  placeholder="Search services by title or category..."
+                  value={serviceSearch}
+                  onChange={(e) => setServiceSearch(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 text-xs sm:text-sm focus:ring-2 focus:ring-sky-500 focus:bg-white"
+                />
+              </div>
+
+              {/* Services List */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {filteredServices.map((srv) => (
+                  <div
+                    key={srv.id}
+                    className="p-4 rounded-2xl border border-slate-200 bg-white hover:border-sky-300 hover:shadow-md transition flex flex-col justify-between"
+                  >
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 bg-slate-100 px-2 py-0.5 rounded">
+                          {srv.category}
+                        </span>
+                        {srv.isEmergency24x7 && (
+                          <span className="text-[9px] font-bold uppercase text-red-600 bg-red-50 border border-red-200 px-2 py-0.5 rounded">
+                            24x7 Emergency
+                          </span>
+                        )}
+                      </div>
+                      <h4 className="font-extrabold text-sm text-slate-900">{srv.title}</h4>
+                      <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
+                        {srv.shortDescription || srv.description}
+                      </p>
+                    </div>
+
+                    <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+                      <span className="text-[11px] text-slate-400">
+                        {srv.features?.length || 0} Key Highlights
+                      </span>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => openEditServiceModal(srv)}
+                          className="px-3 py-1.5 rounded-lg bg-sky-50 hover:bg-sky-100 text-sky-700 font-bold flex items-center gap-1 transition"
+                        >
+                          <Edit2 className="w-3.5 h-3.5" />
+                          <span>Edit</span>
+                        </button>
+                        <button
+                          onClick={() => handleDeleteService(srv.id, srv.title)}
+                          className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition"
+                          title="Delete Service"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ======================================================== */}
+          {/* 4. CORPORATE & INSURANCE PARTNERS (FULL CRUD) */}
+          {/* ======================================================== */}
+          {activeTab === "partners" && (
+            <div className="space-y-6">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
+                <div>
+                  <h2 className="text-xl font-black text-slate-900">Cashless &amp; Corporate Partners</h2>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Manage industrial group cashless tie-ups and health insurance TPAs.
+                  </p>
+                </div>
+                <button
+                  onClick={openAddPartnerModal}
+                  className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-md transition"
+                >
+                  <PlusCircle className="w-4 h-4" />
+                  <span>Add New Partner</span>
+                </button>
+              </div>
+
+              {/* Search Bar */}
+              <div className="relative">
+                <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+                <input
+                  type="text"
+                  placeholder="Search corporate or insurance partners..."
+                  value={partnerSearch}
+                  onChange={(e) => setPartnerSearch(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 text-xs sm:text-sm focus:ring-2 focus:ring-sky-500 focus:bg-white"
+                />
+              </div>
+
+              {/* Partners Grid */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                {filteredPartners.map((partner, idx) => (
+                  <div
+                    key={idx}
+                    className="p-3.5 rounded-2xl border border-slate-200 bg-white hover:border-sky-300 hover:shadow-md transition flex flex-col justify-between items-center text-center group"
+                  >
+                    <div className="w-full flex items-center justify-between mb-2">
+                      <span
+                        className={`text-[9px] font-bold px-2 py-0.5 rounded uppercase ${
+                          partner.type === "Corporate"
+                            ? "bg-indigo-50 text-indigo-700"
+                            : "bg-emerald-50 text-emerald-700"
+                        }`}
+                      >
+                        {partner.type === "Corporate" ? "Corporate" : "TPA"}
+                      </span>
+                      <button
+                        onClick={() => handleDeletePartner(partner.name)}
+                        className="text-slate-300 hover:text-red-500 p-0.5 transition"
+                        title="Delete"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+
+                    <div className="relative w-full h-16 flex items-center justify-center p-1 rounded-xl bg-slate-50 group-hover:bg-sky-50/50 transition">
+                      <Image
+                        src={partner.image}
+                        alt={partner.name}
+                        fill
+                        className="object-contain p-1"
+                      />
+                    </div>
+
+                    <span className="mt-2 text-xs font-bold text-slate-800 line-clamp-1">
+                      {partner.name}
+                    </span>
+
+                    <button
+                      onClick={() => openEditPartnerModal(partner)}
+                      className="mt-3 w-full py-1.5 rounded-lg bg-slate-50 hover:bg-sky-50 text-sky-700 text-[11px] font-bold flex items-center justify-center gap-1 transition"
+                    >
+                      <Edit2 className="w-3 h-3" />
+                      <span>Edit Logo/Details</span>
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ======================================================== */}
+          {/* 5. PHOTO GALLERY (FULL CRUD) */}
+          {/* ======================================================== */}
+          {activeTab === "gallery" && (
+            <div className="space-y-6">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
+                <div>
+                  <h2 className="text-xl font-black text-slate-900">Photo Gallery &amp; Campus Tour</h2>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Upload and manage hospital building, OT, ICU, lab, and camp photos.
+                  </p>
+                </div>
+                <button
+                  onClick={openAddGalleryModal}
+                  className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-md transition"
+                >
+                  <PlusCircle className="w-4 h-4" />
+                  <span>Add New Photo</span>
+                </button>
+              </div>
+
+              {/* Gallery Grid */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                {galleryList.map((item) => (
+                  <div
+                    key={item.id}
+                    className="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-xs hover:shadow-md transition flex flex-col justify-between"
+                  >
+                    <div className="relative h-32 w-full bg-slate-100">
+                      <Image src={item.image} alt={item.title} fill className="object-cover" />
+                      <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-black/60 text-white text-[9px] font-bold">
+                        {item.category}
+                      </span>
+                    </div>
+
+                    <div className="p-3 space-y-1">
+                      <h4 className="text-xs font-bold text-slate-900 truncate">{item.title}</h4>
+                      <p className="text-[10px] text-slate-500 line-clamp-1">{item.description}</p>
+                    </div>
+
+                    <div className="p-2 pt-0 flex items-center justify-between border-t border-slate-100">
+                      <button
+                        onClick={() => openEditGalleryModal(item)}
+                        className="text-xs font-bold text-sky-700 hover:text-sky-800 flex items-center gap-1 py-1"
+                      >
+                        <Edit2 className="w-3 h-3" />
+                        <span>Edit</span>
+                      </button>
+                      <button
+                        onClick={() => handleDeleteGallery(item.id, item.title)}
+                        className="p-1 text-slate-400 hover:text-red-600 transition"
+                        title="Delete photo"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ======================================================== */}
+          {/* 6. ANNOUNCEMENTS & EMERGENCY NOTICES (FULL CRUD) */}
+          {/* ======================================================== */}
+          {activeTab === "announcements" && (
+            <div className="space-y-6">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
+                <div>
+                  <h2 className="text-xl font-black text-slate-900">Announcements &amp; Notice Banner</h2>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Post health camp announcements, urgent emergency alerts, and updates.
+                  </p>
+                </div>
+                <button
+                  onClick={openAddAnnouncementModal}
+                  className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-md transition"
+                >
+                  <PlusCircle className="w-4 h-4" />
+                  <span>Add Announcement</span>
+                </button>
+              </div>
+
+              {/* Announcement List */}
+              <div className="space-y-3">
+                {announcementsList.map((ann) => (
+                  <div
+                    key={ann.id}
+                    className="p-4 rounded-2xl border border-slate-200 bg-white hover:border-sky-300 transition flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+                  >
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span
+                          className={`text-[9px] font-bold uppercase px-2 py-0.5 rounded ${
+                            ann.category === "Emergency"
+                              ? "bg-red-100 text-red-800"
+                              : ann.category === "Camp"
+                              ? "bg-amber-100 text-amber-800"
+                              : "bg-sky-100 text-sky-800"
+                          }`}
+                        >
+                          {ann.category}
+                        </span>
+                        <span
+                          className={`text-[9px] font-bold px-2 py-0.5 rounded-full ${
+                            ann.isActive ? "bg-emerald-100 text-emerald-800" : "bg-slate-100 text-slate-500"
+                          }`}
+                        >
+                          {ann.isActive ? "Live / Active" : "Inactive"}
+                        </span>
+                        <span className="text-[10px] text-slate-400">{ann.date}</span>
+                      </div>
+                      <h4 className="font-bold text-sm text-slate-900">{ann.title}</h4>
+                      <p className="text-xs text-slate-600 leading-relaxed max-w-2xl">{ann.content}</p>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0">
+                      <button
+                        onClick={() => handleToggleAnnActive(ann.id)}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition ${
+                          ann.isActive
+                            ? "bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200"
+                            : "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100"
+                        }`}
+                      >
+                        {ann.isActive ? "Deactivate" : "Activate"}
+                      </button>
+                      <button
+                        onClick={() => openEditAnnouncementModal(ann)}
+                        className="p-2 rounded-xl text-sky-700 bg-sky-50 hover:bg-sky-100 transition"
+                        title="Edit"
+                      >
+                        <Edit2 className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteAnnouncement(ann.id)}
+                        className="p-2 rounded-xl text-slate-400 hover:text-red-600 hover:bg-red-50 transition"
+                        title="Delete"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ======================================================== */}
+          {/* 7. FAQS EDITOR (FULL CRUD) */}
+          {/* ======================================================== */}
+          {activeTab === "faqs" && (
+            <div className="space-y-6">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
+                <div>
+                  <h2 className="text-xl font-black text-slate-900">Frequently Asked Questions</h2>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Add and edit patient questions regarding emergency, cashless admissions, and OPD.
+                  </p>
+                </div>
+                <button
+                  onClick={openAddFaqModal}
+                  className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-md transition"
+                >
+                  <PlusCircle className="w-4 h-4" />
+                  <span>Add New FAQ</span>
+                </button>
+              </div>
+
+              {/* FAQs List */}
+              <div className="space-y-3">
+                {faqsList.map((faq, idx) => (
+                  <div
+                    key={idx}
+                    className="p-4 rounded-2xl border border-slate-200 bg-white hover:border-sky-300 transition flex items-start justify-between gap-4"
+                  >
+                    <div className="space-y-1.5 max-w-3xl">
+                      <div className="flex items-center gap-2">
+                        <span className="w-5 h-5 rounded-full bg-sky-100 text-sky-800 font-black text-[10px] flex items-center justify-center">
+                          {idx + 1}
+                        </span>
+                        <h4 className="font-bold text-sm text-slate-900">{faq.question}</h4>
+                      </div>
+                      <p className="text-xs text-slate-600 leading-relaxed pl-7">{faq.answer}</p>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0">
+                      <button
+                        onClick={() => openEditFaqModal(faq, idx)}
+                        className="p-2 rounded-xl text-sky-700 bg-sky-50 hover:bg-sky-100 transition"
+                        title="Edit"
+                      >
+                        <Edit2 className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteFaq(idx)}
+                        className="p-2 rounded-xl text-slate-400 hover:text-red-600 hover:bg-red-50 transition"
+                        title="Delete"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ======================================================== */}
+          {/* 8. SEO & META SETTINGS */}
+          {/* ======================================================== */}
+          {activeTab === "seo" && (
+            <div className="space-y-6">
+              <div className="border-b border-slate-200 pb-4">
+                <h2 className="text-xl font-black text-slate-900">SEO &amp; Search Engine Metadata</h2>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Customize Google search titles, meta descriptions, and keywords for Mundra ranking.
+                </p>
+              </div>
+
+              {/* Live Google Preview Card */}
+              <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
+                  Google Search Snippet Preview
+                </span>
+                <span className="text-xs text-slate-500 font-mono block">
+                  https://geetahospitalmundra.com
+                </span>
+                <h4 className="text-lg font-bold text-blue-700 hover:underline cursor-pointer">
+                  {seoSettings.title}
+                </h4>
+                <p className="text-xs text-slate-600 leading-relaxed max-w-2xl">
+                  {seoSettings.description}
                 </p>
               </div>
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
-                    Google Search Meta Title (50 - 65 characters)
+                  <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                    Meta Page Title
                   </label>
                   <input
                     type="text"
-                    value={seoSettings.title || ""}
+                    value={seoSettings.title}
                     onChange={(e) => setSeoSettings({ ...seoSettings, title: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500 bg-slate-50 font-semibold"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-sky-500"
                   />
                   <span className="text-[10px] text-slate-400 mt-1 block">
-                    Current Length: {seoSettings.title?.length || 0} characters
+                    Length: {seoSettings.title.length} characters (Recommended: 50-65)
                   </span>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
-                    Google Search Meta Description (150 - 160 characters)
+                  <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                    Meta Description
                   </label>
                   <textarea
                     rows={3}
-                    value={seoSettings.description || ""}
+                    value={seoSettings.description}
                     onChange={(e) => setSeoSettings({ ...seoSettings, description: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500 bg-slate-50"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-sky-500"
                   />
                   <span className="text-[10px] text-slate-400 mt-1 block">
-                    Current Length: {seoSettings.description?.length || 0} characters
+                    Length: {seoSettings.description.length} characters (Recommended: 120-160)
                   </span>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
-                    Target High-Intent Search Keywords (Comma separated)
+                  <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                    Meta Keywords (Comma separated)
                   </label>
                   <textarea
-                    rows={2}
-                    value={seoSettings.keywords || ""}
+                    rows={3}
+                    value={seoSettings.keywords}
                     onChange={(e) => setSeoSettings({ ...seoSettings, keywords: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-sky-500 bg-slate-50 font-mono"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-sky-500 font-mono text-xs"
                   />
                 </div>
 
-                {/* Google Search Snippet Preview */}
-                <div className="mt-4 p-4 rounded-2xl bg-slate-50 border border-slate-200">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-2">
-                    Google Search Snippet Preview
-                  </span>
-                  <div className="space-y-1">
-                    <span className="text-xs text-emerald-700 font-mono block">
-                      https://geetahospitalmundra.com
-                    </span>
-                    <h4 className="text-base text-blue-700 hover:underline font-semibold cursor-pointer leading-snug">
-                      {seoSettings.title}
-                    </h4>
-                    <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
-                      {seoSettings.description}
-                    </p>
-                  </div>
+                <div className="pt-4 flex justify-end">
+                  <button
+                    type="button"
+                    onClick={() => handleSaveAll()}
+                    className="px-6 py-2.5 rounded-xl bg-sky-700 hover:bg-sky-800 text-white font-bold text-xs sm:text-sm shadow-md transition"
+                  >
+                    Save SEO Settings
+                  </button>
                 </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
+        </main>
       </div>
 
-      {/* ------------------------------------------------------------- */}
-      {/* MODAL 1: ADD NEW DOCTOR */}
-      {/* ------------------------------------------------------------- */}
-      {isAddDocModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fade-in">
-          <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden">
-            <div className="bg-gradient-to-r from-sky-800 to-teal-800 p-5 text-white flex items-center justify-between">
+      {/* ======================================================== */}
+      {/* MODAL 1: ADD / EDIT DOCTOR */}
+      {/* ======================================================== */}
+      {docModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+          <div className="bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 sm:p-8 shadow-2xl space-y-6">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-4">
               <div>
-                <h3 className="text-lg font-bold">Add New Doctor to Faculty</h3>
-                <p className="text-sky-100 text-xs">Profile will be showcased on the hospital website</p>
+                <h3 className="text-lg font-black text-slate-900">
+                  {docModalMode === "add" ? "Add New Doctor" : `Edit ${docForm.name}`}
+                </h3>
+                <p className="text-xs text-slate-500">Configure doctor profile, OPD timings, and clinical bio.</p>
               </div>
               <button
-                onClick={() => setIsAddDocModalOpen(false)}
-                className="p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white"
+                onClick={() => setDocModalOpen(false)}
+                className="p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleAddDoctor} className="p-6 space-y-3.5 max-h-[80vh] overflow-y-auto">
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Doctor Full Name *</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. Dr. Rajesh Patel"
-                    value={newDocForm.name}
-                    onChange={(e) => setNewDocForm({ ...newDocForm, name: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-sky-500 bg-slate-50"
-                  />
+            <form onSubmit={handleSaveDoctor} className="space-y-4">
+              {/* Photo Upload & Preview */}
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col sm:flex-row items-center gap-4">
+                <div className="relative w-20 h-24 rounded-xl overflow-hidden bg-white border border-slate-300 shrink-0 shadow-xs">
+                  <Image src={docForm.image} alt={docForm.name || "Preview"} fill className="object-cover" />
                 </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Qualifications *</label>
+                <div className="space-y-2 flex-grow text-center sm:text-left">
+                  <span className="text-xs font-bold text-slate-700 block">Doctor Photo</span>
+                  <input
+                    type="file"
+                    ref={doctorPhotoInputRef}
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      const url = await handleFileUpload(file, "doctor");
+                      if (url) setDocForm({ ...docForm, image: url });
+                    }}
+                    accept="image/*"
+                    className="hidden"
+                  />
+                  <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
+                    <button
+                      type="button"
+                      onClick={() => doctorPhotoInputRef.current?.click()}
+                      disabled={uploadLoading === "doctor"}
+                      className="px-3 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold flex items-center gap-1 transition"
+                    >
+                      <Upload className="w-3.5 h-3.5" />
+                      <span>{uploadLoading === "doctor" ? "Uploading..." : "Upload Photo"}</span>
+                    </button>
+                  </div>
                   <input
                     type="text"
-                    required
-                    placeholder="e.g. M.B.B.S., M.D."
-                    value={newDocForm.qualification}
-                    onChange={(e) => setNewDocForm({ ...newDocForm, qualification: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-sky-500 bg-slate-50"
+                    value={docForm.image}
+                    onChange={(e) => setDocForm({ ...docForm, image: e.target.value })}
+                    placeholder="/images/doctors/..."
+                    className="w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-mono"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Department *</label>
+                  <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                    Doctor Name *
+                  </label>
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Cardiology"
-                    value={newDocForm.department}
-                    onChange={(e) => setNewDocForm({ ...newDocForm, department: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-sky-500 bg-slate-50"
+                    value={docForm.name}
+                    onChange={(e) => setDocForm({ ...docForm, name: e.target.value })}
+                    placeholder="Dr. Full Name"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-sky-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Type *</label>
+                  <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                    Qualification *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={docForm.qualification}
+                    onChange={(e) => setDocForm({ ...docForm, qualification: e.target.value })}
+                    placeholder="MBBS, MD, MS, DNB..."
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-sky-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                    Department / Specialty *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={docForm.department}
+                    onChange={(e) => setDocForm({ ...docForm, department: e.target.value })}
+                    placeholder="Gynecology &amp; Obstetrics, Pediatrics..."
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-sky-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                    Designation
+                  </label>
+                  <input
+                    type="text"
+                    value={docForm.designation}
+                    onChange={(e) => setDocForm({ ...docForm, designation: e.target.value })}
+                    placeholder="Chief Consultant &amp; Medical Director"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-sky-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                    Practice Type
+                  </label>
                   <select
-                    value={newDocForm.type}
-                    onChange={(e) => setNewDocForm({ ...newDocForm, type: e.target.value as any })}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-sky-500 bg-slate-50"
+                    value={docForm.type}
+                    onChange={(e) => setDocForm({ ...docForm, type: e.target.value as any })}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-sky-500"
                   >
-                    <option value="full-time">Full-Time Resident</option>
+                    <option value="full-time">Full-Time Hospital Specialist</option>
                     <option value="visiting">Visiting Super-Specialist</option>
                   </select>
                 </div>
-              </div>
 
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Designation *</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. Senior Consultant Gynecologist"
-                  value={newDocForm.designation}
-                  onChange={(e) => setNewDocForm({ ...newDocForm, designation: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-sky-500 bg-slate-50"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">OPD Schedule</label>
+                  <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                    Experience
+                  </label>
                   <input
                     type="text"
-                    placeholder="e.g. Monday to Saturday"
-                    value={newDocForm.opdSchedule}
-                    onChange={(e) => setNewDocForm({ ...newDocForm, opdSchedule: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-sky-500 bg-slate-50"
+                    value={docForm.experience}
+                    onChange={(e) => setDocForm({ ...docForm, experience: e.target.value })}
+                    placeholder="15+ Years"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-sky-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">OPD Timings</label>
+                  <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                    OPD Days / Schedule
+                  </label>
                   <input
                     type="text"
-                    placeholder="e.g. 10:00 AM - 1:00 PM"
-                    value={newDocForm.opdTiming}
-                    onChange={(e) => setNewDocForm({ ...newDocForm, opdTiming: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-sky-500 bg-slate-50"
+                    value={docForm.opdSchedule}
+                    onChange={(e) => setDocForm({ ...docForm, opdSchedule: e.target.value })}
+                    placeholder="Monday to Saturday / 1st Thursday"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-sky-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                    OPD Timings
+                  </label>
+                  <input
+                    type="text"
+                    value={docForm.opdTiming}
+                    onChange={(e) => setDocForm({ ...docForm, opdTiming: e.target.value })}
+                    placeholder="10:00 AM - 1:30 PM &amp; 5:00 PM - 8:00 PM"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-sky-500"
+                  />
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                    Clinical Expertise (Comma separated)
+                  </label>
+                  <input
+                    type="text"
+                    value={docForm.expertise.join(", ")}
+                    onChange={(e) =>
+                      setDocForm({
+                        ...docForm,
+                        expertise: e.target.value.split(",").map((s) => s.trim()),
+                      })
+                    }
+                    placeholder="Normal &amp; High-Risk Delivery, Laparoscopy, Ultrasound, Infertility"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-sky-500"
+                  />
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                    Doctor Bio / Clinical Overview
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={docForm.bio || ""}
+                    onChange={(e) => setDocForm({ ...docForm, bio: e.target.value })}
+                    placeholder="Brief background about training, clinical awards, or hospital leadership."
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-sky-500"
                   />
                 </div>
               </div>
 
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Photo Image URL / Path</label>
-                <input
-                  type="text"
-                  placeholder="e.g. /images/doctors/dr-kundan-modi.jpg or https://..."
-                  value={newDocForm.image}
-                  onChange={(e) => setNewDocForm({ ...newDocForm, image: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-sky-500 bg-slate-50 font-mono"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Key Clinical Expertise (comma separated)</label>
-                <textarea
-                  rows={2}
-                  placeholder="e.g. High risk delivery, 3D USG scan, Laparoscopic surgery"
-                  value={newDocForm.expertise}
-                  onChange={(e) => setNewDocForm({ ...newDocForm, expertise: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-sky-500 bg-slate-50"
-                />
-              </div>
-
-              <div className="pt-2 flex gap-3">
-                <button
-                  type="submit"
-                  className="flex-1 py-2.5 px-4 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs shadow-xs transition"
-                >
-                  Add Doctor to Website
-                </button>
+              <div className="pt-4 border-t border-slate-100 flex items-center justify-end gap-3">
                 <button
                   type="button"
-                  onClick={() => setIsAddDocModalOpen(false)}
-                  className="py-2.5 px-4 rounded-xl border border-slate-200 text-slate-600 text-xs font-semibold"
+                  onClick={() => setDocModalOpen(false)}
+                  className="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 font-bold text-xs hover:bg-slate-50"
                 >
                   Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition"
+                >
+                  {docModalMode === "add" ? "Create Doctor" : "Update Doctor"}
                 </button>
               </div>
             </form>
@@ -1038,77 +2045,578 @@ export default function AdminClient() {
         </div>
       )}
 
-      {/* ------------------------------------------------------------- */}
-      {/* MODAL 2: ADD GALLERY PHOTO */}
-      {/* ------------------------------------------------------------- */}
-      {isAddPhotoModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fade-in">
-          <div className="relative w-full max-w-md bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden">
-            <div className="bg-gradient-to-r from-sky-800 to-teal-800 p-5 text-white flex items-center justify-between">
+      {/* ======================================================== */}
+      {/* MODAL 2: ADD / EDIT SERVICE */}
+      {/* ======================================================== */}
+      {serviceModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+          <div className="bg-white rounded-3xl w-full max-w-xl max-h-[90vh] overflow-y-auto p-6 sm:p-8 shadow-2xl space-y-6">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-4">
               <div>
-                <h3 className="text-lg font-bold">Add Photo to Gallery</h3>
-                <p className="text-sky-100 text-xs">Showcase hospital facilities and medical events</p>
+                <h3 className="text-lg font-black text-slate-900">
+                  {serviceModalMode === "add" ? "Add New Service" : `Edit ${serviceForm.title}`}
+                </h3>
+                <p className="text-xs text-slate-500">Configure medical wing, description, and highlights.</p>
               </div>
               <button
-                onClick={() => setIsAddPhotoModalOpen(false)}
-                className="p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white"
+                onClick={() => setServiceModalOpen(false)}
+                className="p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleAddPhoto} className="p-6 space-y-3.5">
+            <form onSubmit={handleSaveService} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Photo Title *</label>
+                <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                  Service Title *
+                </label>
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Advanced Modular Operation Theatre"
-                  value={newPhotoForm.title}
-                  onChange={(e) => setNewPhotoForm({ ...newPhotoForm, title: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-sky-500 bg-slate-50"
+                  value={serviceForm.title}
+                  onChange={(e) => setServiceForm({ ...serviceForm, title: e.target.value })}
+                  placeholder="24x7 ICU Ambulance, Neonatal ICU (NICU)..."
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-sky-500"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                    Category
+                  </label>
+                  <select
+                    value={serviceForm.category}
+                    onChange={(e) => setServiceForm({ ...serviceForm, category: e.target.value as any })}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-sky-500"
+                  >
+                    <option value="Critical Care">Critical Care</option>
+                    <option value="Surgical & Maternal">Surgical &amp; Maternal</option>
+                    <option value="Diagnostics">Diagnostics</option>
+                    <option value="Inpatient & Amenities">Inpatient &amp; Amenities</option>
+                    <option value="Community Health">Community Health</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                    Icon Theme
+                  </label>
+                  <select
+                    value={serviceForm.iconName}
+                    onChange={(e) => setServiceForm({ ...serviceForm, iconName: e.target.value })}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-sky-500"
+                  >
+                    <option value="Stethoscope">Stethoscope (General)</option>
+                    <option value="HeartPulse">HeartPulse (Cardio / Emergency)</option>
+                    <option value="Baby">Baby (Pediatric / NICU / Maternity)</option>
+                    <option value="Ambulance">Ambulance (24x7 Response)</option>
+                    <option value="FlaskConical">FlaskConical (Pathology Lab)</option>
+                    <option value="Pill">Pill (Pharmacy)</option>
+                    <option value="Activity">Activity (ICU / Vital Care)</option>
+                    <option value="Bone">Bone (Orthopedics / C-ARM)</option>
+                    <option value="Eye">Eye (Ophthalmology)</option>
+                    <option value="ShieldCheck">ShieldCheck (Mediclaim / Insurance)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="flex items-center gap-2 cursor-pointer p-3 rounded-xl bg-slate-50 border border-slate-200">
+                  <input
+                    type="checkbox"
+                    checked={serviceForm.isEmergency24x7 || false}
+                    onChange={(e) => setServiceForm({ ...serviceForm, isEmergency24x7: e.target.checked })}
+                    className="w-4 h-4 rounded text-sky-600 focus:ring-sky-500"
+                  />
+                  <span className="text-xs font-bold text-slate-800">
+                    Mark as 24x7 Emergency Service (Displays red pulse badge)
+                  </span>
+                </label>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                  Short Description
+                </label>
+                <input
+                  type="text"
+                  value={serviceForm.shortDescription || ""}
+                  onChange={(e) => setServiceForm({ ...serviceForm, shortDescription: e.target.value })}
+                  placeholder="One sentence summary for service cards"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-sky-500"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Category *</label>
-                <select
-                  value={newPhotoForm.category}
-                  onChange={(e) => setNewPhotoForm({ ...newPhotoForm, category: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-sky-500 bg-slate-50 font-medium"
+                <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                  Full Service Description
+                </label>
+                <textarea
+                  rows={3}
+                  value={serviceForm.description}
+                  onChange={(e) => setServiceForm({ ...serviceForm, description: e.target.value })}
+                  placeholder="Detailed clinical equipment, team capabilities, and benefits."
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-sky-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                  Clinical Highlights / Features (One per line)
+                </label>
+                <textarea
+                  rows={3}
+                  value={serviceFeaturesInput}
+                  onChange={(e) => setServiceFeaturesInput(e.target.value)}
+                  placeholder="Dedicated Oxygen Pipeline&#10;24x7 Medical Officer on Duty&#10;Emergency Back-up Power"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-sky-500 font-mono text-xs"
+                />
+              </div>
+
+              <div className="pt-4 border-t border-slate-100 flex items-center justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setServiceModalOpen(false)}
+                  className="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 font-bold text-xs hover:bg-slate-50"
                 >
-                  <option value="Infrastructure">Infrastructure & Building</option>
-                  <option value="ICU & OTs">ICU & Operation Theatres</option>
-                  <option value="Facilities">Medical Facilities & Labs</option>
-                  <option value="Camps & Seminars">Health Camps & Seminars</option>
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition"
+                >
+                  {serviceModalMode === "add" ? "Create Service" : "Update Service"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ======================================================== */}
+      {/* MODAL 3: ADD / EDIT PARTNER */}
+      {/* ======================================================== */}
+      {partnerModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+          <div className="bg-white rounded-3xl w-full max-w-lg p-6 sm:p-8 shadow-2xl space-y-6">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+              <div>
+                <h3 className="text-lg font-black text-slate-900">
+                  {partnerModalMode === "add" ? "Add Cashless Partner" : `Edit ${partnerForm.name}`}
+                </h3>
+                <p className="text-xs text-slate-500">Upload official logo and set corporate or TPA type.</p>
+              </div>
+              <button
+                onClick={() => setPartnerModalOpen(false)}
+                className="p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSavePartner} className="space-y-4">
+              {/* Partner Logo Upload & Preview */}
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-center gap-4">
+                <div className="relative w-24 h-16 rounded-xl border border-slate-300 bg-white p-2 flex items-center justify-center shrink-0">
+                  <Image src={partnerForm.image} alt={partnerForm.name || "Partner"} fill className="object-contain p-1" />
+                </div>
+                <div className="space-y-1 flex-grow">
+                  <span className="text-xs font-bold text-slate-700 block">Partner Logo File</span>
+                  <input
+                    type="file"
+                    ref={partnerLogoInputRef}
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      const url = await handleFileUpload(file, "partner");
+                      if (url) setPartnerForm({ ...partnerForm, image: url });
+                    }}
+                    accept="image/*"
+                    className="hidden"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => partnerLogoInputRef.current?.click()}
+                    disabled={uploadLoading === "partner"}
+                    className="px-3 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold flex items-center gap-1 transition"
+                  >
+                    <Upload className="w-3.5 h-3.5" />
+                    <span>{uploadLoading === "partner" ? "Uploading..." : "Upload Logo"}</span>
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                  Partner / Company Name *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={partnerForm.name}
+                  onChange={(e) => setPartnerForm({ ...partnerForm, name: e.target.value })}
+                  placeholder="e.g. Adani Group, HDFC ERGO..."
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-sky-500"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                    Partner Category
+                  </label>
+                  <select
+                    value={partnerForm.type}
+                    onChange={(e) => setPartnerForm({ ...partnerForm, type: e.target.value as any })}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-sky-500"
+                  >
+                    <option value="Corporate">Corporate Industrial Group</option>
+                    <option value="TPA / Insurance">Insurance &amp; TPA</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                    Logo Text / Acronym
+                  </label>
+                  <input
+                    type="text"
+                    value={partnerForm.logoText}
+                    onChange={(e) => setPartnerForm({ ...partnerForm, logoText: e.target.value })}
+                    placeholder="ADANI, HDFC ERGO..."
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-sky-500"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                  Logo Image Path / URL
+                </label>
+                <input
+                  type="text"
+                  value={partnerForm.image}
+                  onChange={(e) => setPartnerForm({ ...partnerForm, image: e.target.value })}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs font-mono"
+                />
+              </div>
+
+              <div className="pt-4 border-t border-slate-100 flex items-center justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setPartnerModalOpen(false)}
+                  className="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 font-bold text-xs hover:bg-slate-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition"
+                >
+                  {partnerModalMode === "add" ? "Add Partner" : "Update Partner"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ======================================================== */}
+      {/* MODAL 4: ADD / EDIT GALLERY PHOTO */}
+      {/* ======================================================== */}
+      {galleryModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+          <div className="bg-white rounded-3xl w-full max-w-lg p-6 sm:p-8 shadow-2xl space-y-6">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+              <div>
+                <h3 className="text-lg font-black text-slate-900">
+                  {galleryModalMode === "add" ? "Add Photo to Gallery" : "Edit Photo Details"}
+                </h3>
+                <p className="text-xs text-slate-500">Upload facility images and add descriptive captions.</p>
+              </div>
+              <button
+                onClick={() => setGalleryModalOpen(false)}
+                className="p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveGallery} className="space-y-4">
+              {/* Image Upload & Preview */}
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-center gap-4">
+                <div className="relative w-24 h-20 rounded-xl border border-slate-300 bg-white overflow-hidden shrink-0 shadow-xs">
+                  <Image src={galleryForm.image} alt={galleryForm.title || "Preview"} fill className="object-cover" />
+                </div>
+                <div className="space-y-1 flex-grow">
+                  <span className="text-xs font-bold text-slate-700 block">Photo Image</span>
+                  <input
+                    type="file"
+                    ref={galleryImageInputRef}
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      const url = await handleFileUpload(file, "gallery");
+                      if (url) setGalleryForm({ ...galleryForm, image: url });
+                    }}
+                    accept="image/*"
+                    className="hidden"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => galleryImageInputRef.current?.click()}
+                    disabled={uploadLoading === "gallery"}
+                    className="px-3 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold flex items-center gap-1 transition"
+                  >
+                    <Upload className="w-3.5 h-3.5" />
+                    <span>{uploadLoading === "gallery" ? "Uploading..." : "Upload New Photo"}</span>
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                  Photo Title / Headline *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={galleryForm.title}
+                  onChange={(e) => setGalleryForm({ ...galleryForm, title: e.target.value })}
+                  placeholder="e.g. 5-Bed NICU with Phototherapy, Modular OT..."
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-sky-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                  Category
+                </label>
+                <select
+                  value={galleryForm.category}
+                  onChange={(e) => setGalleryForm({ ...galleryForm, category: e.target.value })}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-sky-500"
+                >
+                  <option value="Infrastructure">Infrastructure</option>
+                  <option value="Critical Care">Critical Care (ICU / NICU)</option>
+                  <option value="Operating Theatres">Operating Theatres (OT)</option>
+                  <option value="Diagnostics">Diagnostics (Pathology / USG)</option>
+                  <option value="Super-Specialist OPD">Super-Specialist OPD</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Image URL or Local Path *</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. /images/operation-theatre-1.jpg or https://..."
-                  value={newPhotoForm.image}
-                  onChange={(e) => setNewPhotoForm({ ...newPhotoForm, image: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-sky-500 bg-slate-50 font-mono"
+                <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                  Caption / Description
+                </label>
+                <textarea
+                  rows={2}
+                  value={galleryForm.description}
+                  onChange={(e) => setGalleryForm({ ...galleryForm, description: e.target.value })}
+                  placeholder="Brief clinical description of the facility shown."
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-sky-500"
                 />
               </div>
 
-              <div className="pt-2 flex gap-3">
-                <button
-                  type="submit"
-                  className="flex-1 py-2.5 px-4 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs shadow-xs transition"
-                >
-                  Add to Gallery
-                </button>
+              <div className="pt-4 border-t border-slate-100 flex items-center justify-end gap-3">
                 <button
                   type="button"
-                  onClick={() => setIsAddPhotoModalOpen(false)}
-                  className="py-2.5 px-4 rounded-xl border border-slate-200 text-slate-600 text-xs font-semibold"
+                  onClick={() => setGalleryModalOpen(false)}
+                  className="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 font-bold text-xs hover:bg-slate-50"
                 >
                   Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition"
+                >
+                  {galleryModalMode === "add" ? "Add to Gallery" : "Update Photo"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ======================================================== */}
+      {/* MODAL 5: ADD / EDIT ANNOUNCEMENT */}
+      {/* ======================================================== */}
+      {annModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+          <div className="bg-white rounded-3xl w-full max-w-lg p-6 sm:p-8 shadow-2xl space-y-6">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+              <div>
+                <h3 className="text-lg font-black text-slate-900">
+                  {annModalMode === "add" ? "Create Announcement" : "Edit Notice"}
+                </h3>
+                <p className="text-xs text-slate-500">Notice bar alert or upcoming clinical camp banner.</p>
+              </div>
+              <button
+                onClick={() => setAnnModalOpen(false)}
+                className="p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveAnnouncement} className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                  Title / Headline *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={annForm.title}
+                  onChange={(e) => setAnnForm({ ...annForm, title: e.target.value })}
+                  placeholder="e.g. Free Cardiology Mega Camp This Sunday"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-sky-500"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                    Category
+                  </label>
+                  <select
+                    value={annForm.category}
+                    onChange={(e) => setAnnForm({ ...annForm, category: e.target.value })}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-sky-500"
+                  >
+                    <option value="Emergency">Emergency</option>
+                    <option value="Camp">Clinical Camp</option>
+                    <option value="TPA / Cashless">TPA / Cashless</option>
+                    <option value="General Notice">General Notice</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                    Notice Date
+                  </label>
+                  <input
+                    type="date"
+                    value={annForm.date}
+                    onChange={(e) => setAnnForm({ ...annForm, date: e.target.value })}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-sky-500"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                  Notice Details / Description
+                </label>
+                <textarea
+                  rows={3}
+                  required
+                  value={annForm.content}
+                  onChange={(e) => setAnnForm({ ...annForm, content: e.target.value })}
+                  placeholder="Detailed timings, consulting doctors, and instructions for patients."
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-sky-500"
+                />
+              </div>
+
+              <div>
+                <label className="flex items-center gap-2 cursor-pointer p-3 rounded-xl bg-slate-50 border border-slate-200">
+                  <input
+                    type="checkbox"
+                    checked={annForm.isActive}
+                    onChange={(e) => setAnnForm({ ...annForm, isActive: e.target.checked })}
+                    className="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500"
+                  />
+                  <span className="text-xs font-bold text-slate-800">
+                    Publish this notice on the website immediately
+                  </span>
+                </label>
+              </div>
+
+              <div className="pt-4 border-t border-slate-100 flex items-center justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setAnnModalOpen(false)}
+                  className="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 font-bold text-xs hover:bg-slate-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition"
+                >
+                  {annModalMode === "add" ? "Publish Notice" : "Update Notice"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ======================================================== */}
+      {/* MODAL 6: ADD / EDIT FAQ */}
+      {/* ======================================================== */}
+      {faqModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+          <div className="bg-white rounded-3xl w-full max-w-lg p-6 sm:p-8 shadow-2xl space-y-6">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+              <div>
+                <h3 className="text-lg font-black text-slate-900">
+                  {faqModalMode === "add" ? "Add FAQ" : "Edit FAQ"}
+                </h3>
+                <p className="text-xs text-slate-500">Provide clear answers for patient inquiries.</p>
+              </div>
+              <button
+                onClick={() => setFaqModalOpen(false)}
+                className="p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveFaq} className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                  Patient Question *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={faqForm.question}
+                  onChange={(e) => setFaqForm({ ...faqForm, question: e.target.value })}
+                  placeholder="e.g. Which insurance policies provide cashless admission?"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-sky-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
+                  Answer *
+                </label>
+                <textarea
+                  rows={4}
+                  required
+                  value={faqForm.answer}
+                  onChange={(e) => setFaqForm({ ...faqForm, answer: e.target.value })}
+                  placeholder="Comprehensive clinical or administrative answer."
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-sky-500"
+                />
+              </div>
+
+              <div className="pt-4 border-t border-slate-100 flex items-center justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setFaqModalOpen(false)}
+                  className="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 font-bold text-xs hover:bg-slate-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition"
+                >
+                  {faqModalMode === "add" ? "Create FAQ" : "Update FAQ"}
                 </button>
               </div>
             </form>
