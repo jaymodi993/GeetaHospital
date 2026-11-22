@@ -4,6 +4,7 @@ import path from "path";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+export const maxDuration = 60;
 
 export async function POST(request: Request) {
   try {
@@ -20,6 +21,13 @@ export async function POST(request: Request) {
 
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
+
+    if (buffer.length > 3.8 * 1024 * 1024) {
+      return NextResponse.json(
+        { success: false, error: "File exceeds 3.8MB maximum limit. Please select a smaller or compressed image." },
+        { status: 400 }
+      );
+    }
 
     // Sanitize filename and get extension
     const originalName = file.name || "upload";

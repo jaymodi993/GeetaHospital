@@ -130,8 +130,14 @@ export function CmsProvider({ children }: { children: React.ReactNode }) {
   const refreshCms = async () => {
     try {
       const res = await fetch("/api/admin/content", { cache: "no-store" });
-      const json = await res.json();
-      if (json.success && json.data) {
+      const text = await res.text();
+      let json: any;
+      try {
+        json = JSON.parse(text);
+      } catch {
+        return;
+      }
+      if (json && json.success && json.data) {
         applyData(json.data);
         try {
           localStorage.setItem("gh_cms_content", JSON.stringify(json.data));

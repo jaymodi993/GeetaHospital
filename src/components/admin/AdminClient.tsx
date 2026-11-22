@@ -179,12 +179,18 @@ export default function AdminClient() {
     }
   }, []);
 
-  // Fetch CMS data
+  // Fetch CMS data safely
   const fetchCmsData = async () => {
     try {
       const res = await fetch("/api/admin/content", { cache: "no-store" });
-      const data = await res.json();
-      if (data.success && data.data) {
+      const text = await res.text();
+      let data: any;
+      try {
+        data = JSON.parse(text);
+      } catch {
+        return;
+      }
+      if (data && data.success && data.data) {
         if (data.data.hospitalProfile) {
           setHospitalProfile((prev: any) => ({ ...prev, ...data.data.hospitalProfile }));
         }
@@ -238,19 +244,85 @@ export default function AdminClient() {
     localStorage.removeItem("gh_admin_auth");
   };
 
-  // Client-side image compression to guarantee payload stays well under Vercel's 4.5MB limit
-  const compressImageIfNeeded = async (file: File): Promise<File> => {
+  // Helper to re-compress any oversized Base64 DataURLs before saving to avoid Vercel 4.5MB limit
+  const shrinkDataUrlIfNeeded = async (dataUrl: string, maxDim: number = 500, quality: number = 0.82): Promise<string> => {
+    if (!dataUrl || !dataUrl.startsWith("data:image/") || dataUrl.length < 200 * 1024) {
+      return dataUrl;
+    }
+    return new Promise((resolve) => {
+      const img = new (window as any).Image();
+      img.onload = () => {
+        let { width, height } = img;
+        if (width > maxDim || height > maxDim) {
+          if (width > height) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
+          } else {
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
+          }
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.max(1, width);
+        canvas.height = Math.max(1, height);
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return resolve(dataUrl);
+
+        ctx.drawImage(img, 0, 0, width, height);
+
+        let outMime = "image/jpeg";
+        try {
+          if (canvas.toDataURL("image/webp").startsWith("data:image/webp")) {
+            outMime = "image/webp";
+          }
+        } catch {
+          outMime = "image/jpeg";
+        }
+
+        const compressed = canvas.toDataURL(outMime, quality);
+        resolve(compressed.length < dataUrl.length ? compressed : dataUrl);
+      };
+      img.onerror = () => resolve(dataUrl);
+      img.src = dataUrl;
+    });
+  };
+
+  // High-performance client-side image compressor:
+  // Aggressively downsizes and converts images to WebP/JPEG/PNG so payloads remain tiny (< 150KB per image).
+  const compressImageIfNeeded = async (file: File, type: string): Promise<File> => {
+    // SVGs are vector; if small, keep as is
     if (
-      file.type === "image/svg+xml" ||
-      file.type.includes("icon") ||
-      file.name.endsWith(".ico") ||
-      file.name.endsWith(".svg")
+      (file.type === "image/svg+xml" || file.name.endsWith(".svg")) &&
+      file.size < 300 * 1024
     ) {
       return file;
     }
-    // Only compress if larger than 1MB
-    if (file.size < 1024 * 1024) {
-      return file;
+
+    // Determine target dimension and quality based on upload category
+    let maxDim = 800;
+    let targetQuality = 0.8;
+    let preferPng = false;
+
+    if (type === "favicon") {
+      maxDim = 64;
+      targetQuality = 0.9;
+      preferPng = true;
+    } else if (type === "logo" || type === "partner") {
+      maxDim = 400;
+      targetQuality = 0.85;
+      preferPng = file.type === "image/png" || file.type.includes("icon") || file.name.endsWith(".png");
+    } else if (type === "doctor") {
+      maxDim = 500;
+      targetQuality = 0.82;
+      preferPng = false;
+    } else if (type === "banner" || type === "campus") {
+      maxDim = 1200;
+      targetQuality = 0.8;
+      preferPng = false;
+    } else if (type === "gallery") {
+      maxDim = 1000;
+      targetQuality = 0.8;
+      preferPng = false;
     }
 
     return new Promise((resolve) => {
@@ -258,10 +330,9 @@ export default function AdminClient() {
       reader.onload = (e) => {
         const img = new (window as any).Image();
         img.onload = () => {
-          let width = img.width;
-          let height = img.height;
-          const maxDim = 1600;
+          let { width, height } = img;
 
+          // Scale dimensions proportionally if larger than maxDim
           if (width > maxDim || height > maxDim) {
             if (width > height) {
               height = Math.round((height * maxDim) / width);
@@ -273,18 +344,38 @@ export default function AdminClient() {
           }
 
           const canvas = document.createElement("canvas");
-          canvas.width = width;
-          canvas.height = height;
+          canvas.width = Math.max(1, width);
+          canvas.height = Math.max(1, height);
           const ctx = canvas.getContext("2d");
           if (!ctx) return resolve(file);
 
+          if (!preferPng) {
+            ctx.fillStyle = "#FFFFFF";
+            ctx.fillRect(0, 0, width, height);
+          }
+
           ctx.drawImage(img, 0, 0, width, height);
-          const outMime = file.type === "image/png" ? "image/png" : "image/jpeg";
+
+          // Determine optimal output format (WebP has universal modern support and 40% smaller size)
+          let outMime = "image/jpeg";
+          if (preferPng) {
+            outMime = "image/png";
+          } else {
+            try {
+              if (canvas.toDataURL("image/webp").startsWith("data:image/webp")) {
+                outMime = "image/webp";
+              }
+            } catch {
+              outMime = "image/jpeg";
+            }
+          }
 
           canvas.toBlob(
             (blob) => {
-              if (blob && blob.size < file.size) {
-                const compressedFile = new File([blob], file.name, {
+              if (blob) {
+                const ext = outMime === "image/png" ? ".png" : outMime === "image/webp" ? ".webp" : ".jpg";
+                const baseName = (file.name || "upload").substring(0, (file.name || "upload").lastIndexOf(".")) || "image";
+                const compressedFile = new File([blob], `${baseName}${ext}`, {
                   type: outMime,
                   lastModified: Date.now(),
                 });
@@ -294,7 +385,7 @@ export default function AdminClient() {
               }
             },
             outMime,
-            0.85
+            targetQuality
           );
         };
         img.onerror = () => resolve(file);
@@ -309,7 +400,7 @@ export default function AdminClient() {
   const handleFileUpload = async (rawFile: File, type: string): Promise<string | null> => {
     setUploadLoading(type);
     try {
-      const file = await compressImageIfNeeded(rawFile);
+      const file = await compressImageIfNeeded(rawFile, type);
       const formData = new FormData();
       formData.append("file", file);
       formData.append("type", type);
@@ -325,10 +416,10 @@ export default function AdminClient() {
         data = JSON.parse(text);
       } catch {
         if (res.status === 413 || text.toLowerCase().includes("entity too large")) {
-          alert("File size is too large for upload. Please select an image under 4MB.");
+          alert("File size is too large for upload. The image could not be processed.");
           return null;
         }
-        alert("Upload server returned: " + (text.slice(0, 150) || "Unknown error"));
+        alert("Upload server returned (" + res.status + "): " + (text.slice(0, 150) || "Unknown error"));
         return null;
       }
 
@@ -379,15 +470,16 @@ export default function AdminClient() {
     if (url) {
       const updated = { ...hospitalProfile, heroBannerUrl: url };
       setHospitalProfile(updated);
+      handleSaveAll({ hospitalProfile: updated });
     }
   };
 
-  // Save all CMS changes
+  // Save all CMS changes with payload sanitization and safe error handling
   const handleSaveAll = async (overridePayload?: any) => {
     setIsSaving(true);
     setSaveSuccess(false);
 
-    const payload = {
+    const basePayload = {
       hospitalProfile,
       doctors: doctorsList,
       services: servicesList,
@@ -399,20 +491,57 @@ export default function AdminClient() {
       ...(overridePayload || {}),
     };
 
+    // Deep copy payload to sanitize
+    const payload = JSON.parse(JSON.stringify(basePayload));
+
+    // Shrink any oversized data URLs before sending over network
     try {
+      if (payload.hospitalProfile?.logoUrl?.startsWith("data:") && payload.hospitalProfile.logoUrl.length > 200 * 1024) {
+        payload.hospitalProfile.logoUrl = await shrinkDataUrlIfNeeded(payload.hospitalProfile.logoUrl, 400, 0.85);
+      }
+      if (payload.hospitalProfile?.faviconUrl?.startsWith("data:") && payload.hospitalProfile.faviconUrl.length > 80 * 1024) {
+        payload.hospitalProfile.faviconUrl = await shrinkDataUrlIfNeeded(payload.hospitalProfile.faviconUrl, 64, 0.9);
+      }
+      if (payload.hospitalProfile?.heroBannerUrl?.startsWith("data:") && payload.hospitalProfile.heroBannerUrl.length > 300 * 1024) {
+        payload.hospitalProfile.heroBannerUrl = await shrinkDataUrlIfNeeded(payload.hospitalProfile.heroBannerUrl, 1200, 0.8);
+      }
+    } catch (e) {
+      console.warn("Payload sanitization warning:", e);
+    }
+
+    try {
+      const jsonString = JSON.stringify(payload);
+      if (jsonString.length > 3.8 * 1024 * 1024) {
+        alert("Cannot save: Total website data is too large (" + (jsonString.length / (1024 * 1024)).toFixed(1) + " MB). Please re-upload your images using smaller photos.");
+        setIsSaving(false);
+        return;
+      }
+
       const res = await fetch("/api/admin/content", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: jsonString,
       });
 
-      const data = await res.json();
+      const text = await res.text();
+      let data: any;
+      try {
+        data = JSON.parse(text);
+      } catch {
+        if (res.status === 413 || text.toLowerCase().includes("entity too large")) {
+          alert("Cannot save: Request exceeded server capacity (413). Please compress your images.");
+          return;
+        }
+        alert("Server returned error (" + res.status + "): " + (text.slice(0, 150) || "Failed to parse server response"));
+        return;
+      }
+
       if (data.success) {
         setSaveSuccess(true);
         updateLocalCms(payload);
         setTimeout(() => setSaveSuccess(false), 4000);
       } else {
-        alert("Could not save changes: " + (data.error || "Unknown error"));
+        alert("Could not save changes: " + (data.error || "Unknown server error"));
       }
     } catch (err: any) {
       console.error("Error saving CMS:", err);
